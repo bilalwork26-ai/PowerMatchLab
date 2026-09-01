@@ -3,6 +3,7 @@ import Link from "next/link";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 import { PageIntro } from "@/components/layout/PageIntro";
 import { JsonLd } from "@/components/ui/JsonLd";
+import { Callout } from "@/components/ui/Callout";
 
 export const metadata: Metadata = pageMetadata({
   title: "Privacy Policy",
@@ -29,9 +30,13 @@ export default function PrivacyPolicyPage() {
         ]}
       />
       <div className="container-page prose-pml max-w-3xl py-10">
-        <p className="text-xs text-navy-500">
-          Draft for review — not yet legally reviewed. Last updated 2026-09-01.
-        </p>
+        <Callout tone="warn" title="Pending review before public launch">
+          This page is a drafted starting point, not a legally reviewed
+          policy. It must be reviewed by the site owner — and, where
+          required, legal counsel — before launch. Outstanding items are
+          flagged inline below (contact method, hosting provider log
+          retention, analytics). Last updated 2026-09-01.
+        </Callout>
 
         <h2>Tools run in your browser</h2>
         <p>
@@ -51,12 +56,13 @@ export default function PrivacyPolicyPage() {
         </ul>
 
         <h2>Server logs</h2>
-        <p>
-          The hosting provider may keep standard technical logs (IP address, user
-          agent, requested URL, timestamp) for security and reliability. The site
-          owner should confirm the provider’s retention period and document it
-          here before launch.
-        </p>
+        <Callout tone="warn" title="Not yet confirmed">
+          The hosting provider may keep standard technical logs (IP address,
+          user agent, requested URL, timestamp) for security and reliability.
+          The site owner must confirm the actual provider&rsquo;s retention
+          period and document it here before launch — no retention period is
+          stated yet because none has been verified.
+        </Callout>
 
         <h2>Analytics</h2>
         <p>
@@ -81,10 +87,12 @@ export default function PrivacyPolicyPage() {
         </p>
 
         <h2>Contact</h2>
-        <p>
-          Add a contact method here before launch (for example a dedicated email
-          address) so visitors can raise privacy questions or corrections.
-        </p>
+        <Callout tone="warn" title="No contact method published yet">
+          No email address or contact form is published for this site yet.
+          One must be added here before launch so visitors have a real way to
+          raise privacy questions or corrections — this section intentionally
+          does not display a placeholder or invented address in the meantime.
+        </Callout>
       </div>
     </>
   );
