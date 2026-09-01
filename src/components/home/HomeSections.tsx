@@ -21,7 +21,7 @@ export function Hero() {
     <section className="bg-navy-900 text-white">
       <div className="container-page grid gap-8 py-14 lg:grid-cols-[1.2fr_1fr] lg:py-20">
         <div>
-          <h1 className="text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
+          <h1 className="text-3xl font-bold leading-tight text-white sm:text-4xl lg:text-5xl">
             Find the Right Power Station for Your Needs.
           </h1>
           <p className="mt-4 max-w-xl text-navy-200">

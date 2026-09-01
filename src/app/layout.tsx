@@ -44,9 +44,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // overflow-x-hidden on both html and body is a safety net: <html> is the
+  // actual scrolling element for the page, so it also needs the constraint.
+  // Together they stop any accidental wide content deep in the tree from
+  // making the whole page pannable horizontally, without affecting nested
+  // overflow-x-auto containers (e.g. the Power Calculator device table),
+  // which keep scrolling independently.
   return (
-    <html lang="en">
-      <body className="min-h-screen">
+    <html lang="en" data-scroll-behavior="smooth" className="overflow-x-hidden">
+      <body className="min-h-screen overflow-x-hidden">
         <JsonLd data={[organizationJsonLd(), webSiteJsonLd()]} />
         <a href="#main" className="skip-link">
           Skip to main content

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 import { PageIntro } from "@/components/layout/PageIntro";
 import { JsonLd } from "@/components/ui/JsonLd";
+import { Callout } from "@/components/ui/Callout";
 
 export const metadata: Metadata = pageMetadata({
   title: "Terms of Use",
@@ -29,9 +30,11 @@ export default function TermsPage() {
         ]}
       />
       <div className="container-page prose-pml max-w-3xl py-10">
-        <p className="text-xs text-navy-500">
-          Draft for review — not yet legally reviewed. Last updated 2026-09-01.
-        </p>
+        <Callout tone="warn" title="Pending review before public launch">
+          This page is a drafted starting point, not a legally reviewed terms
+          of use. The site owner — and, where required, legal counsel — must
+          review and adapt it before public launch. Last updated 2026-09-01.
+        </Callout>
 
         <h2>Information, not advice</h2>
         <p>
