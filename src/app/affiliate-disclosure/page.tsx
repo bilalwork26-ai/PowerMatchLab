@@ -41,9 +41,11 @@ export default function AffiliateDisclosurePage() {
           Today, no affiliate tag is applied. The “Check Price on Amazon” button
           uses the normal, direct Amazon product URL stored for each item. The
           internal <code>amazon_affiliate_url</code> field is empty and we do not
-          fabricate tracking IDs or affiliate URLs. When affiliate links go live,
-          this page and the button microcopy will say so, and affiliate links
-          will use <code>rel=&quot;sponsored nofollow&quot;</code>.
+          fabricate tracking IDs or affiliate URLs. Every Amazon link already
+          carries <code>rel=&quot;nofollow sponsored noopener noreferrer&quot;</code>,
+          whether or not it is affiliate — when affiliate links go live, this page
+          and the button microcopy will say so, but the link attributes will not
+          need to change.
         </p>
 
         <h2>What commissions do not affect</h2>

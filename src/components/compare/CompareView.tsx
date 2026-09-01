@@ -356,7 +356,7 @@ export function CompareView({ catalog, scores }: Props) {
 
           {/* PowerMatch score overview */}
           {selected.length >= 2 ? (
-            <section className="mt-10 grid gap-8 lg:grid-cols-2">
+            <section className="mt-10 grid items-start gap-8 lg:grid-cols-2">
               <div className="card p-5">
                 <h2 className="text-base font-semibold">
                   PowerMatch Score overview

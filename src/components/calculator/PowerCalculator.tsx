@@ -254,8 +254,10 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
         </label>
       </aside>
 
-      {/* Main panel */}
-      <div className="space-y-8">
+      {/* Main panel. min-w-0 keeps this grid item from growing to fit the
+          device table's min-w-[680px] below — without it, the whole page
+          widens on narrow viewports instead of just the table scrolling. */}
+      <div className="min-w-0 space-y-8">
         {/* STEP 1 */}
         <section hidden={step !== 1} aria-labelledby="step1-h">
           <h2 id="step1-h" className="text-xl font-bold">
@@ -457,7 +459,16 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
             <button
               type="button"
               onClick={() => setStep(2)}
-              className="rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700"
+              disabled={!ready}
+              className={cn(
+                "rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700",
+                !ready && "cursor-not-allowed opacity-60 hover:bg-brand-600",
+              )}
+              title={
+                !ready
+                  ? "Add at least one device with a running-watts value to continue."
+                  : undefined
+              }
             >
               Next: usage &amp; runtime →
             </button>
