@@ -1,0 +1,40 @@
+{
+  "name": "powermatchlab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "PowerMatchLab — independent decision-support and comparison site for portable power stations (US).",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "next": "15.5.25",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "zod": "3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "22.10.7",
+    "@types/react": "19.0.7",
+    "@types/react-dom": "19.0.3",
+    "autoprefixer": "10.4.20",
+    "eslint": "8.57.1",
+    "eslint-config-next": "15.5.25",
+    "postcss": "8.4.49",
+    "tailwindcss": "3.4.17",
+    "typescript": "5.7.3",
+    "vitest": "2.1.8"
+  },
+  "engines": {
+    "node": ">=18.18.0"
+  },
+  "allowScripts": {
+    "esbuild@0.21.5": true,
+    "unrs-resolver@1.12.2": true
+  }
+}

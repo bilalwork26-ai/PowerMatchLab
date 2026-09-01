@@ -1,0 +1,16 @@
+import type { Metadata } from "next";
+import { getBestFor } from "@/content/best-for";
+import { pageMetadata } from "@/lib/seo";
+import { BestForPage } from "@/components/bestfor/BestForPage";
+
+const content = getBestFor("best-for-camping")!;
+
+export const metadata: Metadata = pageMetadata({
+  title: content.title,
+  description: content.metaDescription,
+  path: "/best-for-camping",
+});
+
+export default function Page() {
+  return <BestForPage content={content} />;
+}
