@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Recommendation, MatchStatus } from "@/lib/recommend";
 import { productDisplayName } from "@/data/products";
 import { fmtWh, fmtWatts } from "@/lib/format";
-import { ProductThumb } from "@/components/ui/ProductThumb";
+import { ProductIllustration } from "@/components/ui/ProductIllustration";
 import { ScoreCircle } from "@/components/ui/ScoreCircle";
 import { AmazonCta } from "@/components/product/AmazonCta";
 import { CompareToggleButton } from "@/components/product/CompareToggleButton";
@@ -21,7 +21,7 @@ export function RecommendationCard({ rec }: { rec: Recommendation }) {
     <article className="card p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex gap-3">
-          <ProductThumb brand={product.brand} model={product.model} size={64} />
+          <ProductIllustration product={product} size={64} />
           <div>
             <p className="text-xs font-medium uppercase tracking-wide text-navy-500">
               {product.brand}

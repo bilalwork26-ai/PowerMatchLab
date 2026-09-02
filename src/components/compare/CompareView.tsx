@@ -8,7 +8,7 @@ import type { ProductScore } from "@/lib/score";
 import { useCompare, MAX_COMPARE } from "@/context/CompareContext";
 import { COMPARE_ROWS, rowWinner } from "@/lib/compare-rows";
 import { cn } from "@/lib/cn";
-import { ProductThumb } from "@/components/ui/ProductThumb";
+import { ProductIllustration } from "@/components/ui/ProductIllustration";
 import { ScoreBar } from "@/components/ui/ScoreBar";
 import { ScoreCircle } from "@/components/ui/ScoreCircle";
 import { RadarChart } from "@/components/ui/RadarChart";
@@ -241,9 +241,8 @@ export function CompareView({ catalog, scores }: Props) {
               <div />
               {selected.map((p) => (
                 <div key={p.id} className="card p-3 text-center">
-                  <ProductThumb
-                    brand={p.brand}
-                    model={p.model}
+                  <ProductIllustration
+                    product={p}
                     size={72}
                     className="mx-auto"
                   />

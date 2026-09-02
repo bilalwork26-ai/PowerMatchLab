@@ -3,7 +3,7 @@ import type { Product } from "@/types/product";
 import type { ProductScore } from "@/lib/score";
 import { productDisplayName } from "@/data/products";
 import { fmtWh, fmtWatts, fmtKg } from "@/lib/format";
-import { ProductThumb } from "@/components/ui/ProductThumb";
+import { ProductIllustration } from "@/components/ui/ProductIllustration";
 import { Badge } from "@/components/ui/Badge";
 import { CompareToggleButton } from "./CompareToggleButton";
 import { AmazonCta } from "./AmazonCta";
@@ -21,7 +21,7 @@ export function ProductCard({
   return (
     <article className="card flex h-full flex-col p-4">
       <div className="flex gap-4">
-        <ProductThumb brand={product.brand} model={product.model} size={84} />
+        <ProductIllustration product={product} size={84} />
         <div className="min-w-0 flex-1">
           <p className="text-xs font-medium uppercase tracking-wide text-navy-500">
             {product.brand}
