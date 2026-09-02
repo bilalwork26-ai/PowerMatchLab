@@ -6,7 +6,7 @@ import { cn } from "@/lib/cn";
 /**
  * "Check Price on Amazon" CTA.
  *
- * - Uses `amazon_affiliate_url` when it exists (it does not yet).
+ * - Uses `amazon_affiliate_url` when it exists (an Amazon Associates link).
  * - Otherwise falls back to the verified direct `amazon_product_url`.
  * - If neither exists, shows a disabled state — never a fabricated link.
  */

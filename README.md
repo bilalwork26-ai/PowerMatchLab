@@ -45,8 +45,11 @@ tests/                     Vitest suites
 
 ## Data & integrity rules honored
 
-- `amazon_affiliate_url` stays `null`; the "Check Price on Amazon" CTA falls back to
-  the verified `amazon_product_url`. No fabricated affiliate URLs or tracking IDs.
+- `amazon_affiliate_url` holds a real Amazon Associates link (tracking ID
+  `powermatchlab-20`) for every product now that the site is public and
+  registered with the Associates programme. The "Check Price on Amazon" CTA
+  falls back to the verified `amazon_product_url` only if a product's
+  affiliate link is ever missing. No fabricated affiliate URLs or tracking IDs.
 - No invented prices, discounts, stock, star ratings, review counts or test results.
 - Manufacturer claim vs. PowerMatchLab calculation vs. editorial assessment are
   labelled throughout. See `/about-methodology`.
@@ -62,6 +65,7 @@ tests/                     Vitest suites
 - START_HERE_CLAUDE.md — original handoff instruction
 - references/ — approved visual references
 
-Amazon Associates affiliate URLs intentionally remain `null` until PowerMatchLab has a
-public URL and the Associates registration can be completed. Normal Amazon product URLs
-are included as working commercial destinations, subject to production revalidation.
+Amazon Associates affiliate URLs (tracking ID `powermatchlab-20`) were added once
+PowerMatchLab had a public URL and the Associates registration was completed. Normal
+Amazon product URLs remain as the fallback commercial destination, subject to
+production revalidation.

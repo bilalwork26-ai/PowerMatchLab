@@ -3,8 +3,10 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   images: {
-    // Product imagery is not bundled in V1 (no verified image assets shipped).
-    // Placeholders are rendered as inline SVG, so remote/optimized images are unused.
+    // Licensed product photography is not available in V1 (see
+    // /affiliate-disclosure). Every product instead uses an original,
+    // locally-authored illustration from public/illustrations/ — no remote
+    // image host is ever needed.
     remotePatterns: [],
   },
   async redirects() {

@@ -15,7 +15,8 @@ import { Badge } from "@/components/ui/Badge";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { Callout } from "@/components/ui/Callout";
 import { ScoreCircle } from "@/components/ui/ScoreCircle";
-import { ProductThumb } from "@/components/ui/ProductThumb";
+import { ProductIllustration } from "@/components/ui/ProductIllustration";
+import { ILLUSTRATIVE_CAPTION_LONG } from "@/lib/illustrations";
 import { AmazonCta } from "@/components/product/AmazonCta";
 import { CompareToggleButton } from "@/components/product/CompareToggleButton";
 import { ProductTabs } from "@/components/product/ProductTabs";
@@ -85,12 +86,12 @@ export default async function ProductPage({
 
           <div className="mt-5 grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
             <div className="flex flex-col gap-6 sm:flex-row">
-              <ProductThumb
-                brand={product.brand}
-                model={product.model}
-                size={200}
-                className="mx-auto sm:mx-0"
-              />
+              <div className="mx-auto flex flex-col items-center gap-2 sm:mx-0 sm:items-start">
+                <ProductIllustration product={product} size={200} showCaption={false} />
+                <p className="max-w-[220px] text-center text-[10px] leading-snug text-navy-400 sm:text-left">
+                  {ILLUSTRATIVE_CAPTION_LONG}
+                </p>
+              </div>
               <div className="min-w-0">
                 <p className="text-sm font-medium uppercase tracking-wide text-navy-500">
                   {product.brand}

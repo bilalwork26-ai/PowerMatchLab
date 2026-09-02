@@ -48,7 +48,7 @@
     "last_verified": "2026-09-01",
     "amazon_asin": "B0F42HLLSC",
     "amazon_product_url": "https://www.amazon.com/dp/B0F42HLLSC",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": "https://amzn.to/4xzHJNL"
   },
   {
     "id": "jackery-explorer-1000-v2",
@@ -100,7 +100,7 @@
     "last_verified": "2026-09-01",
     "amazon_asin": "B0D7PPG25F",
     "amazon_product_url": "https://www.amazon.com/dp/B0D7PPG25F",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": "https://amzn.to/4xt2BGe"
   },
   {
     "id": "ecoflow-delta-3-classic",
@@ -152,7 +152,7 @@
     "last_verified": "2026-09-01",
     "amazon_asin": "B0FQVC4RF5",
     "amazon_product_url": "https://www.amazon.com/dp/B0FQVC4RF5",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": "https://amzn.to/3V8rkBi"
   },
   {
     "id": "anker-solix-c1000-gen-2",
@@ -204,7 +204,7 @@
     "last_verified": "2026-09-01",
     "amazon_asin": "B0FN7MSY4L",
     "amazon_product_url": "https://www.amazon.com/dp/B0FN7MSY4L",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": "https://amzn.to/4zTzRrS"
   },
   {
     "id": "bluetti-ac180",
@@ -255,7 +255,7 @@
     "last_verified": "2026-09-01",
     "amazon_asin": "B0C1SMJTDT",
     "amazon_product_url": "https://www.amazon.com/dp/B0C1SMJTDT",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": "https://amzn.to/4gIsMSa"
   },
   {
     "id": "anker-solix-s2000",
@@ -307,7 +307,7 @@
     "last_verified": "2026-09-01",
     "amazon_asin": "B0GY4TQ2P8",
     "amazon_product_url": "https://www.amazon.com/dp/B0GY4TQ2P8",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": "https://amzn.to/462BxBM"
   },
   {
     "id": "jackery-explorer-2000-v2",
@@ -359,7 +359,7 @@
     "last_verified": "2026-09-01",
     "amazon_asin": "B0DFG2WDQH",
     "amazon_product_url": "https://www.amazon.com/dp/B0DFG2WDQH",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": "https://amzn.to/4x151e0"
   },
   {
     "id": "anker-solix-c2000-gen-2",
@@ -412,7 +412,7 @@
     "last_verified": "2026-09-01",
     "amazon_asin": "B0FVFGL38H",
     "amazon_product_url": "https://www.amazon.com/dp/B0FVFGL38H",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": "https://amzn.to/3SqjJNP"
   },
   {
     "id": "ecoflow-delta-pro-3",
@@ -463,9 +463,9 @@
     ],
     "official_source": "EcoFlow US",
     "last_verified": "2026-09-01",
-    "amazon_asin": "B0D14FMFZD",
-    "amazon_product_url": "https://www.amazon.com/dp/B0D14FMFZD",
-    "amazon_affiliate_url": null
+    "amazon_asin": "B0D14FMEZD",
+    "amazon_product_url": "https://www.amazon.com/dp/B0D14FMEZD",
+    "amazon_affiliate_url": "https://amzn.to/4daJPev"
   },
   {
     "id": "anker-solix-f3800",
@@ -519,6 +519,6 @@
     "last_verified": "2026-09-01",
     "amazon_asin": "B0C5C9HMQ2",
     "amazon_product_url": "https://www.amazon.com/dp/B0C5C9HMQ2",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": "https://amzn.to/3UsOl1K"
   }
 ]

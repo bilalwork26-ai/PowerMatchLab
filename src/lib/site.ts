@@ -83,4 +83,4 @@ export const LEGAL_NAV: NavItem[] = [
 ];
 
 export const AFFILIATE_DISCLOSURE_SHORT =
-  "PowerMatchLab is reader-supported. “Check Price on Amazon” links currently point to normal Amazon product pages; Amazon Associates tracking will be added once the site is registered. We never accept payment for placement or ratings.";
+  "PowerMatchLab is reader-supported. As an Amazon Associate I earn from qualifying purchases. “Check Price on Amazon” links carry our Amazon Associates tracking ID. We never accept payment for placement or ratings.";
