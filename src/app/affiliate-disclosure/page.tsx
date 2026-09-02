@@ -7,7 +7,7 @@ import { JsonLd } from "@/components/ui/JsonLd";
 export const metadata: Metadata = pageMetadata({
   title: "Affiliate Disclosure",
   description:
-    "How PowerMatchLab makes money, what the Amazon links are today, and our commitment not to let commissions influence rankings or scores.",
+    "PowerMatchLab is a participant in the Amazon Associates Program. How the Amazon links work today, and our commitment not to let commissions influence rankings or scores.",
   path: "/affiliate-disclosure",
 });
 
@@ -30,22 +30,30 @@ export default function AffiliateDisclosurePage() {
       <div className="container-page prose-pml max-w-3xl py-10">
         <h2>The short version</h2>
         <p>
-          PowerMatchLab is reader-supported. We intend to join the Amazon
-          Associates programme once the site is publicly registered. After that,
-          some outbound links to Amazon will carry an affiliate tag and a
-          qualifying purchase may earn us a commission at no extra cost to you.
+          PowerMatchLab is reader-supported and participates in the Amazon
+          Services LLC Associates Program, an affiliate advertising program
+          designed to provide a means for sites to earn advertising fees by
+          advertising and linking to Amazon.com.
+        </p>
+        <p>
+          <strong>As an Amazon Associate I earn from qualifying purchases.</strong>{" "}
+          A qualifying purchase made after following a “Check Price on Amazon”
+          link may earn PowerMatchLab a commission, at no extra cost to you.
         </p>
 
         <h2>What the links are right now</h2>
         <p>
-          Today, no affiliate tag is applied. The “Check Price on Amazon” button
-          uses the normal, direct Amazon product URL stored for each item. The
-          internal <code>amazon_affiliate_url</code> field is empty and we do not
-          fabricate tracking IDs or affiliate URLs. Every Amazon link already
-          carries <code>rel=&quot;nofollow sponsored noopener noreferrer&quot;</code>,
-          whether or not it is affiliate — when affiliate links go live, this page
-          and the button microcopy will say so, but the link attributes will not
-          need to change.
+          Every product in the catalog stores its own Amazon Associates link in
+          the internal <code>amazon_affiliate_url</code> field, generated
+          directly from our Associates account for that exact product page — we
+          do not fabricate tracking IDs or affiliate URLs, and we do not point
+          one product&rsquo;s button at a different product. If that field were
+          ever empty for an item, the “Check Price on Amazon” button would fall
+          back to the plain, direct <code>amazon_product_url</code> instead,
+          rather than show a broken or guessed link. Every Amazon link, affiliate
+          or not, carries{" "}
+          <code>rel=&quot;nofollow sponsored noopener noreferrer&quot;</code> and
+          opens in a new tab.
         </p>
 
         <h2>What commissions do not affect</h2>

@@ -74,9 +74,10 @@ export default function PrivacyPolicyPage() {
         <h2>Outbound links to Amazon</h2>
         <p>
           When you follow a “Check Price on Amazon” link you leave PowerMatchLab
-          and Amazon’s own privacy policy applies. Once the Amazon Associates
-          programme is active, outbound links may include an affiliate tag that
-          lets Amazon attribute a purchase to PowerMatchLab. See the{" "}
+          and Amazon’s own privacy policy applies. PowerMatchLab is a
+          participant in the Amazon Associates Program, so these outbound links
+          include an affiliate tag that lets Amazon attribute a qualifying
+          purchase to PowerMatchLab. See the{" "}
           <Link href="/affiliate-disclosure">Affiliate Disclosure</Link>.
         </p>
 

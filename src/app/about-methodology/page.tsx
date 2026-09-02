@@ -40,9 +40,9 @@ export default function MethodologyPage() {
         <p>
           PowerMatchLab compares portable power stations for the United States
           market and helps visitors size their needs. It is reader-supported:
-          when the Amazon Associates programme is active, qualifying purchases
-          made through our links may earn a commission at no cost to you. We do
-          not accept payment for placement, ratings or reviews.
+          as an Amazon Associate I earn from qualifying purchases made through
+          our links, at no cost to you. We do not accept payment for placement,
+          ratings or reviews.
         </p>
 
         <h2>Three kinds of statement</h2>
@@ -224,10 +224,11 @@ export default function MethodologyPage() {
 
         <h2>Amazon links</h2>
         <p>
-          Each product stores a direct Amazon product URL. A future Amazon
-          Associates URL field is currently empty. Until it is populated, “Check
-          Price on Amazon” uses the verified direct product URL. We never
-          fabricate a tracking ID or an affiliate link. See the{" "}
+          Each product stores both a direct Amazon product URL and an Amazon
+          Associates affiliate URL. “Check Price on Amazon” uses the affiliate
+          URL when one is stored for that product, and falls back to the direct
+          product URL otherwise — never a fabricated tracking ID or an invented
+          link. See the{" "}
           <Link href="/affiliate-disclosure">Affiliate Disclosure</Link>.
         </p>
 
