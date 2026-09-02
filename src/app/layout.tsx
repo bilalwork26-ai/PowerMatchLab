@@ -32,6 +32,13 @@ export const metadata: Metadata = {
     description: SITE.description,
   },
   robots: { index: true, follow: true },
+  other: {
+    // Google AdSense site-ownership verification tag, rendered server-side
+    // into <head> via the Metadata API so it is present in the raw HTML
+    // response even without JavaScript. Matches the same AdSense account
+    // as the loader script below (client=ca-pub-5968945060876033).
+    "google-adsense-account": "ca-pub-5968945060876033",
+  },
 };
 
 export const viewport: Viewport = {
