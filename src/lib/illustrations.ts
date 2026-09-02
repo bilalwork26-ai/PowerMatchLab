@@ -1,9 +1,9 @@
 import type { Product } from "@/types/product";
 
 /**
- * Canonical mapping from product illustration to a rough size class, used
- * only to pick a sensible alt-text description and to keep the ten
- * hand-authored SVGs in public/illustrations/ visually differentiated.
+ * Canonical mapping from product to a rough size class, used only to pick a
+ * sensible alt-text description and to keep the ten renders in
+ * public/illustrations/ visually differentiated.
  *
  * Derived from each product's own verified `capacity_wh` (see
  * products.json) — not an invented specification, purely a display
@@ -27,12 +27,12 @@ const SIZE_CLASS_BY_ID: Record<string, IllustrationSizeClass> = {
 };
 
 /**
- * Canonical local path for a product's illustration. Every catalog product
- * id maps to exactly one hand-authored SVG in public/illustrations/ — this
- * is the single source of truth for the path, so no component hardcodes it.
+ * Canonical local path for a product's image. Every catalog product id maps
+ * to exactly one original render in public/illustrations/ — this is the
+ * single source of truth for the path, so no component hardcodes it.
  */
 export function getIllustrationPath(product: Product): string {
-  return `/illustrations/${product.id}.svg`;
+  return `/illustrations/${product.id}.png`;
 }
 
 export function getIllustrationSizeClass(product: Product): IllustrationSizeClass {
@@ -40,12 +40,12 @@ export function getIllustrationSizeClass(product: Product): IllustrationSizeClas
 }
 
 /**
- * Honest alt text: identifies the product but never claims the illustration
- * is an exact photograph of it.
+ * Honest alt text: identifies the product but never claims the render is an
+ * exact photograph of it.
  */
 export function getIllustrationAlt(product: Product): string {
   const sizeClass = getIllustrationSizeClass(product);
-  return `Illustrative rendering representing a ${sizeClass} portable power station — not an exact photograph of the ${product.brand} ${product.model}.`;
+  return `Original illustrative render representing a ${sizeClass} portable power station — not an exact photograph of the ${product.brand} ${product.model}.`;
 }
 
 export const ILLUSTRATIVE_CAPTION_SHORT = "Illustrative image — not an exact product photograph.";

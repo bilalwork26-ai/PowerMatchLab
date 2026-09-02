@@ -8,14 +8,15 @@ import {
 } from "@/lib/illustrations";
 
 /**
- * Original PowerMatchLab illustration for a product.
+ * Original PowerMatchLab render for a product.
  *
  * V1 ships no licensed product photography (see /affiliate-disclosure and
- * the illustration's own alt text): every catalog product instead gets one
- * hand-authored, brand-neutral SVG in public/illustrations/, sized by
- * category (compact / mid-size / large / whole-home backup) using the
- * product's own verified capacity — never an attempt at the real industrial
- * design, and never presented as a photograph.
+ * the render's own alt text): every catalog product instead gets one
+ * original, brand-neutral render in public/illustrations/, generated for
+ * this project and sized by category (compact / mid-size / large /
+ * whole-home backup) using the product's own verified capacity — never an
+ * attempt at the real industrial design, and never presented as an exact
+ * photograph.
  */
 export function ProductIllustration({
   product,
@@ -43,7 +44,6 @@ export function ProductIllustration({
           alt={alt}
           fill
           sizes={`${size}px`}
-          unoptimized
           className="object-contain p-2"
         />
       </div>
