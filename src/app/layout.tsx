@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import "./globals.css";
 import { SITE } from "@/lib/site";
 import { absoluteUrl, organizationJsonLd, webSiteJsonLd } from "@/lib/seo";
@@ -53,6 +54,25 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth" className="overflow-x-hidden">
       <body className="min-h-screen overflow-x-hidden">
+        {/*
+          Google AdSense account/verification loader — the official
+          snippet, unmodified, published once here so every route gets it
+          exactly once. `beforeInteractive` is the only next/script
+          strategy Next.js injects into the actual <head> regardless of
+          where the component sits in the tree (this root layout has no
+          manual <head> element; App Router builds it from the Metadata
+          API) — this placement matches Next's own documented pattern for
+          beforeInteractive scripts. The script tag keeps its own `async`
+          attribute, so the browser fetches it without blocking HTML
+          parsing or paint — this only ships the loader, no manual ad
+          slots/units are placed anywhere yet.
+        */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5968945060876033"
+          crossOrigin="anonymous"
+          strategy="beforeInteractive"
+        />
         <JsonLd data={[organizationJsonLd(), webSiteJsonLd()]} />
         <a href="#main" className="skip-link">
           Skip to main content
