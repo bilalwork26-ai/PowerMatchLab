@@ -159,9 +159,26 @@ export default async function GuidePage({
           <div className="not-prose mt-8 rounded-lg border border-navy-100 bg-navy-50 p-4 text-xs text-navy-600">
             <p className="font-semibold text-navy-800">Sources</p>
             <ul className="mt-1 list-disc pl-5">
-              {guide.sources.map((s) => (
-                <li key={s}>{s}</li>
-              ))}
+              {guide.sources.map((s) => {
+                const label = typeof s === "string" ? s : s.label;
+                const url = typeof s === "string" ? undefined : s.url;
+                return (
+                  <li key={label}>
+                    {url ? (
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline hover:text-navy-800"
+                      >
+                        {label}
+                      </a>
+                    ) : (
+                      label
+                    )}
+                  </li>
+                );
+              })}
             </ul>
             <p className="mt-3">
               Last updated {fmtDate(guide.lastUpdated)}. This guide is educational
