@@ -36,6 +36,8 @@ export interface Guide {
   sections: GuideSection[];
   /** Product ids to surface as "related" (must exist in products.json). */
   relatedProductIds: string[];
+  /** Other guide slugs to cross-link (must exist in GUIDES). Optional. */
+  relatedGuideSlugs?: string[];
   faq: GuideFaq[];
   sources: GuideSource[];
   lastUpdated: string; // ISO date
@@ -624,6 +626,695 @@ export const GUIDES: Guide[] = [
         url: "https://www.energy.gov/sites/default/files/2022-01/understanding-solar-photovoltaic-system-performance.pdf",
       },
       "Manufacturer specification sheets referenced in products.json",
+    ],
+    lastUpdated: "2026-09-03",
+  },
+  {
+    slug: "power-station-for-home-backup",
+    title: "What Size Power Station Do I Need for Home Backup?",
+    metaDescription:
+      "How to size a power station for whole-home or essential-circuit backup: which loads to prioritize, UPS switchover, 120/240V, and a worked capacity example.",
+    intro: [
+      "\"Home backup\" covers a wide range, from keeping the fridge, internet and a few lights on during a short outage to running most of a house for days. This guide helps you figure out which one you actually need before you size anything.",
+      "The math is the same watts-vs-watt-hours method used throughout PowerMatchLab, applied to a whole household's essential circuits instead of a single appliance.",
+    ],
+    sections: [
+      {
+        id: "define-your-backup-scope",
+        heading: "Step 1: Decide what \"backup\" means for your household",
+        body: [
+          "Start by naming the circuits or devices you actually need through an outage: refrigerator, freezer, internet router and modem, a few lights, phone charging, medical equipment, a sump pump, maybe a window AC or a well pump. Write the list down before looking at any product.",
+          "A portable power station is generally an essentials device, not a whole-house generator replacement — sized realistically, it comfortably covers a defined list of priority loads rather than every circuit in the home.",
+        ],
+      },
+      {
+        id: "list-loads-home-backup",
+        heading: "Step 2: List each load's running watts",
+        body: [
+          "For every item on your list, find its running watts from its rating label or manual, or measure it with a plug-in energy meter. Don't estimate — a router might be 10-15 W while a window AC can be several hundred to over a thousand.",
+          "Note anything motor-driven (fridge, freezer, sump pump, well pump, some AC units) separately — these have a startup surge well above their running watts, covered in Step 4.",
+        ],
+      },
+      {
+        id: "daily-energy-home-backup",
+        heading: "Step 3: Estimate total daily energy",
+        body: [
+          "Multiply each load's watts by how many hours per day you expect to run it, then add every load together for a daily watt-hour total. A fridge alone commonly uses roughly 1,000-1,600 Wh/day; add your other essentials on top.",
+          "As a broad planning reference, a household running a compact essentials list — fridge, internet, phones, a few lights — often lands somewhere around 2,000-4,000 Wh per day, but your own list may be higher or lower; there is no substitute for adding up your own numbers from Step 2.",
+        ],
+      },
+      {
+        id: "capacity-formula-home-backup",
+        heading: "Step 4: Convert to a recommended capacity",
+        body: [
+          "Using the same assumptions as the rest of PowerMatchLab — about 85% usable energy after conversion losses, plus roughly 20% reserve headroom: recommended minimum capacity (Wh) ≈ (daily energy Wh × days of autonomy) ÷ 0.85 × 1.2.",
+          "Worked example: your essentials list adds up to 2,500 Wh/day, and you want to plan for one full day without recharging. 2,500 ÷ 0.85 × 1.2 ≈ 3,529 Wh minimum recommended capacity. A two-day plan without recharge roughly doubles the daily-energy figure before the same adjustment.",
+          "Multi-day, no-recharge scenarios get large fast — this is where an expandable platform (add battery modules instead of buying a second unit) or a recharge plan (generator, solar, or grid access) usually makes more practical sense than one enormous fixed battery.",
+        ],
+      },
+      {
+        id: "continuous-surge-home-backup",
+        heading: "Step 5: Confirm continuous output and surge headroom",
+        body: [
+          "Add the running watts of everything that could be on at once — that's your required continuous output. Then add your single largest startup surge (typically the fridge or a pump) on top of everything else running, and check that total against the station's surge/peak rating.",
+          "Undersizing output is a common failure mode even when capacity looks fine on paper: a station with plenty of watt-hours can still trip or refuse to start a compressor if its continuous or surge watt rating is too low for what you're asking it to run at once.",
+        ],
+      },
+      {
+        id: "switchover-240v",
+        heading: "UPS switchover time and 120/240V loads",
+        body: [
+          "If you want the station to take over automatically when the grid drops — keeping a desktop, networking gear, or certain medical devices running through the cutover — look for a fast switchover time, commonly in the 10-20 millisecond range on units that support it.",
+          "Well pumps, electric ranges, dryers and some HVAC equipment need 120/240V split-phase power. Only a subset of large power stations provide this natively; most output 120V only. Confirm this before assuming a station can cover a 240V appliance.",
+        ],
+      },
+      {
+        id: "vs-generator",
+        heading: "Power station vs. a standby or portable generator",
+        body: [
+          "A battery power station is silent, produces no exhaust, and needs no fuel — it can sit indoors and starts instantly. Its trade-off is finite capacity: once the battery is empty, you need to recharge it (grid, solar, or a generator) rather than just adding more fuel.",
+          "A fuel generator can run indefinitely as long as fuel lasts, at the cost of noise, exhaust (never run one indoors or in an attached garage), and maintenance. Many households use a power station for quiet, everyday-length outages and treat a generator, if they have one, as backup for genuinely extended events.",
+        ],
+      },
+      {
+        id: "professional-install-note",
+        heading: "Connecting to your home's electrical panel",
+        body: [
+          "Some larger power stations support a transfer switch or a dedicated inlet that can back up selected circuits directly from the breaker panel. This is an electrical installation, not a plug-and-play setup, and should be done by a licensed electrician.",
+        ],
+      },
+    ],
+    relatedProductIds: [
+      "ecoflow-delta-pro-3",
+      "anker-solix-f3800",
+      "anker-solix-c2000-gen-2",
+    ],
+    relatedGuideSlugs: ["power-station-for-power-outage", "power-station-for-refrigerator"],
+    faq: [
+      {
+        question: "Can a power station really back up my whole house?",
+        answer:
+          "For most households, no — a portable power station realistically covers a defined list of essential circuits (fridge, internet, some lights, phone charging, maybe a pump), not an entire home's simultaneous load. Whole-house coverage generally needs a much larger, professionally installed system.",
+      },
+      {
+        question: "How much capacity do I need for a 24-hour outage?",
+        answer:
+          "Add up the daily energy of the specific loads you want to keep on (Step 3), then apply the 85% usable-energy and 20% reserve adjustments from Step 4. Essentials-only lists commonly land in the low thousands of watt-hours per day, but your own list is the number that matters.",
+      },
+      {
+        question: "Do I need 240V?",
+        answer:
+          "Only if you have a specific 240V load you want to back up directly, like a well pump, electric range, or dryer. Most households running fridge/internet/lights/phones-class essentials only need 120V.",
+      },
+      {
+        question: "Should I buy one large station or two smaller ones?",
+        answer:
+          "One larger unit is simpler and generally more energy-efficient. Two smaller units add redundancy and flexibility — useful if you want to back up two separate areas — but cost more per Wh and take more space.",
+      },
+    ],
+    sources: [
+      {
+        label: "U.S. Department of Energy — Estimating Appliance and Home Electronic Energy Use",
+        url: "https://www.energy.gov/energysaver/estimating-appliance-and-home-electronic-energy-use",
+      },
+      "Manufacturer specification sheets referenced in products.json",
+    ],
+    lastUpdated: "2026-09-03",
+  },
+  {
+    slug: "power-station-for-rv",
+    title: "What Size Power Station Do I Need for an RV?",
+    metaDescription:
+      "Sizing a power station for an RV: TT-30 shore-power compatibility, air conditioner surge, boondocking days, weight, and a worked capacity example.",
+    intro: [
+      "RV power needs range from topping off house batteries and running small electronics to starting a rooftop air conditioner. What you actually need depends heavily on which of those you're solving for.",
+      "This guide applies PowerMatchLab's standard watts-vs-watt-hours method to RV-specific loads and constraints — shore-cord compatibility, big surge loads, and boondocking days without hookups.",
+    ],
+    sections: [
+      {
+        id: "rv-loads",
+        heading: "Step 1: Separate small electronics from big appliances",
+        body: [
+          "Phones, laptops, lighting, a fan, and a TV are all modest, steady loads — usually single-digit to low double-digit watts for USB devices, tens to low hundreds of watts for AC electronics. A microwave, an electric kettle, or especially a rooftop air conditioner are a different category entirely, often several hundred to well over a thousand watts.",
+          "Check each device's rating label or manual for its real running watts rather than guessing; RV appliance labels usually list both amps and watts.",
+        ],
+      },
+      {
+        id: "rv-ac-surge",
+        heading: "The rooftop air conditioner is the hard case",
+        body: [
+          "A typical RV rooftop AC's compressor has a large startup surge, often several times its running watts, for a moment. Many portable power stations cannot start a rooftop AC directly without either a soft-start device on the AC itself or a station with very high surge headroom.",
+          "If running the AC from a power station matters to you, check the specific unit's surge/peak output rating against your AC's documented starting characteristics (in its manual or on a soft-start kit's spec sheet) before assuming it will work — this is the single most common RV power-sizing disappointment.",
+        ],
+      },
+      {
+        id: "tt30",
+        heading: "TT-30 shore-power compatibility",
+        body: [
+          "A native TT-30 (30A, 120V) outlet lets you plug your RV's standard shore cord straight into the power station, powering the rig's existing distribution panel and everything wired to it. Without a TT-30 outlet, you're limited to whatever household outlets the station provides, and higher-draw circuits inside the RV may not be reachable at all.",
+          "Confirm both the outlet type and the amp rating — a household 15/20A outlet is not the same as a 30A shore-power circuit, even if voltage matches.",
+        ],
+      },
+      {
+        id: "boondocking-energy",
+        heading: "Step 2: Estimate daily energy for boondocking",
+        body: [
+          "List every device you'll run away from hookups, its watts, and hours per day, then add them up the same way as any other PowerMatchLab sizing guide: watts × hours = watt-hours per device, summed for a daily total.",
+          "Refrigeration (if it's not propane), lighting, water pump, fans, and device charging are the recurring daily loads for most boondocking setups; occasional loads like a microwave or hair dryer add a smaller amount depending on how often you actually use them.",
+        ],
+      },
+      {
+        id: "rv-capacity-formula",
+        heading: "Step 3: Convert to a recommended capacity",
+        body: [
+          "The same adjustments apply as elsewhere on PowerMatchLab: about 85% usable energy after conversion losses, plus roughly 20% reserve headroom. Recommended minimum capacity (Wh) ≈ (daily energy Wh × days without recharge) ÷ 0.85 × 1.2.",
+          "Worked example: your boondocking load list adds up to 900 Wh/day, and you're planning for three days without a recharge option. 900 × 3 ÷ 0.85 × 1.2 ≈ 3,812 Wh minimum recommended capacity — well into large-platform territory, which is where an expandable system or a daily recharge plan (driving, solar, or a campground hookup) usually makes more sense than one very large fixed battery.",
+        ],
+      },
+      {
+        id: "rv-recharge",
+        heading: "Recharging on the road",
+        body: [
+          "Some power stations accept a 12V/24V DC input that can be fed from the vehicle's alternator with the right cable and current limits, letting you top up while driving between camp spots. Check the unit's documented DC input spec before relying on this.",
+          "Solar panels can also recharge a station while parked, but real-world output is usually well below the panel's rated watts — commonly 60-80% on a good day — so size any panel setup so its realistic output, not its rated number, covers your daily need. PowerMatchLab's solar guide covers this in more depth.",
+        ],
+      },
+      {
+        id: "rv-weight",
+        heading: "Weight, mounting, and expansion",
+        body: [
+          "A station that lives in the RV affects payload and needs a secure mounting spot, but portability matters less than for backpack-carried camping gear — check the weight listed on each product's page if payload is tight.",
+          "For trips or setups where energy needs might grow, an expandable platform lets you add battery modules later instead of buying a second, separate unit.",
+        ],
+      },
+    ],
+    relatedProductIds: [
+      "jackery-explorer-2000-v2",
+      "anker-solix-c2000-gen-2",
+      "anker-solix-c1000-gen-2",
+    ],
+    relatedGuideSlugs: ["solar-input-and-charging-times-explained", "watts-vs-watt-hours"],
+    faq: [
+      {
+        question: "Will a power station run my RV's rooftop air conditioner?",
+        answer:
+          "Only if its surge/peak rating clearly covers the AC's documented startup surge — many cannot without a soft-start device fitted to the AC. Check both the AC's specs and the station's surge rating before assuming it will work; this is the most common RV sizing mismatch.",
+      },
+      {
+        question: "Do I need a TT-30 outlet, or will a regular household outlet work?",
+        answer:
+          "If you want to plug your RV's factory shore cord straight in, you need a native TT-30 outlet. A household 120V outlet works for individual devices plugged in directly, but not for powering the rig's built-in distribution panel through its normal shore cord.",
+      },
+      {
+        question: "Can a power station replace my RV's house battery and converter?",
+        answer:
+          "Not directly — a power station is a self-contained AC/DC source, not a wired-in replacement for the RV's existing 12V system, converter, and charger. Integrating one with the rig's electrical system generally needs additional wiring.",
+      },
+      {
+        question: "How many boondocking days can I plan for?",
+        answer:
+          "Divide the station's usable capacity (roughly 85% of rated Wh) by your daily energy total from Step 2. For longer stretches, either raise capacity, add solar, or plan a recharge drive.",
+      },
+    ],
+    sources: [
+      {
+        label: "U.S. Department of Energy — Estimating Appliance and Home Electronic Energy Use",
+        url: "https://www.energy.gov/energysaver/estimating-appliance-and-home-electronic-energy-use",
+      },
+      {
+        label: "U.S. Department of Energy / NREL — Understanding Solar Photovoltaic System Performance",
+        url: "https://www.energy.gov/sites/default/files/2022-01/understanding-solar-photovoltaic-system-performance.pdf",
+      },
+      "Manufacturer specification sheets referenced in products.json",
+    ],
+    lastUpdated: "2026-09-03",
+  },
+  {
+    slug: "power-station-for-power-outage",
+    title: "What Size Power Station Do I Need for a Power Outage?",
+    metaDescription:
+      "Preparing for a power outage with a portable power station: what to prioritize, how to size capacity for a few hours vs. multiple days, and generator safety.",
+    intro: [
+      "An outage guide is different from a single-appliance guide because the real question is priority: with limited capacity, what do you power first, and for how long? This guide walks through that decision alongside the same sizing method used across PowerMatchLab.",
+      "If you already know you specifically need to cover a refrigerator, a CPAP machine, or your whole home's essential circuits, PowerMatchLab has a dedicated guide for each — this one is the general planning starting point.",
+    ],
+    sections: [
+      {
+        id: "prioritize-loads",
+        heading: "Step 1: Prioritize what actually needs power",
+        body: [
+          "Ready.gov, the U.S. government's official emergency-preparedness site, recommends taking an inventory of what in your home depends on electricity before an outage happens, including talking to your medical provider about a plan for any electrically powered medical devices and any medication that requires refrigeration.",
+          "A short list usually covers: refrigerator/freezer, phone and communication devices, lighting, internet/router if you need connectivity, and any medical equipment. Everything else — entertainment devices, non-essential appliances — is optional and can be added if capacity allows.",
+        ],
+      },
+      {
+        id: "short-vs-long-outage",
+        heading: "Step 2: Decide whether you're planning for hours or days",
+        body: [
+          "A short outage (a few hours) is mostly about keeping the fridge from warming up and keeping phones charged — a compact station can comfortably cover this.",
+          "A multi-day outage changes the math substantially: daily energy needs multiply by the number of days, which is why longer outages usually call for either a larger/expandable station, a recharge plan (solar or generator), or both. Size for the realistic worst case you're planning around, not just a typical short outage.",
+        ],
+      },
+      {
+        id: "outage-daily-energy",
+        heading: "Step 3: Add up daily energy for your priority list",
+        body: [
+          "For each device on your priority list: watts × hours used per day = watt-hours per day, then add them together. A refrigerator alone is commonly 1,000-1,600 Wh/day; phone charging and a few LED lights add relatively little on top.",
+          "Check devices' rating labels or manuals for real watts rather than guessing — this is the same rule as every other PowerMatchLab sizing guide, and it matters more, not less, in a real outage.",
+        ],
+      },
+      {
+        id: "outage-capacity-formula",
+        heading: "Step 4: Convert to a recommended capacity",
+        body: [
+          "Using PowerMatchLab's standard assumptions — about 85% usable energy after conversion losses, plus roughly 20% reserve headroom: recommended minimum capacity (Wh) ≈ (daily energy Wh × days of outage) ÷ 0.85 × 1.2.",
+          "Worked example: your priority list (fridge, phones, some lights) totals 1,400 Wh/day, and you're planning for a 2-day outage. 1,400 × 2 ÷ 0.85 × 1.2 ≈ 3,953 Wh minimum recommended capacity.",
+        ],
+      },
+      {
+        id: "outage-surge",
+        heading: "Don't forget the surge, especially for the fridge",
+        body: [
+          "A refrigerator or freezer compressor surges to two to three times its running watts for a moment on startup. Whatever station you plan around needs a surge/peak rating that comfortably clears that spike, on top of enough continuous output for everything else running at the same time.",
+        ],
+      },
+      {
+        id: "generator-safety-outage",
+        heading: "If you're also considering a fuel generator",
+        body: [
+          "A fuel-burning generator can run as long as fuel lasts, but produces carbon monoxide and must never run indoors, in a garage (even with the door open), or near windows or doors — the U.S. Consumer Product Safety Commission has documented carbon monoxide deaths tied to generators used too close to living spaces.",
+          "A battery power station avoids this risk entirely since it has no exhaust, which is one reason many households keep one specifically for the indoor-adjacent essentials (fridge, medical devices, communication) while reserving a generator, if they have one, for larger or longer-duration loads outdoors.",
+        ],
+      },
+      {
+        id: "recharging-during-outage",
+        heading: "Recharging mid-outage",
+        body: [
+          "Solar input can extend a station's coverage during a multi-day outage, though real-world output is usually well below a panel's rated watts. A car's outlet or DC input, where supported, is another option if you're mobile during the outage. Plan your recharge option before you need it, not during.",
+        ],
+      },
+    ],
+    relatedProductIds: [
+      "jackery-explorer-1000-v2",
+      "ecoflow-delta-3-classic",
+      "anker-solix-s2000",
+    ],
+    relatedGuideSlugs: [
+      "power-station-for-refrigerator",
+      "power-station-for-cpap",
+      "power-station-for-home-backup",
+    ],
+    faq: [
+      {
+        question: "How long will a power station last during an outage?",
+        answer:
+          "Divide its usable capacity (roughly 85% of rated Wh) by your priority list's daily energy total from Step 3. PowerMatchLab's Power Calculator and its dedicated runtime guide can help work this out for your exact devices.",
+      },
+      {
+        question: "What should I power first if capacity is limited?",
+        answer:
+          "Refrigeration, communication (phone charging, and internet if you need connectivity), lighting, and any medical equipment are the common priority list — see Ready.gov's guidance for a fuller household inventory approach.",
+      },
+      {
+        question: "Is it safe to run a generator in my garage during an outage?",
+        answer:
+          "No. The U.S. Consumer Product Safety Commission specifically warns against running fuel-burning generators indoors, in an attached garage even with the door open, or near windows and doors, because of carbon monoxide risk.",
+      },
+      {
+        question: "Can I combine a power station with a generator?",
+        answer:
+          "Yes — some households use the power station for quiet, always-on essentials and only start a generator (outdoors, away from the house) for larger loads or when the battery runs low. Check compatibility before wiring the two together electrically.",
+      },
+    ],
+    sources: [
+      { label: "Ready.gov (FEMA) — Power Outages", url: "https://www.ready.gov/power-outages" },
+      {
+        label: "U.S. Consumer Product Safety Commission — Carbon Monoxide Fact Sheet",
+        url: "https://www.cpsc.gov/safety-education/safety-guides/carbon-monoxide/carbon-monoxide-fact-sheet",
+      },
+      "Manufacturer specification sheets referenced in products.json",
+    ],
+    lastUpdated: "2026-09-03",
+  },
+  {
+    slug: "how-long-will-a-1000wh-power-station-last",
+    title: "How Long Will a 1000Wh Power Station Last?",
+    metaDescription:
+      "How long a 1000Wh-class power station runs common devices, using the same capacity × 0.85 ÷ device-watts formula PowerMatchLab uses everywhere, with a worked table.",
+    intro: [
+      "\"How long will it last\" always depends on what you're running — there is no single answer for a 1000Wh station any more than there is for a 1000Wh battery of any kind. This guide shows the exact calculation and applies it to several common device categories so you can see how it scales.",
+      "Every figure below is a calculation from the same formula PowerMatchLab uses on its product pages, not a measured test result — treat it as a planning estimate and check your own device's real wattage for an accurate number.",
+    ],
+    sections: [
+      {
+        id: "the-formula-1000wh",
+        heading: "The formula: usable energy ÷ device watts",
+        body: [
+          "Estimated runtime (hours) = usable energy (Wh) ÷ device watts. Usable energy is not the full nameplate capacity — inverter and conversion losses mean roughly 85% is actually usable, the same conservative planning figure used throughout PowerMatchLab.",
+          "For a 1000Wh-class station: usable energy ≈ 1,000 × 0.85 = 850 Wh. Divide that by whatever you're running to get estimated hours.",
+        ],
+      },
+      {
+        id: "worked-table-1000wh",
+        heading: "Worked examples for common device categories",
+        body: [
+          "Using 850 Wh of usable energy and typical, approximate wattages for common device categories:",
+          "These device wattages are broad, commonly cited category approximations, not a measurement of any specific product — your actual appliance may draw meaningfully more or less. Always check its rating label or manual, or measure it with a plug-in energy meter, before relying on a runtime estimate.",
+        ],
+        bullets: [
+          "Full-size refrigerator (~150 W average): 850 ÷ 150 ≈ 5.7 hours",
+          "CPAP machine (~40 W): 850 ÷ 40 ≈ 21.3 hours",
+          "Laptop (~60 W): 850 ÷ 60 ≈ 14.2 hours",
+          "LED TV (~100 W): 850 ÷ 100 ≈ 8.5 hours",
+          "Space heater (~1,500 W): 850 ÷ 1,500 ≈ 0.6 hours",
+        ],
+      },
+      {
+        id: "why-varies",
+        heading: "Why your real number will differ",
+        body: [
+          "Cycling loads (a fridge compressor, a space heater's thermostat) don't draw their rated watts continuously, so their real daily energy use is usually lower than watts × 24 hours would suggest — PowerMatchLab's refrigerator guide covers this in more depth.",
+          "Ambient temperature, battery age, and how many other devices share the same station at once all shift the real-world number away from the calculated one. Treat every figure here as a starting point for planning, not a guarantee.",
+        ],
+      },
+      {
+        id: "scaling-other-capacities",
+        heading: "Scaling to other capacity classes",
+        body: [
+          "The same formula scales linearly: usable energy ÷ device watts. A 2,000Wh station usable at roughly 1,700 Wh runs any of the devices above for roughly twice as long; a 300Wh station usable at roughly 255 Wh runs them for roughly a third as long.",
+          "PowerMatchLab's Power Calculator does this math automatically for your exact device list and target capacity, across the actual products in the catalog.",
+        ],
+      },
+      {
+        id: "continuous-vs-runtime",
+        heading: "Runtime capacity isn't the same as continuous output",
+        body: [
+          "A long estimated runtime only matters if the station's continuous output watts can handle the device in the first place — a 1000Wh-class station with a modest output rating may not be able to start a large motor-driven appliance at all, regardless of how many hours the capacity math suggests.",
+          "Check both numbers separately: continuous/surge output (can it start and run the device) and capacity-based runtime (how long it lasts once running). PowerMatchLab's watts-vs-watt-hours guide covers the distinction in detail.",
+        ],
+      },
+    ],
+    relatedProductIds: [
+      "jackery-explorer-1000-v2",
+      "ecoflow-delta-3-classic",
+      "anker-solix-c1000-gen-2",
+    ],
+    relatedGuideSlugs: ["watts-vs-watt-hours", "can-a-power-station-run-a-refrigerator"],
+    faq: [
+      {
+        question: "Is 850 Wh always the usable energy for a 1000Wh station?",
+        answer:
+          "85% is a conservative planning assumption used across PowerMatchLab, not a universal constant — real usable energy varies by unit, battery age, and load. Treat 850 Wh as a reasonable planning estimate for a 1,000Wh-class unit, not an exact guarantee.",
+      },
+      {
+        question: "Why does my estimated runtime look different from what I've seen elsewhere?",
+        answer:
+          "Different sources assume different device wattages and different usable-energy percentages. Always check which device watts and efficiency assumption a given estimate is using — and ideally substitute your own device's real, measured wattage.",
+      },
+      {
+        question: "Does a 1000Wh station mean 1000 watts of output?",
+        answer:
+          "No — capacity (Wh, energy) and continuous output (W, power) are separate specs. A station's watt-hour rating tells you how long it can run something; its watt rating tells you what it can run at all.",
+      },
+    ],
+    sources: [
+      {
+        label: "U.S. Department of Energy — Estimating Appliance and Home Electronic Energy Use",
+        url: "https://www.energy.gov/energysaver/estimating-appliance-and-home-electronic-energy-use",
+      },
+      "Manufacturer specification sheets referenced in products.json",
+    ],
+    lastUpdated: "2026-09-03",
+  },
+  {
+    slug: "lifepo4-vs-lithium-ion",
+    title: "LiFePO4 vs Lithium-Ion Power Stations",
+    metaDescription:
+      "LiFePO4 is a type of lithium-ion battery, not a separate technology. Here's what the terminology actually means and how it affects a power station buying decision.",
+    intro: [
+      "\"LiFePO4 vs. lithium-ion\" is one of the most common ways people search this topic, but it's a slightly confusing question on its own terms: LiFePO4 (lithium iron phosphate) is itself a type of lithium-ion battery. This guide untangles the terminology first, then covers what actually differs between the chemistries you'll see in power stations.",
+      "For a deeper technical comparison of LiFePO4 against the other lithium-ion chemistry most commonly used in older or lighter power stations, see PowerMatchLab's dedicated LiFePO4 vs. NMC guide, linked below.",
+    ],
+    sections: [
+      {
+        id: "terminology",
+        heading: "Clearing up the terminology",
+        body: [
+          "\"Lithium-ion\" is a broad family name for any rechargeable battery that moves lithium ions between electrodes — it describes the mechanism, not one specific chemical recipe. LiFePO4 (lithium iron phosphate, often shortened to LFP) is one member of that family; NMC (nickel manganese cobalt) and NCA (nickel cobalt aluminum) are others.",
+          "So the real-world question people usually mean by \"LiFePO4 vs. lithium-ion\" is actually LiFePO4 vs. the other common lithium-ion chemistries — mainly NMC — which is a genuinely useful comparison, just phrased slightly imprecisely.",
+        ],
+      },
+      {
+        id: "why-it-matters-lifepo4",
+        heading: "Why the chemistry inside matters to a buyer",
+        body: [
+          "Nearly every power station in the current PowerMatchLab catalog uses LiFePO4, which reflects an industry-wide shift over the past several years. The chemistry affects three things buyers actually notice: how many charge cycles the battery realistically survives, how it behaves thermally, and how much it weighs for a given capacity.",
+        ],
+      },
+      {
+        id: "cycle-life-lifepo4",
+        heading: "Cycle life",
+        body: [
+          "LiFePO4 cells typically tolerate several thousand charge/discharge cycles before dropping to 80% of original capacity — often cited in the 3,000 to 6,000+ range depending on the cell and how it's managed. Older NMC packs are usually rated for meaningfully fewer cycles.",
+          "For someone charging a station a few times a week, that difference can mean the practical difference between replacing a battery in a few years versus using the same one for well over a decade.",
+        ],
+      },
+      {
+        id: "thermal-lifepo4",
+        heading: "Thermal stability",
+        body: [
+          "LiFePO4 is generally regarded as more thermally stable and less prone to thermal runaway than NMC or NCA chemistries, which is a meaningful consideration for a battery you keep indoors, in a vehicle, or near where you sleep.",
+        ],
+      },
+      {
+        id: "weight-lifepo4",
+        heading: "Energy density and weight",
+        body: [
+          "NMC and NCA pack more energy into the same weight and volume than LiFePO4, so a non-LFP station can be lighter for a given capacity. Modern LiFePO4 packs have narrowed this gap considerably compared to earlier generations, but a weight difference generally still exists.",
+        ],
+      },
+      {
+        id: "practical-takeaway-lifepo4",
+        heading: "Practical takeaway",
+        body: [
+          "For stationary home backup and most RV or camping use, LiFePO4's longevity and thermal stability usually outweigh a small weight penalty, which is a large part of why it now dominates the market. If absolute minimum weight per watt-hour is your top priority over everything else, a non-LFP chemistry may still have an edge — check the battery chemistry field on any product page before assuming.",
+        ],
+      },
+    ],
+    relatedProductIds: [
+      "bluetti-ac180",
+      "anker-solix-s2000",
+      "anker-solix-f3800",
+    ],
+    relatedGuideSlugs: ["lifepo4-vs-nmc-battery-chemistry"],
+    faq: [
+      {
+        question: "Is LiFePO4 better than lithium-ion?",
+        answer:
+          "LiFePO4 is a lithium-ion chemistry, not a competing technology — the useful comparison is LiFePO4 against other lithium-ion chemistries like NMC. On cycle life and thermal stability, LiFePO4 generally has an edge; on raw energy density and weight, other lithium-ion chemistries can have an edge.",
+      },
+      {
+        question: "Does cold weather affect LiFePO4 differently than other lithium-ion batteries?",
+        answer:
+          "Charging any lithium-ion battery, including LiFePO4, below freezing risks cell damage, so many stations block or limit charging in cold conditions regardless of chemistry. Discharging in the cold is less of a concern but capacity typically drops temporarily.",
+      },
+      {
+        question: "How do I know which chemistry my power station uses?",
+        answer:
+          "Check the product's specification sheet or its listing on PowerMatchLab — the battery chemistry field states LiFePO4, NMC, or another chemistry directly rather than leaving it to assumption.",
+      },
+    ],
+    sources: [
+      { label: "U.S. Department of Energy — DOE Explains...Batteries", url: "https://www.energy.gov/science/doe-explainsbatteries" },
+      "Battery chemistry overviews from cell manufacturers and DOE energy storage resources",
+    ],
+    lastUpdated: "2026-09-03",
+  },
+  {
+    slug: "watts-vs-watt-hours",
+    title: "Watts vs Watt-Hours: What Power Station Buyers Need to Know",
+    metaDescription:
+      "The difference between watts (W) and watt-hours (Wh) explained plainly, with common device wattage ranges and why confusing the two leads to the wrong power station.",
+    intro: [
+      "Watts and watt-hours are the two numbers on every power station spec sheet, and mixing them up is one of the most common reasons people buy the wrong size. This guide is the plain-English explanation PowerMatchLab's other guides link back to.",
+      "Short version: watts is a rate, watt-hours is a total. Everything else follows from that distinction.",
+    ],
+    sections: [
+      {
+        id: "watts-defined",
+        heading: "Watts (W): a rate of power, not an amount",
+        body: [
+          "A watt measures how much power something draws or delivers at a given instant — it's a rate, the same way miles per hour is a rate of speed. A 100 W device pulls 100 watts whether it runs for one minute or ten hours; the watt figure itself doesn't change with time.",
+          "On a power station, the watts figure appears as a continuous output rating (how much it can deliver steadily) and a surge or peak rating (how much it can deliver briefly, for motor startups).",
+        ],
+      },
+      {
+        id: "watt-hours-defined",
+        heading: "Watt-hours (Wh): an amount of energy over time",
+        body: [
+          "A watt-hour is energy — watts multiplied by the hours they're sustained. A 100 W device running for 3 hours uses 300 Wh, regardless of how that power was delivered moment to moment.",
+          "A power station's battery capacity is rated in watt-hours (or often kilowatt-hours, kWh — 1,000 Wh). That number tells you how much total energy is stored, which determines how long it can run something once that something is actually running.",
+        ],
+      },
+      {
+        id: "why-confusing-them-matters",
+        heading: "Why mixing them up leads to the wrong purchase",
+        body: [
+          "A device's watts tells you whether a station can start and run it at all — check that against the station's continuous and surge output. A device's watt-hours (watts × hours of use) tells you how long the station's capacity will sustain it — check that against the battery's usable Wh.",
+          "Buying based on only one of the two numbers is the classic mistake: a station with plenty of watt-hours but too low a watt rating can fail to start a device entirely, while a station with a high watt rating but modest watt-hours can start anything but run out quickly.",
+        ],
+      },
+      {
+        id: "converting-watts-to-watt-hours",
+        heading: "Converting between the two",
+        body: [
+          "Watt-hours = watts × hours of use. If you only know amps and volts (common on rating labels), watts ≈ amps × volts, and you can convert from there.",
+          "Working the other direction: hours of runtime ≈ usable battery Wh ÷ device watts. PowerMatchLab uses roughly 85% of nameplate capacity as usable energy in its own runtime and sizing calculations, to account for inverter and conversion losses.",
+        ],
+      },
+      {
+        id: "typical-device-wattages",
+        heading: "Typical wattage ranges for common devices",
+        body: [
+          "These are broad, commonly cited category ranges, not a measurement of any specific product — always check your own device's rating label or manual for its real figure.",
+        ],
+        bullets: [
+          "Phone or small USB device charging: roughly 5-20 W",
+          "Laptop: roughly 30-100 W",
+          "LED TV: roughly 30-150 W depending on size",
+          "Box fan or CPAP machine without a heated humidifier: roughly 30-60 W",
+          "Full-size refrigerator (average, cycling): roughly 100-200 W average, with a startup surge several times higher",
+          "Microwave or coffee maker: roughly 600-1,200 W",
+          "Space heater or hair dryer: roughly 750-1,800 W",
+        ],
+      },
+      {
+        id: "continuous-vs-surge-watts",
+        heading: "Continuous watts vs. surge watts",
+        body: [
+          "Continuous watts is what a device draws while running steadily. Surge (or peak/startup) watts is a brief spike, common in anything with an electric motor — a compressor, a pump, a power tool — often two to three times the running watts for a fraction of a second.",
+          "A power station's surge rating needs to clear a device's startup spike, not just its running watts, or the device may fail to start even though the continuous rating looked sufficient.",
+        ],
+      },
+    ],
+    relatedProductIds: [
+      "bluetti-elite-30-v2",
+      "jackery-explorer-2000-v2",
+      "anker-solix-s2000",
+    ],
+    relatedGuideSlugs: ["how-to-size-a-portable-power-station", "how-long-will-a-1000wh-power-station-last"],
+    faq: [
+      {
+        question: "If a power station is rated 1000Wh, does that mean it outputs 1000 watts?",
+        answer:
+          "No — those are two different specs. Wh (or kWh) is total stored energy; W is the rate of power it can deliver. A station's continuous output watts is a completely separate number, usually listed right next to the capacity on its spec sheet.",
+      },
+      {
+        question: "How many watt-hours does charging a phone use?",
+        answer:
+          "A full phone charge is typically a small fraction of most power stations' capacity — commonly in the 10-20 Wh range, though it varies by phone and charger. Check your charger's rated watts and your phone's typical charge time for a more precise figure.",
+      },
+      {
+        question: "Why do two power stations with the same watt-hour rating feel different in practice?",
+        answer:
+          "Usable energy (after inverter/conversion losses), continuous and surge output ratings, and how efficiently the inverter handles your specific load can all differ between units with the same nameplate Wh — capacity alone doesn't tell the whole story.",
+      },
+    ],
+    sources: [
+      {
+        label: "U.S. Department of Energy — Estimating Appliance and Home Electronic Energy Use",
+        url: "https://www.energy.gov/energysaver/estimating-appliance-and-home-electronic-energy-use",
+      },
+      "Manufacturer specification sheets referenced in products.json",
+    ],
+    lastUpdated: "2026-09-03",
+  },
+  {
+    slug: "how-long-to-charge-power-station-with-solar",
+    title: "How Long Does It Take to Charge a Power Station with Solar Panels?",
+    metaDescription:
+      "How to calculate solar charging time for a power station: the formula, why real panel output runs well below its rated watts, and a worked example table.",
+    intro: [
+      "Solar charging time comes down to one calculation — energy needed divided by realistic panel output — but the \"realistic\" part is where most estimates go wrong. This guide walks through the formula and applies it to a few worked examples.",
+      "For the deeper explanation of what a station's solar input spec actually means and how AC and solar charging compare, see PowerMatchLab's solar input and charging guide, linked below.",
+    ],
+    sections: [
+      {
+        id: "solar-charge-formula",
+        heading: "The formula",
+        body: [
+          "Charging time (hours) ≈ energy needed (Wh) ÷ realistic solar input (W). \"Energy needed\" is however much of the battery's capacity you're actually replacing — a full charge from empty uses close to the full rated Wh, a partial top-up uses less.",
+          "\"Realistic solar input\" is the operative word — it is not simply the panel's rated wattage. Real-world output is reduced by sun angle, panel temperature, haze or cloud cover, cable losses, and time of day, and is commonly in the 60-80% range of the rated number on a good day.",
+        ],
+      },
+      {
+        id: "worked-examples-solar",
+        heading: "Worked examples",
+        body: [
+          "A 200 W-rated solar panel realistically delivering 65% of its rating produces about 130 W in good midday sun. Charging a 1,000Wh station from empty: 1,000 ÷ 130 ≈ 7.7 hours of good sun — which in practice usually spans more than one calendar day, since few locations get 7-8 hours of consistently strong sun.",
+          "The same 200 W panel charging a 2,000Wh station from empty: 2,000 ÷ 130 ≈ 15.4 hours of good sun, realistically two to three days depending on conditions and how much of each day is strong, direct sun.",
+          "A larger 400 W-rated setup at the same 65% realistic derate produces about 260 W: 1,000 ÷ 260 ≈ 3.8 hours of good sun for the same 1,000Wh station — roughly half the time, since panel wattage and charging time scale inversely.",
+        ],
+      },
+      {
+        id: "why-full-sun-hours-matter",
+        heading: "\"Hours of sun\" isn't the same as \"hours of daylight\"",
+        body: [
+          "A day has roughly 12-14 hours of daylight in much of the U.S. depending on season and latitude, but only a portion of that is strong, direct sun capable of near-peak panel output — early morning, late afternoon, haze, and cloud cover all reduce output well below peak.",
+          "Solar-charging estimates are usually expressed in \"full-sun hours\" or \"peak-sun hours\" for this reason — a rough count of how many hours of peak-equivalent sun a location gets, which is often meaningfully less than its total daylight hours.",
+        ],
+      },
+      {
+        id: "factors-that-change-solar-charging",
+        heading: "What changes your real number",
+        body: [
+          "Panel angle and orientation relative to the sun, ambient and panel temperature (panels lose some efficiency when hot), shading (even partial shading on part of a panel string can cut output disproportionately), and the station's charge controller and maximum solar input spec all affect the real number.",
+          "Check the station's maximum solar input watts specifically — pairing it with a panel array rated well above that ceiling doesn't help, since the station simply won't accept more than its rated input regardless of what the panels could theoretically produce.",
+        ],
+      },
+      {
+        id: "ac-vs-solar-speed",
+        heading: "Solar vs. AC (wall) charging speed",
+        body: [
+          "AC charging from a wall outlet is almost always faster and far more predictable than solar, since it isn't subject to weather or time of day. Many people use solar for extending runtime during multi-day off-grid use and AC for the fastest full recharge when a wall outlet is available.",
+          "Some stations support charging from AC and solar simultaneously for a faster combined recharge — check the specific unit's combined-input limit rather than assuming the two simply add together without a cap.",
+        ],
+      },
+    ],
+    relatedProductIds: [
+      "jackery-explorer-2000-v2",
+      "bluetti-ac180",
+      "ecoflow-delta-pro-3",
+    ],
+    relatedGuideSlugs: ["solar-input-and-charging-times-explained"],
+    faq: [
+      {
+        question: "How many watts of solar panel do I need to fully recharge my station in a day?",
+        answer:
+          "As a rough starting point, divide your station's capacity by the number of realistic full-sun hours your location gets, then divide again by your expected real-world derate (commonly 60-80%) to size the panel's rated watts. A local solar-hours estimate for your area will be more accurate than a national average.",
+      },
+      {
+        question: "Why is my panel producing far less than its rated watts?",
+        answer:
+          "Rated watts are measured under standardized lab conditions rarely matched outdoors. Angle, temperature, haze, partial shading, cabling, and time of day all reduce real output — 60-80% of rated on a good day is a typical, not a pessimistic, expectation.",
+      },
+      {
+        question: "Can I charge from solar and AC at the same time?",
+        answer:
+          "Many stations support simultaneous AC + solar input for a faster combined charge, but not all, and combined input is often capped below the simple sum of both maximums. Check the specific unit's spec sheet.",
+      },
+      {
+        question: "Does cloudy weather stop solar charging completely?",
+        answer:
+          "No, but it reduces output substantially — panels still produce some power under cloud cover, just well below their clear-sky output. Plan for meaningfully longer charging time on overcast days rather than assuming zero output.",
+      },
+    ],
+    sources: [
+      {
+        label: "U.S. Department of Energy / NREL — Understanding Solar Photovoltaic System Performance",
+        url: "https://www.energy.gov/sites/default/files/2022-01/understanding-solar-photovoltaic-system-performance.pdf",
+      },
+      "Manufacturer charging specifications referenced in products.json",
     ],
     lastUpdated: "2026-09-03",
   },
