@@ -23,6 +23,8 @@ import {
 import { fmtWh, fmtWatts } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import { Callout } from "@/components/ui/Callout";
+import { EnergyLines } from "@/components/ui/EnergyLines";
+import { AnimatedStat } from "@/components/ui/AnimatedStat";
 import { RecommendationCard } from "./RecommendationCard";
 import { PlusIcon, TrashIcon } from "@/components/ui/icons";
 
@@ -169,7 +171,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
                 className={cn(
                   "flex w-full items-start gap-3 rounded-lg border p-3 text-left",
                   step === s.n
-                    ? "border-brand-300 bg-brand-50"
+                    ? "border-brand-300 bg-brand-50 shadow-glow-brand"
                     : "border-navy-100 bg-white hover:bg-navy-50",
                 )}
               >
@@ -177,7 +179,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
                   className={cn(
                     "grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-semibold",
                     step === s.n
-                      ? "bg-brand-600 text-white"
+                      ? "bg-gradient-to-br from-brand-500 to-cyan-500 text-white shadow-glow-cyan"
                       : "bg-navy-100 text-navy-600",
                   )}
                 >
@@ -243,7 +245,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
                 useCase: (e.target.value || null) as UseCaseKey | null,
               }))
             }
-            className="mt-1.5 w-full rounded-md border border-navy-200 py-1.5 pl-2 pr-7 text-sm outline-none focus:border-brand-400"
+            className="mt-1.5 w-full rounded-md border border-navy-200 py-1.5 pl-2 pr-7 text-sm outline-none transition-shadow duration-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
           >
             {USE_CASE_OPTIONS.map((o) => (
               <option key={o.key} value={o.key}>
@@ -278,7 +280,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
                   setExampleKey(e.target.value);
                   if (e.target.value) addExample(e.target.value);
                 }}
-                className="rounded-md border border-navy-200 py-2 pl-2 pr-8 text-sm outline-none focus:border-brand-400"
+                className="rounded-md border border-navy-200 py-2 pl-2 pr-8 text-sm outline-none transition-shadow duration-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
               >
                 <option value="">+ Add example appliance…</option>
                 {APPLIANCE_EXAMPLES.map((a) => (
@@ -335,7 +337,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
                           }
                           placeholder="e.g. Chest freezer"
                           aria-label="Device name"
-                          className="w-full min-w-[140px] rounded-md border border-navy-200 px-2 py-1.5 outline-none focus:border-brand-400"
+                          className="w-full min-w-[140px] rounded-md border border-navy-200 px-2 py-1.5 outline-none transition-shadow duration-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
                         />
                       </td>
                       <td className="px-2 py-2">
@@ -350,7 +352,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
                             })
                           }
                           aria-label="Running watts"
-                          className="w-20 rounded-md border border-navy-200 px-2 py-1.5 outline-none focus:border-brand-400"
+                          className="w-20 rounded-md border border-navy-200 px-2 py-1.5 outline-none transition-shadow duration-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
                         />
                       </td>
                       <td className="px-2 py-2">
@@ -364,7 +366,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
                             })
                           }
                           aria-label="Quantity"
-                          className="w-16 rounded-md border border-navy-200 px-2 py-1.5 outline-none focus:border-brand-400"
+                          className="w-16 rounded-md border border-navy-200 px-2 py-1.5 outline-none transition-shadow duration-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
                         />
                       </td>
                       <td className="px-2 py-2">
@@ -380,7 +382,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
                             })
                           }
                           aria-label="Hours per day"
-                          className="w-16 rounded-md border border-navy-200 px-2 py-1.5 outline-none focus:border-brand-400"
+                          className="w-16 rounded-md border border-navy-200 px-2 py-1.5 outline-none transition-shadow duration-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
                         />
                       </td>
                       <td className="px-2 py-2">
@@ -398,7 +400,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
                           }
                           placeholder="—"
                           aria-label="Startup surge watts (optional)"
-                          className="w-20 rounded-md border border-navy-200 px-2 py-1.5 outline-none focus:border-brand-400"
+                          className="w-20 rounded-md border border-navy-200 px-2 py-1.5 outline-none transition-shadow duration-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
                         />
                       </td>
                       <td className="px-2 py-2 font-semibold tabular-nums text-navy-800">
@@ -461,8 +463,8 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
               onClick={() => setStep(2)}
               disabled={!ready}
               className={cn(
-                "rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700",
-                !ready && "cursor-not-allowed opacity-60 hover:bg-brand-600",
+                "rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white transition-[background-color,box-shadow,transform] duration-200 hover:-translate-y-px hover:bg-brand-700 hover:shadow-glow-brand",
+                !ready && "cursor-not-allowed opacity-60 hover:translate-y-0 hover:bg-brand-600 hover:shadow-none",
               )}
               title={
                 !ready
@@ -587,7 +589,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
             <button
               type="button"
               onClick={() => setStep(3)}
-              className="rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700"
+              className="rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white transition-[background-color,box-shadow,transform] duration-200 hover:-translate-y-px hover:bg-brand-700 hover:shadow-glow-brand"
             >
               See your power needs →
             </button>
@@ -607,36 +609,39 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
             </Callout>
           ) : (
             <>
-              <div className="mt-4 rounded-xl bg-navy-900 p-5 text-white">
-                <p className="text-sm text-navy-300">Recommended minimum capacity</p>
-                <p className="mt-1 text-4xl font-bold">
-                  {result.recommendedMinimumCapacityWh.toLocaleString("en-US")}{" "}
-                  <span className="text-xl font-medium text-navy-300">Wh</span>
-                </p>
-                <p className="mt-1 text-xs text-navy-400">
-                  = ({result.dailyEnergyWh.toLocaleString("en-US")} Wh/day × {days}{" "}
-                  {days === 1 ? "day" : "days"}) ÷ {efficiencyPct}% usable ×{" "}
-                  (1 + {reservePct}% reserve)
-                </p>
+              <div className="surface-dark relative mt-4 overflow-hidden p-5 text-white">
+                <EnergyLines className="opacity-30" />
+                <div className="relative">
+                  <p className="text-sm text-navy-300">Recommended minimum capacity</p>
+                  <p className="mt-1 text-4xl font-bold">
+                    <AnimatedStat value={result.recommendedMinimumCapacityWh} />{" "}
+                    <span className="text-xl font-medium text-navy-300">Wh</span>
+                  </p>
+                  <p className="mt-1 text-xs text-navy-400">
+                    = ({result.dailyEnergyWh.toLocaleString("en-US")} Wh/day × {days}{" "}
+                    {days === 1 ? "day" : "days"}) ÷ {efficiencyPct}% usable ×{" "}
+                    (1 + {reservePct}% reserve)
+                  </p>
 
-                <dl className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                  <ResultStat
-                    label="Total daily energy"
-                    value={fmtWh(result.dailyEnergyWh)}
-                  />
-                  <ResultStat
-                    label="Required usable capacity"
-                    value={fmtWh(result.requiredUsableCapacityWh)}
-                  />
-                  <ResultStat
-                    label="Required continuous output"
-                    value={fmtWatts(result.requiredContinuousOutputW)}
-                  />
-                  <ResultStat
-                    label="Required surge capability"
-                    value={fmtWatts(result.requiredSurgeOutputW)}
-                  />
-                </dl>
+                  <dl className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    <ResultStat
+                      label="Total daily energy"
+                      value={fmtWh(result.dailyEnergyWh)}
+                    />
+                    <ResultStat
+                      label="Required usable capacity"
+                      value={fmtWh(result.requiredUsableCapacityWh)}
+                    />
+                    <ResultStat
+                      label="Required continuous output"
+                      value={fmtWatts(result.requiredContinuousOutputW)}
+                    />
+                    <ResultStat
+                      label="Required surge capability"
+                      value={fmtWatts(result.requiredSurgeOutputW)}
+                    />
+                  </dl>
+                </div>
               </div>
 
               <div className="mt-4 flex flex-wrap gap-2 text-xs">

@@ -14,8 +14,12 @@ export function PageIntro({
   children?: ReactNode;
 }) {
   return (
-    <div className="border-b border-navy-100 bg-white">
-      <div className="container-page py-8 sm:py-10">
+    <div className="relative overflow-hidden border-b border-navy-100 bg-gradient-to-b from-navy-50 to-white">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-radial-glow-brand opacity-60"
+      />
+      <div className="container-page relative py-8 sm:py-10">
         {crumbs ? (
           <div className="mb-4">
             <Breadcrumbs crumbs={crumbs} />

@@ -19,7 +19,7 @@ export function ProductCard({
 }) {
   const name = productDisplayName(product);
   return (
-    <article className="card flex h-full flex-col p-4">
+    <article className="card-interactive flex h-full flex-col p-4">
       <div className="flex gap-4">
         <ProductIllustration product={product} size={84} />
         <div className="min-w-0 flex-1">

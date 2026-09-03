@@ -171,7 +171,7 @@ export function CompareView({ catalog, scores }: Props) {
                 onChange={(e) => {
                   if (e.target.value) add(e.target.value);
                 }}
-                className="rounded-full border border-dashed border-brand-300 bg-brand-50 py-1.5 pl-3 pr-8 text-sm text-brand-700 outline-none"
+                className="rounded-full border border-dashed border-brand-300 bg-brand-50 py-1.5 pl-3 pr-8 text-sm text-brand-700 outline-none transition-shadow duration-200 focus:ring-2 focus:ring-brand-200"
               >
                 <option value="">+ Add another product…</option>
                 {remaining.map((p) => (
@@ -201,7 +201,7 @@ export function CompareView({ catalog, scores }: Props) {
               className={cn(
                 "rounded-full px-3 py-1 text-xs font-medium",
                 useCase === uc.key
-                  ? "bg-navy-900 text-white"
+                  ? "bg-gradient-to-r from-brand-600 to-cyan-600 text-white shadow-glow-brand"
                   : "bg-navy-100 text-navy-700 hover:bg-navy-200",
               )}
             >
@@ -292,7 +292,7 @@ export function CompareView({ catalog, scores }: Props) {
                     <th
                       scope="colgroup"
                       colSpan={selected.length + 1}
-                      className="bg-navy-50 px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-navy-600"
+                      className="bg-gradient-to-r from-navy-50 to-white px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-navy-600"
                     >
                       {g.group}
                     </th>
@@ -314,7 +314,7 @@ export function CompareView({ catalog, scores }: Props) {
                         >
                           {row.label}
                           {isPriority ? (
-                            <span className="ml-1.5 rounded bg-brand-600 px-1 py-0.5 text-[9px] font-semibold uppercase text-white">
+                            <span className="ml-1.5 rounded bg-gradient-to-r from-brand-600 to-cyan-600 px-1 py-0.5 text-[9px] font-semibold uppercase text-white">
                               Key
                             </span>
                           ) : null}

@@ -8,7 +8,7 @@ export function Logo({ variant = "light" }: { variant?: "light" | "dark" }) {
       className="group inline-flex items-center gap-2"
       aria-label="PowerMatchLab home"
     >
-      <span className="grid h-9 w-9 place-items-center rounded-lg bg-brand-600 text-white shadow-sm">
+      <span className="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-glow-brand transition-shadow duration-300 group-hover:shadow-glow-cyan">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
           <path
             d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"

@@ -196,7 +196,7 @@ export function ProductsBrowser({
                 value={filters.q}
                 onChange={(e) => setFilters((f) => ({ ...f, q: e.target.value }))}
                 placeholder="Search brand or model"
-                className="w-full rounded-md border border-navy-200 py-2 pl-9 pr-3 text-sm outline-none focus:border-brand-400"
+                className="w-full rounded-md border border-navy-200 py-2 pl-9 pr-3 text-sm outline-none transition-shadow duration-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
               />
             </span>
           </label>
@@ -308,7 +308,7 @@ export function ProductsBrowser({
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value as SortKey)}
-              className="rounded-md border border-navy-200 py-1.5 pl-2 pr-7 text-sm outline-none focus:border-brand-400"
+              className="rounded-md border border-navy-200 py-1.5 pl-2 pr-7 text-sm outline-none transition-shadow duration-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
             >
               <option value="score">PowerMatch Score</option>
               <option value="capacity">Capacity</option>
@@ -320,7 +320,8 @@ export function ProductsBrowser({
         </div>
 
         {results.length === 0 ? (
-          <div className="card mt-4 p-8 text-center text-sm text-navy-600">
+          <div className="card mt-4 flex flex-col items-center gap-2 p-10 text-center text-sm text-navy-600">
+            <SearchIcon width={28} height={28} className="text-navy-300" />
             No products match these filters. Try clearing some.
           </div>
         ) : (
@@ -400,7 +401,7 @@ function SelectGroup({
         onChange={(e) =>
           onChange(e.target.value === "" ? null : Number(e.target.value))
         }
-        className="mt-2 w-full rounded-md border border-navy-200 py-1.5 pl-2 pr-7 text-sm outline-none focus:border-brand-400"
+        className="mt-2 w-full rounded-md border border-navy-200 py-1.5 pl-2 pr-7 text-sm outline-none transition-shadow duration-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
       >
         {options.map((o) => (
           <option key={o.label} value={o.value ?? ""}>

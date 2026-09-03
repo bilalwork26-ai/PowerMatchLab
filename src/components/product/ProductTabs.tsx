@@ -37,9 +37,9 @@ export function ProductTabs({ tabs }: { tabs: TabDef[] }) {
               tabIndex={selected ? 0 : -1}
               onClick={() => setActive(t.id)}
               className={cn(
-                "whitespace-nowrap border-b-2 px-4 py-2.5 text-sm font-medium transition-colors",
+                "whitespace-nowrap border-b-2 px-4 py-2.5 text-sm font-medium transition-colors duration-200",
                 selected
-                  ? "border-brand-600 text-brand-700"
+                  ? "border-cyan-500 text-brand-700"
                   : "border-transparent text-navy-500 hover:text-navy-800",
               )}
             >
