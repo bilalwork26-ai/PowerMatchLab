@@ -138,3 +138,16 @@
   stroke-dasharray: 8 10;
   animation: dash-flow 6s linear infinite;
 }
+
+/* Small traveling "particle" dashes for the hero device graphic's
+   connector lines — a tighter dot-dash pattern than .energy-path reads
+   as beads of light flowing along the wire rather than a dashed line. */
+.energy-particles {
+  stroke-dasharray: 1.5 9;
+  animation: dash-flow 2.4s linear infinite;
+}
+
+/* Moderate glassmorphism surface for panels on a dark background. */
+.glass-panel {
+  @apply rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm;
+}

@@ -3,31 +3,56 @@ import type { Product } from "@/types/product";
 import type { ProductScore } from "@/lib/score";
 import { productDisplayName } from "@/data/products";
 import { fmtWh, fmtWatts, fmtKg } from "@/lib/format";
+import { cn } from "@/lib/cn";
 import { ProductIllustration } from "@/components/ui/ProductIllustration";
 import { Badge } from "@/components/ui/Badge";
 import { CompareToggleButton } from "./CompareToggleButton";
 import { AmazonCta } from "./AmazonCta";
 
+/**
+ * `tone="dark"` is a purely visual variant for placing this exact card
+ * (same real data, same required affiliate CTA/disclosure, same compare
+ * toggle) on a dark navy section, e.g. the home page's featured picks.
+ * Nothing about the underlying product data or link logic changes.
+ */
 export function ProductCard({
   product,
   score,
   showActions = true,
+  tone = "light",
 }: {
   product: Product;
   score?: ProductScore;
   showActions?: boolean;
+  tone?: "light" | "dark";
 }) {
   const name = productDisplayName(product);
+  const dark = tone === "dark";
   return (
-    <article className="card-interactive flex h-full flex-col p-4">
+    <article
+      className={cn(
+        "flex h-full flex-col p-4",
+        dark
+          ? "rounded-xl border border-navy-700 bg-gradient-to-b from-navy-800 to-navy-900 shadow-glow-soft transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-glow-cyan"
+          : "card-interactive",
+      )}
+    >
       <div className="flex gap-4">
         <ProductIllustration product={product} size={84} />
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-medium uppercase tracking-wide text-navy-500">
+          <p
+            className={cn(
+              "text-xs font-medium uppercase tracking-wide",
+              dark ? "text-navy-400" : "text-navy-500",
+            )}
+          >
             {product.brand}
           </p>
-          <h3 className="truncate text-base font-semibold">
-            <Link href={`/products/${product.id}`} className="hover:text-brand-700">
+          <h3 className={cn("truncate text-base font-semibold", dark && "text-white")}>
+            <Link
+              href={`/products/${product.id}`}
+              className={dark ? "hover:text-cyan-300" : "hover:text-brand-700"}
+            >
               {product.model}
             </Link>
           </h3>
@@ -45,29 +70,28 @@ export function ProductCard({
       </div>
 
       <dl className="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
-        <div className="rounded-md bg-navy-50 p-2">
-          <dt className="text-navy-500">Capacity</dt>
-          <dd className="mt-0.5 font-semibold text-navy-900">
-            {fmtWh(product.capacity_wh)}
-          </dd>
-        </div>
-        <div className="rounded-md bg-navy-50 p-2">
-          <dt className="text-navy-500">Output</dt>
-          <dd className="mt-0.5 font-semibold text-navy-900">
-            {fmtWatts(product.rated_output_w)}
-          </dd>
-        </div>
-        <div className="rounded-md bg-navy-50 p-2">
-          <dt className="text-navy-500">Weight</dt>
-          <dd className="mt-0.5 font-semibold text-navy-900">
-            {product.weight_kg == null ? "Not verified" : `${product.weight_kg} kg`}
-          </dd>
-        </div>
+        {[
+          ["Capacity", fmtWh(product.capacity_wh)],
+          ["Output", fmtWatts(product.rated_output_w)],
+          ["Weight", product.weight_kg == null ? "Not verified" : `${product.weight_kg} kg`],
+        ].map(([label, value]) => (
+          <div
+            key={label}
+            className={cn("rounded-md p-2", dark ? "bg-navy-950/50" : "bg-navy-50")}
+          >
+            <dt className={dark ? "text-navy-400" : "text-navy-500"}>{label}</dt>
+            <dd className={cn("mt-0.5 font-semibold", dark ? "text-white" : "text-navy-900")}>
+              {value}
+            </dd>
+          </div>
+        ))}
       </dl>
 
       {product.best_for.length ? (
-        <p className="mt-3 line-clamp-2 text-xs text-navy-600">
-          <span className="font-medium text-navy-700">Best for:</span>{" "}
+        <p className={cn("mt-3 line-clamp-2 text-xs", dark ? "text-navy-300" : "text-navy-600")}>
+          <span className={cn("font-medium", dark ? "text-navy-200" : "text-navy-700")}>
+            Best for:
+          </span>{" "}
           {product.best_for.slice(0, 4).join(", ")}
         </p>
       ) : null}
@@ -78,12 +102,17 @@ export function ProductCard({
         <div className="mt-4 space-y-2">
           <Link
             href={`/products/${product.id}`}
-            className="inline-flex w-full items-center justify-center rounded-lg border border-brand-200 bg-white px-4 py-2 text-sm font-medium text-brand-700 hover:bg-brand-50"
+            className={cn(
+              "inline-flex w-full items-center justify-center rounded-lg border px-4 py-2 text-sm font-medium",
+              dark
+                ? "border-navy-600 bg-navy-800 text-cyan-300 hover:bg-navy-700"
+                : "border-brand-200 bg-white text-brand-700 hover:bg-brand-50",
+            )}
           >
             View product
           </Link>
           <CompareToggleButton productId={product.id} size="sm" />
-          <AmazonCta product={product} size="sm" withDisclosure={false} />
+          <AmazonCta product={product} size="sm" withDisclosure={false} tone={tone} />
         </div>
       ) : (
         <p className="sr-only">{name}</p>
