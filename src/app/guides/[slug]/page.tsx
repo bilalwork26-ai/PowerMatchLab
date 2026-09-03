@@ -54,6 +54,9 @@ export default async function GuidePage({
 
   const related = getProductsByIds(guide.relatedProductIds);
   const scores = scoreCatalog(getAllProducts());
+  const relatedGuides = (guide.relatedGuideSlugs ?? [])
+    .map((s) => getGuide(s))
+    .filter((g): g is NonNullable<typeof g> => g !== undefined);
 
   const crumbs: Crumb[] = [
     { name: "Home", path: "/" },
@@ -139,6 +142,24 @@ export default async function GuidePage({
               >
                 Compare these →
               </Link>
+            </section>
+          ) : null}
+
+          {relatedGuides.length ? (
+            <section className="not-prose my-8">
+              <h2 className="mb-3 text-xl font-semibold">Related guides</h2>
+              <ul className="grid gap-3 sm:grid-cols-2">
+                {relatedGuides.map((g) => (
+                  <li key={g.slug}>
+                    <Link
+                      href={`/guides/${g.slug}`}
+                      className="card block h-full p-4 text-sm font-semibold text-brand-700 hover:underline"
+                    >
+                      {g.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </section>
           ) : null}
 
