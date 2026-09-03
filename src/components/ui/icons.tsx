@@ -143,3 +143,24 @@ export const CalculatorIcon = (p: IconProps) => (
     <path d="M8 6h8M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14v4M8 18h4" />
   </Base>
 );
+
+export const LaptopIcon = (p: IconProps) => (
+  <Base {...p}>
+    <rect x="4" y="4" width="16" height="11" rx="1.5" />
+    <path d="M2 19h20l-1.5-3h-17L2 19Z" />
+  </Base>
+);
+
+export const TvIcon = (p: IconProps) => (
+  <Base {...p}>
+    <rect x="3" y="5" width="18" height="12" rx="1.5" />
+    <path d="M9 21h6M12 17v4" />
+  </Base>
+);
+
+export const CpapIcon = (p: IconProps) => (
+  <Base {...p}>
+    <path d="M4 12a4 4 0 0 1 4-4h5a4 4 0 0 1 4 4v3H4v-3Z" />
+    <path d="M17 13h3a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-3M8 19v-4M13 19v-4" />
+  </Base>
+);

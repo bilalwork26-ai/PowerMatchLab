@@ -39,6 +39,7 @@ export function ScoreCircle({
         height={size}
         viewBox={`0 0 ${size} ${size}`}
         role="img"
+        className={value != null ? "drop-shadow-[0_0_10px_rgba(28,109,208,0.25)]" : undefined}
         aria-label={
           value == null
             ? `${label}: not scored — not enough verified data`

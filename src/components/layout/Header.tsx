@@ -19,7 +19,7 @@ export function Header() {
   }, [pathname]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-navy-800 bg-navy-900 text-white">
+    <header className="sticky top-0 z-40 border-b border-navy-800/80 bg-navy-900/95 text-white shadow-[0_1px_0_rgba(34,211,238,0.15)] backdrop-blur">
       <div className="container-page flex h-16 items-center justify-between gap-4">
         <Logo variant="light" />
 
@@ -36,9 +36,9 @@ export function Header() {
                     href={item.href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                      "relative rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200",
                       active
-                        ? "bg-navy-800 text-white"
+                        ? "bg-navy-800 text-white after:absolute after:inset-x-3 after:-bottom-[9px] after:h-[2px] after:rounded-full after:bg-cyan-400 after:shadow-glow-soft after:content-['']"
                         : "text-navy-200 hover:bg-navy-800 hover:text-white",
                     )}
                   >
@@ -53,7 +53,7 @@ export function Header() {
         <div className="flex items-center gap-2">
           <Link
             href="/compare"
-            className="relative inline-flex items-center gap-1.5 rounded-md border border-navy-700 px-3 py-2 text-sm font-medium text-navy-100 hover:bg-navy-800"
+            className="relative inline-flex items-center gap-1.5 rounded-md border border-navy-700 px-3 py-2 text-sm font-medium text-navy-100 transition-colors duration-200 hover:border-cyan-400/40 hover:bg-navy-800"
           >
             <ScaleIcon width={16} height={16} />
             <span className="hidden sm:inline">Compare</span>
@@ -66,7 +66,7 @@ export function Header() {
 
           <button
             type="button"
-            className="inline-grid h-10 w-10 place-items-center rounded-md border border-navy-700 text-navy-100 md:hidden"
+            className="inline-grid h-10 w-10 place-items-center rounded-md border border-navy-700 text-navy-100 transition-colors duration-200 hover:border-cyan-400/40 md:hidden"
             aria-expanded={open}
             aria-controls="mobile-menu"
             aria-label={open ? "Close menu" : "Open menu"}

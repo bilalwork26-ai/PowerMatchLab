@@ -4,7 +4,12 @@ import { PRIMARY_NAV } from "@/lib/site";
 export default function NotFound() {
   return (
     <div className="container-page py-20 text-center">
-      <p className="text-sm font-semibold uppercase tracking-wide text-brand-600">
+      <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-navy-800 to-navy-900 text-cyan-300 shadow-glow-cyan">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+          <path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" fill="currentColor" />
+        </svg>
+      </span>
+      <p className="mt-4 text-sm font-semibold uppercase tracking-wide text-brand-600">
         404
       </p>
       <h1 className="mt-2 text-2xl font-bold">This page could not be found</h1>
@@ -17,7 +22,7 @@ export default function NotFound() {
             <li key={i.href}>
               <Link
                 href={i.href}
-                className="rounded-md border border-navy-200 px-3 py-1.5 text-sm font-medium text-navy-700 hover:bg-navy-50"
+                className="rounded-md border border-navy-200 px-3 py-1.5 text-sm font-medium text-navy-700 transition-colors duration-200 hover:border-brand-300 hover:bg-navy-50"
               >
                 {i.label}
               </Link>

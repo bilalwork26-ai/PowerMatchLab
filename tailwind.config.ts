@@ -60,6 +60,18 @@ const config: Config = {
           50: "#fff7ed",
           100: "#ffedd5",
         },
+        /** Electric cyan accent — energy/data highlight color for the 3D tech theme. */
+        cyan: {
+          DEFAULT: "#22d3ee",
+          50: "#ecfeff",
+          100: "#cffafe",
+          200: "#a5f3fc",
+          300: "#67e8f9",
+          400: "#22d3ee",
+          500: "#06b6d4",
+          600: "#0891b2",
+          700: "#0e7490",
+        },
       },
       fontFamily: {
         sans: [
@@ -79,6 +91,47 @@ const config: Config = {
       },
       boxShadow: {
         card: "0 1px 2px rgba(11, 31, 58, 0.06), 0 8px 24px rgba(11, 31, 58, 0.06)",
+        "card-hover": "0 4px 10px rgba(11, 31, 58, 0.08), 0 16px 32px rgba(11, 31, 58, 0.12)",
+        "glow-brand": "0 0 0 1px rgba(28, 109, 208, 0.35), 0 8px 30px rgba(28, 109, 208, 0.25)",
+        "glow-cyan": "0 0 0 1px rgba(34, 211, 238, 0.3), 0 8px 30px rgba(34, 211, 238, 0.2)",
+        "glow-soft": "0 0 40px rgba(34, 211, 238, 0.15)",
+        "inner-line": "inset 0 1px 0 rgba(255, 255, 255, 0.06)",
+      },
+      backgroundImage: {
+        "grid-fade":
+          "linear-gradient(to bottom, rgba(11,31,58,0) 0%, rgba(11,31,58,1) 85%), repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 40px)",
+        "radial-glow-cyan":
+          "radial-gradient(circle at center, rgba(34,211,238,0.35) 0%, rgba(34,211,238,0) 70%)",
+        "radial-glow-brand":
+          "radial-gradient(circle at center, rgba(28,109,208,0.4) 0%, rgba(28,109,208,0) 70%)",
+      },
+      keyframes: {
+        "fade-up": {
+          from: { opacity: "0", transform: "translateY(14px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        "dash-flow": {
+          to: { strokeDashoffset: "-200" },
+        },
+        "pulse-soft": {
+          "0%, 100%": { opacity: "0.6" },
+          "50%": { opacity: "1" },
+        },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-6px)" },
+        },
+        "count-in": {
+          from: { opacity: "0", transform: "scale(0.92)" },
+          to: { opacity: "1", transform: "scale(1)" },
+        },
+      },
+      animation: {
+        "fade-up": "fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "dash-flow": "dash-flow 6s linear infinite",
+        "pulse-soft": "pulse-soft 3s ease-in-out infinite",
+        float: "float 5s ease-in-out infinite",
+        "count-in": "count-in 0.4s ease-out both",
       },
     },
   },

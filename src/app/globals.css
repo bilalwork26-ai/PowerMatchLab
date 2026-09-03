@@ -58,6 +58,19 @@
     @apply rounded-xl border border-navy-100 bg-white shadow-card;
   }
 
+  /* Same surface as .card, plus a gentle lift + deeper shadow on hover —
+     for cards that are themselves a link/button (product cards, tool
+     tiles, guide tiles). Static informational cards keep plain .card. */
+  .card-interactive {
+    @apply card transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:shadow-card-hover;
+  }
+
+  /* Dark "tech" surface for hero/CTA panels: navy gradient, faint top
+     hairline, subtle grid texture handled by bg-grid-fade where used. */
+  .surface-dark {
+    @apply rounded-2xl border border-navy-700/60 bg-gradient-to-b from-navy-800 to-navy-900 shadow-inner-line;
+  }
+
   .prose-pml {
     @apply text-[15px] leading-7 text-navy-700;
   }
@@ -89,4 +102,52 @@
 }
 .skip-link:focus {
   @apply not-sr-only fixed left-4 top-4 z-50 rounded-md bg-navy-900 px-4 py-2 text-sm font-medium text-white;
+}
+
+/* ---------------------------------------------------------------------
+   Scroll-reveal (see components/ui/Reveal.tsx).
+   Server-rendered markup has no reveal classes at all, so content is
+   always visible with JS disabled. Reveal.tsx adds `.reveal-armed` on
+   mount (client-only) and swaps it for `.reveal-visible` once the
+   element intersects — a no-JS or reduced-motion visitor never sees a
+   hidden element. The global prefers-reduced-motion rule above already
+   collapses the transition to ~0ms; this block is a second, explicit
+   safety net so a slow intersection observer callback can never leave
+   content invisible for a reduced-motion visitor.
+   ------------------------------------------------------------------- */
+.reveal-armed {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-armed {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Decorative "energy line" SVG paths (components/ui/EnergyLines.tsx). */
+.energy-path {
+  stroke-dasharray: 8 10;
+  animation: dash-flow 6s linear infinite;
+}
+
+/* Small traveling "particle" dashes for the hero device graphic's
+   connector lines — a tighter dot-dash pattern than .energy-path reads
+   as beads of light flowing along the wire rather than a dashed line. */
+.energy-particles {
+  stroke-dasharray: 1.5 9;
+  animation: dash-flow 2.4s linear infinite;
+}
+
+/* Moderate glassmorphism surface for panels on a dark background. */
+.glass-panel {
+  @apply rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm;
 }

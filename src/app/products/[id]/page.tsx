@@ -80,8 +80,12 @@ export default async function ProductPage({
         data={[productJsonLd(product), breadcrumbJsonLd(crumbs)]}
       />
 
-      <div className="border-b border-navy-100 bg-white">
-        <div className="container-page py-6">
+      <div className="relative overflow-hidden border-b border-navy-100 bg-gradient-to-b from-navy-50 to-white">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-radial-glow-brand opacity-50"
+        />
+        <div className="container-page relative py-6">
           <Breadcrumbs crumbs={crumbs} />
 
           <div className="mt-5 grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -127,7 +131,10 @@ export default async function ProductPage({
 
                 <dl className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3">
                   {keySpecs.map((s) => (
-                    <div key={s.label} className="rounded-lg bg-navy-50 p-3">
+                    <div
+                      key={s.label}
+                      className="rounded-lg border border-navy-100 bg-gradient-to-b from-white to-navy-50 p-3"
+                    >
                       <dt className="text-xs text-navy-500">{s.label}</dt>
                       <dd className="mt-0.5 text-sm font-semibold text-navy-900">
                         {s.value}

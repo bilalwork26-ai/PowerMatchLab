@@ -15,11 +15,14 @@ export function AmazonCta({
   size = "md",
   withDisclosure = true,
   className,
+  tone = "light",
 }: {
   product: Product;
   size?: "sm" | "md" | "lg";
   withDisclosure?: boolean;
   className?: string;
+  /** "dark" keeps the required disclosure text readable (WCAG AA) on a dark card. */
+  tone?: "light" | "dark";
 }) {
   const { href, isAffiliate } = resolveAmazonLink(product);
 
@@ -64,7 +67,12 @@ export function AmazonCta({
         </span>
       )}
 
-      <p className="mt-1.5 text-[11px] leading-4 text-navy-500">
+      <p
+        className={cn(
+          "mt-1.5 text-[11px] leading-4",
+          tone === "dark" ? "text-navy-300" : "text-navy-500",
+        )}
+      >
         Price, availability and current rating are shown on Amazon — PowerMatchLab
         does not display them because we have not independently verified them.
         {isAffiliate
@@ -73,7 +81,10 @@ export function AmazonCta({
         {withDisclosure ? (
           <>
             {" "}
-            <Link href="/affiliate-disclosure" className="underline">
+            <Link
+              href="/affiliate-disclosure"
+              className={cn("underline", tone === "dark" && "decoration-navy-400")}
+            >
               Disclosure
             </Link>
             .
