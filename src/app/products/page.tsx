@@ -7,7 +7,7 @@ import {
 } from "@/data/products";
 import { scoreCatalog, type ProductScore } from "@/lib/score";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
-import { PageIntro } from "@/components/layout/PageIntro";
+import { PageHero } from "@/components/layout/PageHero";
 import { ProductsBrowser } from "@/components/product/ProductsBrowser";
 import { JsonLd } from "@/components/ui/JsonLd";
 
@@ -31,7 +31,7 @@ export default function ProductsPage() {
           { name: "Products", path: "/products" },
         ])}
       />
-      <PageIntro
+      <PageHero
         title="Power Stations Catalog"
         lead="The V1 working catalog. Filters only act on data we have actually verified — an unverified field never counts as a yes or a no."
         crumbs={[

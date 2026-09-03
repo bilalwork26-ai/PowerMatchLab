@@ -6,6 +6,7 @@ import { absoluteUrl, organizationJsonLd, webSiteJsonLd } from "@/lib/seo";
 import { CompareProvider } from "@/context/CompareContext";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { BrandMarquee } from "@/components/layout/BrandMarquee";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { JsonLd } from "@/components/ui/JsonLd";
 
@@ -86,9 +87,10 @@ export default function RootLayout({
         </a>
         <CompareProvider>
           <Header />
-          <main id="main" className="pb-20 md:pb-0">
+          <main id="main" className="bg-navy-950 pb-20 md:pb-0">
             {children}
           </main>
+          <BrandMarquee />
           <Footer />
           <MobileNav />
         </CompareProvider>

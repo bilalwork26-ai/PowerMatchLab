@@ -41,7 +41,7 @@ export function AmazonCta({
           target="_blank"
           rel="nofollow sponsored noopener noreferrer"
           className={cn(
-            "inline-flex w-full items-center justify-center gap-2 rounded-lg border border-amazon-hover bg-amazon font-semibold text-amazon-text transition-colors hover:bg-amazon-hover",
+            "inline-flex w-full items-center justify-center gap-2 rounded-lg border border-amazon-hover bg-amazon font-semibold text-amazon-text transition-[background-color,box-shadow,filter] duration-200 hover:bg-amazon-hover hover:shadow-[0_0_18px_rgba(254,189,105,0.45)] hover:brightness-105",
             sizeCls,
           )}
         >

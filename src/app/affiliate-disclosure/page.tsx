@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
-import { PageIntro } from "@/components/layout/PageIntro";
+import { PageHero } from "@/components/layout/PageHero";
 import { JsonLd } from "@/components/ui/JsonLd";
 
 export const metadata: Metadata = pageMetadata({
@@ -20,14 +20,15 @@ export default function AffiliateDisclosurePage() {
           { name: "Affiliate Disclosure", path: "/affiliate-disclosure" },
         ])}
       />
-      <PageIntro
+      <PageHero
         title="Affiliate Disclosure"
         crumbs={[
           { name: "Home", path: "/" },
           { name: "Affiliate Disclosure", path: "/affiliate-disclosure" },
         ]}
       />
-      <div className="container-page prose-pml max-w-3xl py-10">
+      <div className="bg-navy-950 py-10">
+      <div className="container-page prose-pml max-w-3xl">
         <h2>The short version</h2>
         <p>
           PowerMatchLab is reader-supported and participates in the Amazon
@@ -79,6 +80,7 @@ export default function AffiliateDisclosurePage() {
           Questions about how the site works? See the{" "}
           <Link href="/about-methodology">Methodology</Link>.
         </p>
+      </div>
       </div>
     </>
   );

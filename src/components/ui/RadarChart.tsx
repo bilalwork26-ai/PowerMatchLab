@@ -5,6 +5,8 @@
  * are responsible for that check (see score.ts / MIN_DIMENSIONS_FOR_OVERALL).
  */
 
+import { cn } from "@/lib/cn";
+
 const SERIES_COLORS = ["#1c6dd0", "#16a34a", "#7c3aed", "#d97706"];
 
 export interface RadarSeries {
@@ -18,12 +20,17 @@ export function RadarChart({
   series,
   size = 320,
   caption,
+  tone = "light",
 }: {
   axes: string[];
   series: RadarSeries[];
   size?: number;
   caption?: string;
+  tone?: "light" | "dark";
 }) {
+  const dark = tone === "dark";
+  const gridColor = dark ? "#334766" : "#e2e8f0";
+  const axisLabelColor = dark ? "#94a3b8" : "#475569";
   const cx = size / 2;
   const cy = size / 2;
   const radius = size / 2 - 46;
@@ -56,7 +63,7 @@ export function RadarChart({
               .map((_, i) => pointFor(i, level).join(","))
               .join(" ")}
             fill="none"
-            stroke="#e2e8f0"
+            stroke={gridColor}
             strokeWidth={1}
           />
         ))}
@@ -69,7 +76,7 @@ export function RadarChart({
               y1={cy}
               x2={x}
               y2={y}
-              stroke="#e2e8f0"
+              stroke={gridColor}
               strokeWidth={1}
             />
           );
@@ -95,7 +102,7 @@ export function RadarChart({
               x={x}
               y={y}
               fontSize={10}
-              fill="#475569"
+              fill={axisLabelColor}
               textAnchor={x < cx - 4 ? "end" : x > cx + 4 ? "start" : "middle"}
               dominantBaseline="middle"
             >
@@ -105,7 +112,12 @@ export function RadarChart({
         })}
       </svg>
 
-      <div className="mt-3 flex flex-wrap justify-center gap-3 text-xs">
+      <div
+        className={cn(
+          "mt-3 flex flex-wrap justify-center gap-3 text-xs",
+          dark && "text-navy-300",
+        )}
+      >
         {series.map((s, si) => (
           <span key={s.name} className="inline-flex items-center gap-1.5">
             <span
@@ -126,7 +138,12 @@ export function RadarChart({
           {caption ?? "Radar chart data"}
         </caption>
         <thead>
-          <tr className="border-b border-navy-100 text-left text-navy-500">
+          <tr
+            className={cn(
+              "border-b text-left",
+              dark ? "border-navy-700 text-navy-400" : "border-navy-100 text-navy-500",
+            )}
+          >
             <th scope="col" className="py-1.5 pr-2 font-medium">
               Dimension
             </th>
@@ -139,12 +156,24 @@ export function RadarChart({
         </thead>
         <tbody>
           {axes.map((axis, ai) => (
-            <tr key={axis} className="border-b border-navy-50">
-              <th scope="row" className="py-1.5 pr-2 text-left font-medium text-navy-700">
+            <tr key={axis} className={dark ? "border-b border-navy-800" : "border-b border-navy-50"}>
+              <th
+                scope="row"
+                className={cn(
+                  "py-1.5 pr-2 text-left font-medium",
+                  dark ? "text-navy-200" : "text-navy-700",
+                )}
+              >
                 {axis}
               </th>
               {series.map((s) => (
-                <td key={s.name} className="py-1.5 px-2 tabular-nums text-navy-700">
+                <td
+                  key={s.name}
+                  className={cn(
+                    "py-1.5 px-2 tabular-nums",
+                    dark ? "text-navy-200" : "text-navy-700",
+                  )}
+                >
                   {Math.round(s.values[ai])}
                 </td>
               ))}

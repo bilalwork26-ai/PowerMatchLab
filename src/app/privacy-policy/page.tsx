@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
-import { PageIntro } from "@/components/layout/PageIntro";
+import { PageHero } from "@/components/layout/PageHero";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { Callout } from "@/components/ui/Callout";
 
@@ -21,7 +21,7 @@ export default function PrivacyPolicyPage() {
           { name: "Privacy Policy", path: "/privacy-policy" },
         ])}
       />
-      <PageIntro
+      <PageHero
         title="Privacy Policy"
         lead="This is a template privacy policy for the PowerMatchLab V1 build. It must be reviewed by the site owner (and, where required, legal counsel) before public launch."
         crumbs={[
@@ -29,8 +29,9 @@ export default function PrivacyPolicyPage() {
           { name: "Privacy Policy", path: "/privacy-policy" },
         ]}
       />
-      <div className="container-page prose-pml max-w-3xl py-10">
-        <Callout tone="warn" title="Pending review before public launch">
+      <div className="bg-navy-950 py-10">
+      <div className="container-page prose-pml max-w-3xl">
+        <Callout tone="warn" dark title="Pending review before public launch">
           This page is a drafted starting point, not a legally reviewed
           policy. It must be reviewed by the site owner — and, where
           required, legal counsel — before launch. Outstanding items are
@@ -56,7 +57,7 @@ export default function PrivacyPolicyPage() {
         </ul>
 
         <h2>Server logs</h2>
-        <Callout tone="warn" title="Not yet confirmed">
+        <Callout tone="warn" dark title="Not yet confirmed">
           The hosting provider may keep standard technical logs (IP address,
           user agent, requested URL, timestamp) for security and reliability.
           The site owner must confirm the actual provider&rsquo;s retention
@@ -88,12 +89,13 @@ export default function PrivacyPolicyPage() {
         </p>
 
         <h2>Contact</h2>
-        <Callout tone="warn" title="No contact method published yet">
+        <Callout tone="warn" dark title="No contact method published yet">
           No email address or contact form is published for this site yet.
           One must be added here before launch so visitors have a real way to
           raise privacy questions or corrections — this section intentionally
           does not display a placeholder or invented address in the meantime.
         </Callout>
+      </div>
       </div>
     </>
   );

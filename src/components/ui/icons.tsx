@@ -73,6 +73,14 @@ export const FridgeIcon = (p: IconProps) => (
   </Base>
 );
 
+export const LampIcon = (p: IconProps) => (
+  <Base {...p}>
+    <path d="M6 4h12l-2.5 6h-7L6 4Z" />
+    <path d="M12 10v8M8 22h8" />
+    <path d="M9 18h6" />
+  </Base>
+);
+
 export const HomeIcon = (p: IconProps) => (
   <Base {...p}>
     <path d="M3 11 12 3l9 8" />

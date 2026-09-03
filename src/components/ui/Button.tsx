@@ -12,7 +12,7 @@ const variants: Record<Variant, string> = {
   primary:
     "bg-brand-600 text-white hover:bg-brand-700 hover:shadow-glow-brand hover:-translate-y-px",
   secondary:
-    "bg-white text-brand-700 border border-brand-200 hover:bg-brand-50 hover:border-brand-300",
+    "bg-navy-800 text-white border border-cyan-400/40 hover:bg-navy-700 hover:border-cyan-300 hover:shadow-glow-cyan hover:-translate-y-px",
   amazon:
     "bg-amazon text-amazon-text hover:bg-amazon-hover border border-amazon-hover font-semibold hover:-translate-y-px",
   ghost: "text-brand-700 hover:bg-brand-50",

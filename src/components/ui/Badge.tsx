@@ -11,20 +11,34 @@ const tones: Record<Tone, string> = {
   navy: "bg-navy-900 text-white",
 };
 
+/** Dark-surface equivalents — a navy chip with a cyan-tinted border instead
+ *  of a near-white pill, for badges placed on a dark card (e.g. ProductCard
+ *  tone="dark"). */
+const darkTones: Record<Tone, string> = {
+  neutral: "bg-navy-800 text-navy-100 border border-navy-600",
+  brand: "bg-navy-800 text-cyan-300 border border-cyan-400/40",
+  positive: "bg-navy-800 text-positive-500 border border-positive-500/40",
+  warn: "bg-navy-800 text-amber-300 border border-amber-400/40",
+  navy: "bg-navy-950 text-white border border-navy-700",
+};
+
 export function Badge({
   children,
   tone = "neutral",
+  dark = false,
   className,
 }: {
   children: ReactNode;
   tone?: Tone;
+  /** Render the dark-surface variant — a navy chip instead of a near-white pill. */
+  dark?: boolean;
   className?: string;
 }) {
   return (
     <span
       className={cn(
         "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
-        tones[tone],
+        dark ? darkTones[tone] : tones[tone],
         className,
       )}
     >

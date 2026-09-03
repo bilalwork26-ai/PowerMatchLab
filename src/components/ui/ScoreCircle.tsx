@@ -19,18 +19,23 @@ export function ScoreCircle({
   size = 88,
   label = "PowerMatch Score",
   className,
+  tone = "light",
 }: {
   value: number | null;
   band?: ScoreBand | null;
   size?: number;
   label?: string;
   className?: string;
+  tone?: "light" | "dark";
 }) {
   const stroke = 8;
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
   const pct = value == null ? 0 : Math.min(100, Math.max(0, value));
   const color = band ? bandColor[band] : "#1c6dd0";
+  const dark = tone === "dark";
+  const trackColor = dark ? "#22375c" : "#e2e8f0";
+  const numberColor = dark ? "#ffffff" : "#0b1f3a";
 
   return (
     <div className={cn("flex flex-col items-center", className)}>
@@ -51,7 +56,7 @@ export function ScoreCircle({
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="#e2e8f0"
+          stroke={trackColor}
           strokeWidth={stroke}
         />
         {value != null ? (
@@ -75,7 +80,7 @@ export function ScoreCircle({
           textAnchor="middle"
           fontSize={size * 0.28}
           fontWeight={700}
-          fill="#0b1f3a"
+          fill={numberColor}
         >
           {value == null ? "—" : value}
         </text>
@@ -85,7 +90,9 @@ export function ScoreCircle({
           {band}
         </span>
       ) : (
-        <span className="mt-1 text-xs text-navy-500">Not scored</span>
+        <span className={cn("mt-1 text-xs", dark ? "text-navy-400" : "text-navy-500")}>
+          Not scored
+        </span>
       )}
     </div>
   );

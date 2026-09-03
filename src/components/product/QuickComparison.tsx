@@ -30,7 +30,7 @@ export function QuickComparison({ product }: { product: Product }) {
             units
           </caption>
           <thead>
-            <tr className="text-left text-navy-500">
+            <tr className="text-left text-navy-400">
               <th scope="col" className="py-2 pr-3 font-medium">
                 Model
               </th>
@@ -54,11 +54,11 @@ export function QuickComparison({ product }: { product: Product }) {
               return (
                 <tr
                   key={p.id}
-                  className={current ? "bg-brand-50/60" : "border-t border-navy-100"}
+                  className={current ? "bg-cyan-400/5" : "border-t border-navy-800"}
                 >
                   <th
                     scope="row"
-                    className="py-2.5 pr-3 text-left font-medium text-navy-800"
+                    className="py-2.5 pr-3 text-left font-medium text-navy-100"
                   >
                     {productDisplayName(p)}
                     {current ? (
@@ -67,16 +67,16 @@ export function QuickComparison({ product }: { product: Product }) {
                       </span>
                     ) : null}
                   </th>
-                  <td className="py-2.5 px-3 text-navy-700">{fmtWh(p.capacity_wh)}</td>
-                  <td className="py-2.5 px-3 text-navy-700">
+                  <td className="py-2.5 px-3 text-navy-300">{fmtWh(p.capacity_wh)}</td>
+                  <td className="py-2.5 px-3 text-navy-300">
                     {fmtWatts(p.rated_output_w)}
                   </td>
-                  <td className="py-2.5 px-3 text-navy-700">{fmtKg(p.weight_kg)}</td>
+                  <td className="py-2.5 px-3 text-navy-300">{fmtKg(p.weight_kg)}</td>
                   <td className="py-2.5 pl-3">
                     {!current ? (
                       <Link
                         href={`/products/${p.id}`}
-                        className="text-brand-700 hover:underline"
+                        className="text-cyan-300 hover:underline"
                       >
                         View
                       </Link>
@@ -90,7 +90,7 @@ export function QuickComparison({ product }: { product: Product }) {
       </div>
       <Link
         href={`/compare?ids=${ids}`}
-        className="inline-flex text-sm font-semibold text-brand-700 hover:underline"
+        className="inline-flex text-sm font-semibold text-cyan-300 hover:underline"
       >
         Open full comparison →
       </Link>

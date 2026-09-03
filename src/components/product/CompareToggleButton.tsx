@@ -8,14 +8,17 @@ export function CompareToggleButton({
   productId,
   className,
   size = "md",
+  tone = "light",
 }: {
   productId: string;
   className?: string;
   size?: "sm" | "md";
+  tone?: "light" | "dark";
 }) {
   const { has, toggle, isFull, ready } = useCompare();
   const selected = ready && has(productId);
   const disabled = ready && !selected && isFull;
+  const dark = tone === "dark";
 
   const sizeCls = size === "sm" ? "h-9 px-3 text-sm" : "h-11 px-4 text-sm";
 
@@ -27,9 +30,13 @@ export function CompareToggleButton({
       disabled={disabled}
       className={cn(
         "inline-flex w-full items-center justify-center gap-2 rounded-lg border font-medium transition-colors",
-        selected
-          ? "border-brand-600 bg-brand-50 text-brand-700"
-          : "border-navy-200 bg-white text-navy-800 hover:bg-navy-50",
+        dark
+          ? selected
+            ? "border-cyan-400 bg-cyan-400/10 text-cyan-200 shadow-glow-soft"
+            : "border-cyan-400/30 bg-navy-800 text-navy-100 hover:border-cyan-300 hover:bg-navy-700 hover:shadow-glow-soft focus-visible:border-cyan-300 focus-visible:shadow-glow-soft"
+          : selected
+            ? "border-brand-600 bg-brand-50 text-brand-700"
+            : "border-navy-200 bg-white text-navy-800 hover:bg-navy-50",
         disabled && "cursor-not-allowed opacity-60",
         sizeCls,
         className,

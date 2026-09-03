@@ -69,19 +69,19 @@ export function Hero() {
         className="pointer-events-none absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-radial-glow-cyan"
       />
 
-      <div className="container-page relative grid gap-10 py-16 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:py-24">
+      <div className="container-page relative grid gap-8 py-8 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:py-10">
         <Reveal>
-          <h1 className="text-4xl font-bold leading-[1.05] text-white sm:text-5xl lg:text-[3.4rem]">
+          <h1 className="text-3xl font-bold leading-[1.05] text-white sm:text-4xl lg:text-[2.7rem]">
             Find the Right Power Station.{" "}
             <span className="bg-gradient-to-r from-cyan-300 to-brand-300 bg-clip-text text-transparent">
               Fast.
             </span>
           </h1>
-          <p className="mt-5 max-w-xl text-lg text-navy-200">
+          <p className="mt-3 max-w-xl text-base text-navy-200">
             Tell us what you need to power. We calculate, compare, and show the
             right options — with no invented prices, ratings or reviews.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-5 flex flex-wrap gap-3">
             <ButtonLink href="/power-calculator" size="lg" variant="primary">
               <CalculatorIcon width={18} height={18} />
               Use Power Calculator
@@ -92,35 +92,27 @@ export function Hero() {
             </ButtonLink>
           </div>
 
-          <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-2">
+          <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-1.5">
             {HERO_TRUST.map(({ label, Icon }) => (
-              <li key={label} className="flex items-center gap-1.5 text-sm text-navy-200">
-                <Icon width={16} height={16} className="text-cyan-300" />
+              <li key={label} className="flex items-center gap-1.5 text-xs text-navy-200 sm:text-sm">
+                <Icon width={15} height={15} className="text-cyan-300" />
                 {label}
               </li>
             ))}
           </ul>
 
-          <dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4">
-            <div>
-              <dt className="text-lg font-semibold text-white">
+          <dl className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-xs text-navy-300">
+            <div className="flex items-baseline gap-1">
+              <dt className="font-semibold text-white">
                 <AnimatedStat value={stationCount} />
               </dt>
-              <dd className="text-xs text-navy-300">Power stations tracked</dd>
+              <dd>power stations tracked</dd>
             </div>
-            <div>
-              <dt className="text-lg font-semibold text-white">
+            <div className="flex items-baseline gap-1">
+              <dt className="font-semibold text-white">
                 <AnimatedStat value={100} suffix="%" />
               </dt>
-              <dd className="text-xs text-navy-300">Unbiased — no paid placement</dd>
-            </div>
-            <div>
-              <dt className="text-lg font-semibold text-white">Manufacturer specs</dt>
-              <dd className="text-xs text-navy-300">Clearly labelled as claims</dd>
-            </div>
-            <div>
-              <dt className="text-lg font-semibold text-white">Verified links</dt>
-              <dd className="text-xs text-navy-300">Direct to Amazon USA</dd>
+              <dd>unbiased, no paid placement</dd>
             </div>
           </dl>
         </Reveal>
@@ -131,7 +123,7 @@ export function Hero() {
       </div>
 
       <div className="relative border-t border-navy-800/80">
-        <div className="container-page grid gap-4 py-10 sm:grid-cols-3">
+        <div className="container-page grid gap-3 py-5 sm:grid-cols-3">
           {HOW_IT_WORKS.map(({ n, title, body, Icon }, i) => (
             <Reveal key={n} delayMs={n * 80} className="relative">
               {i < HOW_IT_WORKS.length - 1 ? (
@@ -140,16 +132,16 @@ export function Hero() {
                   className="energy-particles absolute -right-2 top-1/2 hidden h-px w-4 -translate-y-1/2 bg-cyan-400/60 sm:block"
                 />
               ) : null}
-              <div className="glass-panel flex h-full items-start gap-3 p-5">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-brand-600 text-sm font-bold text-white shadow-glow-cyan">
+              <div className="glass-panel flex h-full items-start gap-2.5 p-3.5">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand-600 text-sm font-bold text-white shadow-glow-cyan">
                   {n}
                 </span>
                 <div>
                   <p className="flex items-center gap-1.5 text-sm font-semibold text-white">
-                    <Icon width={15} height={15} className="text-cyan-300" />
+                    <Icon width={14} height={14} className="text-cyan-300" />
                     {title}
                   </p>
-                  <p className="mt-1 text-xs leading-5 text-navy-300">{body}</p>
+                  <p className="mt-0.5 text-xs leading-5 text-navy-300">{body}</p>
                 </div>
               </div>
             </Reveal>
@@ -186,14 +178,14 @@ const TOOLS = [
 
 export function ToolsSection() {
   return (
-    <section className="bg-navy-950 py-16 text-white">
+    <section className="bg-navy-950 py-9 text-white">
       <div className="container-page">
         <Reveal>
-          <h2 className="text-center text-2xl font-bold sm:text-3xl">
+          <h2 className="text-center text-2xl font-bold text-white sm:text-3xl">
             Powerful Tools to Help You Decide
           </h2>
         </Reveal>
-        <div className="mt-10 grid gap-4 md:grid-cols-3">
+        <div className="mt-6 grid gap-4 md:grid-cols-3">
           {TOOLS.map(({ href, title, body, cta, Icon }, i) => (
             <Reveal key={href} delayMs={i * 80}>
               <Link
@@ -224,12 +216,12 @@ export function TopProducts({
 }) {
   const featured = items.slice(0, 4);
   return (
-    <section className="bg-navy-900 py-16 text-white">
+    <section className="bg-navy-900 py-9 text-white">
       <div className="container-page">
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <h2 className="text-2xl font-bold sm:text-3xl">Popular Power Stations</h2>
+              <h2 className="text-2xl font-bold text-white sm:text-3xl">Popular Power Stations</h2>
               <p className="mt-2 max-w-xl text-sm text-navy-300">
                 A quick look at our current top picks by PowerMatch Score. See
                 the full working catalog — all {items.length} products — with
@@ -245,9 +237,9 @@ export function TopProducts({
           </div>
         </Reveal>
 
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {featured.map(({ product, score }, i) => (
-            <Reveal key={product.id} delayMs={i * 70}>
+            <Reveal key={product.id} delayMs={i * 90}>
               <ProductCard product={product} score={score} tone="dark" />
             </Reveal>
           ))}
@@ -302,16 +294,16 @@ const USE_CASES = [
 
 export function UseCaseCards() {
   return (
-    <section className="bg-navy-950 py-16 text-white">
+    <section className="bg-navy-950 py-9 text-white">
       <div className="container-page">
         <Reveal>
-          <h2 className="text-center text-2xl font-bold sm:text-3xl">
+          <h2 className="text-center text-2xl font-bold text-white sm:text-3xl">
             Find the Best Power Station for Your Use
           </h2>
         </Reveal>
-        <div className="mt-10 grid grid-cols-2 gap-5 lg:grid-cols-5">
+        <div className="mt-6 grid grid-cols-2 gap-5 lg:grid-cols-5">
           {USE_CASES.map(({ href, title, body, image, alt, cta }, i) => (
-            <Reveal key={href} delayMs={i * 70}>
+            <Reveal key={href} delayMs={i * 90}>
               <Link
                 href={href}
                 className="group relative block aspect-[4/5] overflow-hidden rounded-2xl border border-navy-800 shadow-glow-soft transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-cyan-400/40 hover:shadow-glow-cyan"
@@ -397,7 +389,7 @@ export function FinalCalculatorCta() {
             <EnergyLines className="opacity-40" />
             <div className="relative flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
               <div>
-                <h2 className="text-xl font-bold">Not sure which power station is right for you?</h2>
+                <h2 className="text-xl font-bold text-white">Not sure which power station is right for you?</h2>
                 <p className="mt-1 text-sm text-navy-300">
                   Use the calculator to get an explainable recommendation in under a minute.
                 </p>

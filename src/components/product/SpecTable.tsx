@@ -88,31 +88,31 @@ export function SpecTable({ product }: { product: Product }) {
   const groups = buildSpecGroups(product);
   return (
     <div className="space-y-6">
-      <p className="text-xs text-navy-500">
+      <p className="text-xs text-navy-400">
         Values marked “manufacturer claim” come from the official source listed
         under Provenance. PowerMatchLab has not independently tested them.
       </p>
       {groups.map((g) => (
-        <div key={g.title} className="overflow-hidden rounded-lg border border-navy-100">
-          <h3 className="bg-navy-50 px-4 py-2 text-sm font-semibold text-navy-800">
+        <div key={g.title} className="overflow-hidden rounded-lg border border-navy-700">
+          <h3 className="bg-navy-900/70 px-4 py-2 text-sm font-semibold text-white">
             {g.title}
           </h3>
           <table className="w-full text-sm">
             <tbody>
               {g.rows.map((row) => (
-                <tr key={row.label} className="border-t border-navy-100">
+                <tr key={row.label} className="border-t border-navy-800">
                   <th
                     scope="row"
-                    className="w-1/2 px-4 py-2.5 text-left font-medium text-navy-600"
+                    className="w-1/2 px-4 py-2.5 text-left font-medium text-navy-300"
                   >
                     {row.label}
                     {row.claim ? (
-                      <span className="ml-1 text-[10px] font-normal uppercase tracking-wide text-navy-400">
+                      <span className="ml-1 text-[10px] font-normal uppercase tracking-wide text-navy-500">
                         claim
                       </span>
                     ) : null}
                   </th>
-                  <td className="px-4 py-2.5 text-navy-900">{row.value}</td>
+                  <td className="px-4 py-2.5 text-white">{row.value}</td>
                 </tr>
               ))}
             </tbody>

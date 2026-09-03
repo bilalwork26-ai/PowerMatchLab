@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { getAllProducts } from "@/data/products";
 import { scoreCatalog, type ProductScore } from "@/lib/score";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
-import { PageIntro } from "@/components/layout/PageIntro";
+import { PageHero } from "@/components/layout/PageHero";
 import { CompareView } from "@/components/compare/CompareView";
 import { JsonLd } from "@/components/ui/JsonLd";
 
@@ -28,7 +28,7 @@ export default function ComparePage() {
           { name: "Compare", path: "/compare" },
         ])}
       />
-      <PageIntro
+      <PageHero
         title="Compare Power Stations"
         lead="See models side by side and check which one actually fits your needs. Highlighted cells hold the best verified value in that row."
         crumbs={[

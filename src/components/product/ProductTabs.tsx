@@ -23,7 +23,7 @@ export function ProductTabs({ tabs }: { tabs: TabDef[] }) {
       <div
         role="tablist"
         aria-label="Product details"
-        className="flex gap-1 overflow-x-auto border-b border-navy-100"
+        className="flex gap-1 overflow-x-auto border-b border-navy-700"
       >
         {tabs.map((t) => {
           const selected = t.id === active;
@@ -39,8 +39,8 @@ export function ProductTabs({ tabs }: { tabs: TabDef[] }) {
               className={cn(
                 "whitespace-nowrap border-b-2 px-4 py-2.5 text-sm font-medium transition-colors duration-200",
                 selected
-                  ? "border-cyan-500 text-brand-700"
-                  : "border-transparent text-navy-500 hover:text-navy-800",
+                  ? "border-cyan-400 text-cyan-300"
+                  : "border-transparent text-navy-400 hover:text-navy-200",
               )}
             >
               {t.label}

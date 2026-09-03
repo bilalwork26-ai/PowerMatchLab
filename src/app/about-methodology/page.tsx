@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
-import { PageIntro } from "@/components/layout/PageIntro";
+import { PageHero } from "@/components/layout/PageHero";
 import { JsonLd } from "@/components/ui/JsonLd";
 import {
   DEFAULT_ASSUMPTIONS,
@@ -26,7 +26,7 @@ export default function MethodologyPage() {
           { name: "About / Methodology", path: "/about-methodology" },
         ])}
       />
-      <PageIntro
+      <PageHero
         title="About &amp; Methodology"
         lead="PowerMatchLab is an independent decision-support site. We help you work out what power station you need and compare the options — we do not sell products and we do not physically test them."
         crumbs={[
@@ -35,7 +35,8 @@ export default function MethodologyPage() {
         ]}
       />
 
-      <div className="container-page prose-pml max-w-3xl py-10">
+      <div className="bg-navy-950 py-10">
+      <div className="container-page prose-pml max-w-3xl">
         <h2>What PowerMatchLab is</h2>
         <p>
           PowerMatchLab compares portable power stations for the United States
@@ -238,6 +239,7 @@ export default function MethodologyPage() {
           canonical dataset is <code>products.json</code>; corrections there flow
           through the whole site.
         </p>
+      </div>
       </div>
     </>
   );

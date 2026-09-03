@@ -23,20 +23,26 @@ export function ProductIllustration({
   size = 96,
   className,
   showCaption = true,
+  tone = "light",
 }: {
   product: Product;
   size?: number;
   className?: string;
   showCaption?: boolean;
+  tone?: "light" | "dark";
 }) {
   const path = getIllustrationPath(product);
   const alt = getIllustrationAlt(product);
   const captionWidth = Math.max(size, 96);
+  const dark = tone === "dark";
 
   return (
     <div className={cn("flex shrink-0 flex-col items-center gap-1", className)}>
       <div
-        className="relative overflow-hidden rounded-lg border border-navy-100 bg-navy-50"
+        className={cn(
+          "relative overflow-hidden rounded-lg border",
+          dark ? "border-navy-700 bg-navy-950/40" : "border-navy-100 bg-navy-50",
+        )}
         style={{ width: size, height: size }}
       >
         <Image
@@ -49,7 +55,10 @@ export function ProductIllustration({
       </div>
       {showCaption ? (
         <p
-          className="text-center text-[9px] leading-tight text-navy-400"
+          className={cn(
+            "text-center text-[9px] leading-tight",
+            dark ? "text-navy-300" : "text-navy-400",
+          )}
           style={{ width: captionWidth }}
         >
           {ILLUSTRATIVE_CAPTION_SHORT}
