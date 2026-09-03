@@ -122,22 +122,27 @@ export function CompareView({ catalog, scores }: Props) {
   }, [selected, scores]);
 
   if (!ready) {
-    return <div className="container-page py-12 text-sm text-navy-500">Loading…</div>;
+    return (
+      <div className="bg-navy-950 py-12 text-sm text-navy-300">
+        <p className="container-page">Loading…</p>
+      </div>
+    );
   }
 
   return (
-    <div className="container-page py-8">
+    <div className="bg-navy-950 py-8 text-white">
+      <div className="container-page">
       {/* Selection tray */}
-      <div className="card p-4">
+      <div className="glass-panel bg-navy-900/60 p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-sm font-semibold">
+          <h2 className="text-sm font-semibold text-white">
             Your selection ({count}/{MAX_COMPARE})
           </h2>
           {count > 0 ? (
             <button
               type="button"
               onClick={clear}
-              className="inline-flex items-center gap-1 text-xs font-medium text-navy-600 hover:text-navy-900"
+              className="inline-flex items-center gap-1 text-xs font-medium text-navy-300 hover:text-white"
             >
               <TrashIcon width={14} height={14} />
               Clear all
@@ -149,14 +154,14 @@ export function CompareView({ catalog, scores }: Props) {
           {selected.map((p) => (
             <span
               key={p.id}
-              className="inline-flex items-center gap-2 rounded-full border border-navy-200 bg-white py-1 pl-3 pr-1 text-sm"
+              className="inline-flex items-center gap-2 rounded-full border border-navy-700 bg-navy-800 py-1 pl-3 pr-1 text-sm text-white"
             >
               {p.brand} {p.model}
               <button
                 type="button"
                 onClick={() => remove(p.id)}
                 aria-label={`Remove ${p.brand} ${p.model} from comparison`}
-                className="grid h-6 w-6 place-items-center rounded-full text-navy-400 hover:bg-navy-100 hover:text-navy-700"
+                className="grid h-6 w-6 place-items-center rounded-full text-navy-400 hover:bg-navy-700 hover:text-white"
               >
                 <XIcon width={14} height={14} />
               </button>
@@ -171,7 +176,7 @@ export function CompareView({ catalog, scores }: Props) {
                 onChange={(e) => {
                   if (e.target.value) add(e.target.value);
                 }}
-                className="rounded-full border border-dashed border-brand-300 bg-brand-50 py-1.5 pl-3 pr-8 text-sm text-brand-700 outline-none transition-shadow duration-200 focus:ring-2 focus:ring-brand-200"
+                className="rounded-full border border-dashed border-cyan-400/50 bg-navy-900/60 py-1.5 pl-3 pr-8 text-sm text-cyan-300 outline-none transition-shadow duration-200 focus:ring-2 focus:ring-cyan-400/30"
               >
                 <option value="">+ Add another product…</option>
                 {remaining.map((p) => (
@@ -182,14 +187,14 @@ export function CompareView({ catalog, scores }: Props) {
               </select>
             </label>
           ) : (
-            <span className="text-xs text-navy-500">
+            <span className="text-xs text-navy-400">
               Maximum of {MAX_COMPARE} products.
             </span>
           )}
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-navy-100 pt-3">
-          <span className="text-xs font-semibold uppercase tracking-wide text-navy-500">
+        <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-navy-700 pt-3">
+          <span className="text-xs font-semibold uppercase tracking-wide text-navy-400">
             Highlight what matters for
           </span>
           {USE_CASES.map((uc) => (
@@ -202,7 +207,7 @@ export function CompareView({ catalog, scores }: Props) {
                 "rounded-full px-3 py-1 text-xs font-medium",
                 useCase === uc.key
                   ? "bg-gradient-to-r from-brand-600 to-cyan-600 text-white shadow-glow-brand"
-                  : "bg-navy-100 text-navy-700 hover:bg-navy-200",
+                  : "bg-navy-800 text-navy-300 hover:bg-navy-700",
               )}
             >
               {uc.label}
@@ -212,7 +217,7 @@ export function CompareView({ catalog, scores }: Props) {
       </div>
 
       {selected.length === 0 ? (
-        <Callout tone="info" className="mt-6">
+        <Callout tone="info" dark className="mt-6">
           Add products from the{" "}
           <Link href="/products" className="underline">
             catalog
@@ -224,7 +229,7 @@ export function CompareView({ catalog, scores }: Props) {
       ) : (
         <>
           {selected.length === 1 ? (
-            <Callout tone="neutral" className="mt-6">
+            <Callout tone="neutral" dark className="mt-6">
               Add at least one more product to see a side-by-side comparison and
               winner highlights.
             </Callout>
@@ -240,27 +245,32 @@ export function CompareView({ catalog, scores }: Props) {
             >
               <div />
               {selected.map((p) => (
-                <div key={p.id} className="card p-3 text-center">
+                <div
+                  key={p.id}
+                  className="glass-panel bg-navy-900/60 p-3 text-center"
+                >
                   <ProductIllustration
                     product={p}
                     size={72}
                     className="mx-auto"
+                    tone="dark"
                   />
-                  <p className="mt-2 text-xs font-medium uppercase tracking-wide text-navy-500">
+                  <p className="mt-2 text-xs font-medium uppercase tracking-wide text-navy-400">
                     {p.brand}
                   </p>
-                  <p className="text-sm font-semibold">{p.model}</p>
+                  <p className="text-sm font-semibold text-white">{p.model}</p>
                   <div className="mt-1 flex justify-center">
                     <ScoreCircle
                       value={scores[p.id]?.overall ?? null}
                       band={scores[p.id]?.band ?? null}
                       size={64}
                       label="PowerMatch Score"
+                      tone="dark"
                     />
                   </div>
                   <Link
                     href={`/products/${p.id}`}
-                    className="mt-1 inline-block text-xs font-medium text-brand-700 hover:underline"
+                    className="mt-1 inline-block text-xs font-medium text-cyan-300 hover:underline"
                   >
                     View product →
                   </Link>
@@ -292,7 +302,7 @@ export function CompareView({ catalog, scores }: Props) {
                     <th
                       scope="colgroup"
                       colSpan={selected.length + 1}
-                      className="bg-gradient-to-r from-navy-50 to-white px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-navy-600"
+                      className="bg-navy-900/80 px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-navy-300"
                     >
                       {g.group}
                     </th>
@@ -304,13 +314,13 @@ export function CompareView({ catalog, scores }: Props) {
                       <tr
                         key={row.key}
                         className={cn(
-                          "border-b border-navy-100",
-                          isPriority && "bg-brand-50/40",
+                          "border-b border-navy-800",
+                          isPriority && "bg-cyan-400/5",
                         )}
                       >
                         <th
                           scope="row"
-                          className="min-w-[180px] px-3 py-2.5 text-left font-medium text-navy-700"
+                          className="min-w-[180px] px-3 py-2.5 text-left font-medium text-navy-300"
                         >
                           {row.label}
                           {isPriority ? (
@@ -328,8 +338,8 @@ export function CompareView({ catalog, scores }: Props) {
                               className={cn(
                                 "px-3 py-2.5 tabular-nums",
                                 isWin
-                                  ? "font-semibold text-positive-700"
-                                  : "text-navy-800",
+                                  ? "font-semibold text-positive-500"
+                                  : "text-navy-100",
                               )}
                             >
                               <span className="inline-flex items-center gap-1">
@@ -337,7 +347,7 @@ export function CompareView({ catalog, scores }: Props) {
                                   <CheckIcon
                                     width={14}
                                     height={14}
-                                    className="text-positive-600"
+                                    className="text-positive-500"
                                   />
                                 ) : null}
                                 {row.display(p)}
@@ -356,11 +366,11 @@ export function CompareView({ catalog, scores }: Props) {
           {/* PowerMatch score overview */}
           {selected.length >= 2 ? (
             <section className="mt-10 grid items-start gap-8 lg:grid-cols-2">
-              <div className="card p-5">
-                <h2 className="text-base font-semibold">
+              <div className="glass-panel bg-navy-900/60 p-5">
+                <h2 className="text-base font-semibold text-white">
                   PowerMatch Score overview
                 </h2>
-                <p className="mt-1 text-xs text-navy-500">
+                <p className="mt-1 text-xs text-navy-400">
                   Editorial scores, normalised across the whole catalog. “Not
                   scored” means insufficient verified data.
                 </p>
@@ -370,13 +380,14 @@ export function CompareView({ catalog, scores }: Props) {
                       key={p.id}
                       value={scores[p.id]?.overall ?? null}
                       label={`${p.brand} ${p.model}`}
+                      tone="dark"
                     />
                   ))}
                 </div>
               </div>
 
-              <div className="card p-5">
-                <h2 className="text-base font-semibold">
+              <div className="glass-panel bg-navy-900/60 p-5">
+                <h2 className="text-base font-semibold text-white">
                   Category performance radar
                 </h2>
                 {radar ? (
@@ -385,10 +396,11 @@ export function CompareView({ catalog, scores }: Props) {
                       axes={radar.axes}
                       series={radar.series}
                       caption="Common PowerMatch Score dimensions across the selected products"
+                      tone="dark"
                     />
                   </div>
                 ) : (
-                  <p className="mt-3 text-sm text-navy-500">
+                  <p className="mt-3 text-sm text-navy-400">
                     A radar chart needs at least three score dimensions that every
                     selected product has in common. The current selection does not
                     meet that, so no chart is shown (we do not fill it with
@@ -402,28 +414,31 @@ export function CompareView({ catalog, scores }: Props) {
           {/* Comparison summary */}
           {selected.length >= 2 ? (
             <section className="mt-8">
-              <h2 className="text-base font-semibold">Comparison summary</h2>
+              <h2 className="text-base font-semibold text-white">Comparison summary</h2>
               <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {selected.map((p) => {
                   const wins = winTally[p.id] ?? 0;
                   const sc = scores[p.id];
                   return (
-                    <div key={p.id} className="card p-4">
-                      <p className="text-sm font-semibold">
+                    <div
+                      key={p.id}
+                      className="rounded-xl border border-navy-700 bg-gradient-to-b from-navy-800 to-navy-900 p-4 shadow-glow-soft"
+                    >
+                      <p className="text-sm font-semibold text-white">
                         {p.brand} {p.model}
                       </p>
-                      <p className="mt-1 text-xs text-navy-600">
+                      <p className="mt-1 text-xs text-navy-300">
                         Leads on {wins} comparable {wins === 1 ? "spec" : "specs"} in
                         this selection.
                         {sc?.overall != null
                           ? ` PowerMatch Score ${sc.overall}/100 (${sc.band}).`
                           : " PowerMatch Score not published."}
                       </p>
-                      <p className="mt-1.5 text-xs text-navy-500">
+                      <p className="mt-1.5 text-xs text-navy-400">
                         Best for: {p.best_for.slice(0, 3).join(", ") || "—"}
                       </p>
                       <div className="mt-3">
-                        <AmazonCta product={p} size="sm" withDisclosure={false} />
+                        <AmazonCta product={p} size="sm" withDisclosure={false} tone="dark" />
                       </div>
                     </div>
                   );
@@ -432,7 +447,7 @@ export function CompareView({ catalog, scores }: Props) {
             </section>
           ) : null}
 
-          <Callout tone="warn" className="mt-8">
+          <Callout tone="warn" dark className="mt-8">
             Winner highlights compare only verified numeric values. A blank or
             “Not verified” cell is excluded from that row — it is not treated as
             zero. Scores are editorial calculations, not test results.{" "}
@@ -443,6 +458,7 @@ export function CompareView({ catalog, scores }: Props) {
           </Callout>
         </>
       )}
+      </div>
     </div>
   );
 }

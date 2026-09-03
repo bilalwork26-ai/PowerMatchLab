@@ -16,6 +16,7 @@ import { JsonLd } from "@/components/ui/JsonLd";
 import { Callout } from "@/components/ui/Callout";
 import { ScoreCircle } from "@/components/ui/ScoreCircle";
 import { ProductIllustration } from "@/components/ui/ProductIllustration";
+import { EnergyLines } from "@/components/ui/EnergyLines";
 import { ILLUSTRATIVE_CAPTION_LONG } from "@/lib/illustrations";
 import { AmazonCta } from "@/components/product/AmazonCta";
 import { CompareToggleButton } from "@/components/product/CompareToggleButton";
@@ -80,48 +81,49 @@ export default async function ProductPage({
         data={[productJsonLd(product), breadcrumbJsonLd(crumbs)]}
       />
 
-      <div className="relative overflow-hidden border-b border-navy-100 bg-gradient-to-b from-navy-50 to-white">
+      <div className="relative overflow-hidden bg-navy-900 text-white">
+        <EnergyLines className="opacity-40" />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-radial-glow-brand opacity-50"
+          className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-radial-glow-cyan opacity-60"
         />
         <div className="container-page relative py-6">
-          <Breadcrumbs crumbs={crumbs} />
+          <Breadcrumbs crumbs={crumbs} tone="dark" />
 
           <div className="mt-5 grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
             <div className="flex flex-col gap-6 sm:flex-row">
               <div className="mx-auto flex flex-col items-center gap-2 sm:mx-0 sm:items-start">
-                <ProductIllustration product={product} size={200} showCaption={false} />
+                <ProductIllustration product={product} size={200} showCaption={false} tone="dark" />
                 <p className="max-w-[220px] text-center text-[10px] leading-snug text-navy-400 sm:text-left">
                   {ILLUSTRATIVE_CAPTION_LONG}
                 </p>
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-medium uppercase tracking-wide text-navy-500">
+                <p className="text-sm font-medium uppercase tracking-wide text-navy-400">
                   {product.brand}
                 </p>
-                <h1 className="text-2xl font-bold sm:text-3xl">{product.model}</h1>
-                <p className="mt-1 text-sm text-navy-500">
+                <h1 className="text-2xl font-bold text-white sm:text-3xl">{product.model}</h1>
+                <p className="mt-1 text-sm text-navy-400">
                   Portable power station · Market: US
                 </p>
 
                 <div className="mt-3 flex flex-wrap gap-1.5">
                   {product.battery_chemistry ? (
-                    <Badge tone="neutral">{product.battery_chemistry}</Badge>
+                    <Badge tone="neutral" dark>{product.battery_chemistry}</Badge>
                   ) : null}
                   {product.expandable === true ? (
-                    <Badge tone="brand">Expandable</Badge>
+                    <Badge tone="brand" dark>Expandable</Badge>
                   ) : null}
                   {product.voltage_240v === true ? (
-                    <Badge tone="brand">120/240V</Badge>
+                    <Badge tone="brand" dark>120/240V</Badge>
                   ) : null}
-                  {product.rv_tt30 === true ? <Badge tone="brand">TT-30</Badge> : null}
+                  {product.rv_tt30 === true ? <Badge tone="brand" dark>TT-30</Badge> : null}
                   {product.solar_input_w ? (
-                    <Badge tone="positive">{product.solar_input_w} W solar</Badge>
+                    <Badge tone="positive" dark>{product.solar_input_w} W solar</Badge>
                   ) : null}
                 </div>
 
-                <p className="mt-4 max-w-prose text-[15px] leading-7 text-navy-700">
+                <p className="mt-4 max-w-prose text-[15px] leading-7 text-navy-200">
                   The {name} is a {fmtWh(product.capacity_wh)} LiFePO4-class
                   portable power station rated for {fmtWatts(product.rated_output_w)}{" "}
                   of continuous output. PowerMatchLab summarises the verified
@@ -133,10 +135,10 @@ export default async function ProductPage({
                   {keySpecs.map((s) => (
                     <div
                       key={s.label}
-                      className="rounded-lg border border-navy-100 bg-gradient-to-b from-white to-navy-50 p-3"
+                      className="rounded-lg border border-navy-700 bg-navy-900/60 p-3"
                     >
-                      <dt className="text-xs text-navy-500">{s.label}</dt>
-                      <dd className="mt-0.5 text-sm font-semibold text-navy-900">
+                      <dt className="text-xs text-navy-400">{s.label}</dt>
+                      <dd className="mt-0.5 text-sm font-semibold text-white">
                         {s.value}
                       </dd>
                     </div>
@@ -146,19 +148,19 @@ export default async function ProductPage({
             </div>
 
             <aside className="lg:sticky lg:top-20 lg:h-fit">
-              <div className="card p-4">
+              <div className="glass-panel bg-navy-900/60 p-4">
                 <div className="flex items-center gap-4">
-                  <ScoreCircle value={score.overall} band={score.band} size={84} />
+                  <ScoreCircle value={score.overall} band={score.band} size={84} tone="dark" />
                   <div>
-                    <p className="text-sm font-semibold">PowerMatch Score</p>
-                    <p className="text-xs text-navy-500">
+                    <p className="text-sm font-semibold text-white">PowerMatch Score</p>
+                    <p className="text-xs text-navy-400">
                       {score.overall == null
                         ? "Not published — insufficient verified data"
                         : `${score.scoredCount}/${score.totalDimensions} dimensions · editorial`}
                     </p>
                     <a
                       href="#details"
-                      className="text-xs font-medium text-brand-700 hover:underline"
+                      className="text-xs font-medium text-cyan-300 hover:underline"
                     >
                       See score breakdown
                     </a>
@@ -166,19 +168,19 @@ export default async function ProductPage({
                 </div>
 
                 <div className="mt-4 space-y-2">
-                  <AmazonCta product={product} size="md" />
-                  <CompareToggleButton productId={product.id} />
+                  <AmazonCta product={product} size="md" tone="dark" />
+                  <CompareToggleButton productId={product.id} tone="dark" />
                 </div>
 
                 {product.best_for.length ? (
-                  <div className="mt-4 border-t border-navy-100 pt-3">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-navy-500">
+                  <div className="mt-4 border-t border-navy-700 pt-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-navy-400">
                       Best for
                     </p>
                     <ul className="mt-1.5 flex flex-wrap gap-1.5">
                       {product.best_for.map((b) => (
                         <li key={b}>
-                          <Badge tone="neutral" className="capitalize">
+                          <Badge tone="neutral" dark className="capitalize">
                             {b}
                           </Badge>
                         </li>
@@ -192,7 +194,8 @@ export default async function ProductPage({
         </div>
       </div>
 
-      <div className="container-page py-8" id="details">
+      <div className="bg-navy-950 py-8 text-white" id="details">
+        <div className="container-page">
         <ProductTabs
           tabs={[
             {
@@ -201,11 +204,11 @@ export default async function ProductPage({
               panel: (
                 <div className="grid gap-8 lg:grid-cols-2">
                   <div>
-                    <h2 className="mb-3 text-lg font-semibold">Pros &amp; cons</h2>
+                    <h2 className="mb-3 text-lg font-semibold text-white">Pros &amp; cons</h2>
                     <ProsCons product={product} />
                   </div>
                   <div>
-                    <h2 className="mb-3 text-lg font-semibold">
+                    <h2 className="mb-3 text-lg font-semibold text-white">
                       Estimated runtime examples
                     </h2>
                     <RuntimeExamples product={product} />
@@ -232,13 +235,13 @@ export default async function ProductPage({
               id: "reviews",
               label: "Reviews",
               panel: (
-                <Callout tone="neutral" title="PowerMatchLab does not host user reviews">
+                <Callout tone="neutral" dark title="PowerMatchLab does not host user reviews">
                   We do not collect visitor reviews, and we do not republish
                   Amazon star ratings or review counts because we have not
                   independently verified them. Check the current rating and
                   reviews on the product’s Amazon page.
                   <div className="mt-3">
-                    <AmazonCta product={product} size="sm" withDisclosure={false} />
+                    <AmazonCta product={product} size="sm" withDisclosure={false} tone="dark" />
                   </div>
                 </Callout>
               ),
@@ -247,7 +250,7 @@ export default async function ProductPage({
               id: "qa",
               label: "Q&A",
               panel: (
-                <Callout tone="neutral" title="No verified questions yet">
+                <Callout tone="neutral" dark title="No verified questions yet">
                   When we add a moderated Q&amp;A, answers will cite the official
                   source or a PowerMatchLab calculation. For sizing questions, the{" "}
                   <Link href="/power-calculator" className="underline">
@@ -259,10 +262,12 @@ export default async function ProductPage({
             },
           ]}
         />
+        </div>
       </div>
 
-      <div className="container-page pb-12">
-        <Callout tone="warn" title="How to read this page">
+      <div className="bg-navy-950 pb-12 text-white">
+        <div className="container-page">
+        <Callout tone="warn" dark title="How to read this page">
           Specifications are manufacturer claims tied to the official source under
           Specifications → Provenance ({fmtText(product.official_source)}, last
           verified {fmtText(product.last_verified)}). The PowerMatch Score is a
@@ -274,6 +279,7 @@ export default async function ProductPage({
           </Link>
           .
         </Callout>
+        </div>
       </div>
     </>
   );

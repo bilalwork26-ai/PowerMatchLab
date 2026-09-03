@@ -11,7 +11,7 @@ import { Logo } from "./Logo";
 export function Footer() {
   const year = new Date().getFullYear();
   return (
-    <footer className="relative mt-16 overflow-hidden border-t border-cyan-400/10 bg-navy-900 text-navy-200">
+    <footer className="relative overflow-hidden border-t border-cyan-400/10 bg-navy-900 text-navy-200">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/60 to-transparent"

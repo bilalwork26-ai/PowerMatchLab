@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
-import { PageIntro } from "@/components/layout/PageIntro";
+import { PageHero } from "@/components/layout/PageHero";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { Callout } from "@/components/ui/Callout";
 
@@ -21,7 +21,7 @@ export default function TermsPage() {
           { name: "Terms", path: "/terms" },
         ])}
       />
-      <PageIntro
+      <PageHero
         title="Terms of Use"
         lead="A template for the PowerMatchLab V1 build. The site owner should review and adapt this before public launch."
         crumbs={[
@@ -29,8 +29,9 @@ export default function TermsPage() {
           { name: "Terms", path: "/terms" },
         ]}
       />
-      <div className="container-page prose-pml max-w-3xl py-10">
-        <Callout tone="warn" title="Pending review before public launch">
+      <div className="bg-navy-950 py-10">
+      <div className="container-page prose-pml max-w-3xl">
+        <Callout tone="warn" dark title="Pending review before public launch">
           This page is a drafted starting point, not a legally reviewed terms
           of use. The site owner — and, where required, legal counsel — must
           review and adapt it before public launch. Last updated 2026-09-01.
@@ -84,6 +85,7 @@ export default function TermsPage() {
           These terms and the site’s content may change at any time. Continued
           use after a change constitutes acceptance of the updated terms.
         </p>
+      </div>
       </div>
     </>
   );

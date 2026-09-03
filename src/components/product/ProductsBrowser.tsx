@@ -167,170 +167,172 @@ export function ProductsBrowser({
     ].filter(Boolean).length;
 
   return (
-    <div className="container-page grid gap-8 py-10 lg:grid-cols-[280px_1fr]">
-      <aside className="lg:sticky lg:top-20 lg:h-fit">
-        <div className="card p-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold">Filters</h2>
-            {activeCount > 0 ? (
-              <button
-                type="button"
-                onClick={() => setFilters(emptyFilters())}
-                className="text-xs font-medium text-brand-700 hover:underline"
+    <div className="bg-navy-950 py-10 text-white">
+      <div className="container-page grid gap-8 lg:grid-cols-[280px_1fr]">
+        <aside className="lg:sticky lg:top-20 lg:h-fit">
+          <div className="glass-panel bg-navy-900/60 p-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-white">Filters</h2>
+              {activeCount > 0 ? (
+                <button
+                  type="button"
+                  onClick={() => setFilters(emptyFilters())}
+                  className="text-xs font-medium text-cyan-300 hover:underline"
+                >
+                  Clear ({activeCount})
+                </button>
+              ) : null}
+            </div>
+
+            <label className="mt-3 block">
+              <span className="sr-only">Search by brand or model</span>
+              <span className="relative block">
+                <SearchIcon
+                  width={16}
+                  height={16}
+                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-navy-500"
+                />
+                <input
+                  type="search"
+                  value={filters.q}
+                  onChange={(e) => setFilters((f) => ({ ...f, q: e.target.value }))}
+                  placeholder="Search brand or model"
+                  className="w-full rounded-md border border-navy-700 bg-navy-950/60 py-2 pl-9 pr-3 text-sm text-white placeholder-navy-500 outline-none transition-shadow duration-200 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
+                />
+              </span>
+            </label>
+
+            <FilterGroup label="Brand">
+              {brands.map((b) => (
+                <CheckRow
+                  key={b}
+                  label={b}
+                  checked={filters.brands.has(b)}
+                  onChange={() => toggleSet("brands", b)}
+                />
+              ))}
+            </FilterGroup>
+
+            <FilterGroup label="Battery chemistry">
+              {chemistries.map((c) => (
+                <CheckRow
+                  key={c}
+                  label={c}
+                  checked={filters.chemistries.has(c)}
+                  onChange={() => toggleSet("chemistries", c)}
+                />
+              ))}
+            </FilterGroup>
+
+            <FilterGroup label="Use case">
+              {useCaseTags.map((t) => (
+                <CheckRow
+                  key={t}
+                  label={t}
+                  checked={filters.useCases.has(t)}
+                  onChange={() => toggleSet("useCases", t)}
+                />
+              ))}
+            </FilterGroup>
+
+            <SelectGroup
+              label="Minimum capacity"
+              options={CAPACITY_STEPS}
+              value={filters.minCapacity}
+              onChange={(v) => setFilters((f) => ({ ...f, minCapacity: v }))}
+            />
+            <SelectGroup
+              label="Minimum rated output"
+              options={OUTPUT_STEPS}
+              value={filters.minOutput}
+              onChange={(v) => setFilters((f) => ({ ...f, minOutput: v }))}
+            />
+            <SelectGroup
+              label="Maximum weight"
+              options={WEIGHT_STEPS}
+              value={filters.maxWeight}
+              onChange={(v) => setFilters((f) => ({ ...f, maxWeight: v }))}
+            />
+
+            <FilterGroup label="Capabilities">
+              <CheckRow
+                label="Solar input"
+                checked={filters.needsSolar}
+                onChange={() =>
+                  setFilters((f) => ({ ...f, needsSolar: !f.needsSolar }))
+                }
+              />
+              <CheckRow
+                label="Expandable capacity"
+                checked={filters.needsExpandable}
+                onChange={() =>
+                  setFilters((f) => ({ ...f, needsExpandable: !f.needsExpandable }))
+                }
+              />
+              <CheckRow
+                label="Native 120/240V"
+                checked={filters.needs240V}
+                onChange={() =>
+                  setFilters((f) => ({ ...f, needs240V: !f.needs240V }))
+                }
+              />
+              <CheckRow
+                label="RV TT-30 outlet"
+                checked={filters.needsTT30}
+                onChange={() =>
+                  setFilters((f) => ({ ...f, needsTT30: !f.needsTT30 }))
+                }
+              />
+              <CheckRow
+                label="UPS switchover (verified)"
+                checked={filters.needsUps}
+                onChange={() =>
+                  setFilters((f) => ({ ...f, needsUps: !f.needsUps }))
+                }
+              />
+            </FilterGroup>
+            <p className="mt-3 text-[11px] leading-4 text-navy-400">
+              Capability filters only match products where that field is verified in
+              our data. A product with an unverified field is excluded from that
+              filter, not assumed.
+            </p>
+          </div>
+        </aside>
+
+        <div>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-navy-300" role="status" aria-live="polite">
+              {results.length} of {products.length} products
+            </p>
+            <label className="flex items-center gap-2 text-sm">
+              <span className="text-navy-300">Sort by</span>
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value as SortKey)}
+                className="rounded-md border border-navy-700 bg-navy-900/60 py-1.5 pl-2 pr-7 text-sm text-white outline-none transition-shadow duration-200 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
               >
-                Clear ({activeCount})
-              </button>
-            ) : null}
+                <option value="score">PowerMatch Score</option>
+                <option value="capacity">Capacity</option>
+                <option value="output">Rated output</option>
+                <option value="weight">Weight (lightest)</option>
+                <option value="brand">Brand / model</option>
+              </select>
+            </label>
           </div>
 
-          <label className="mt-3 block">
-            <span className="sr-only">Search by brand or model</span>
-            <span className="relative block">
-              <SearchIcon
-                width={16}
-                height={16}
-                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-navy-400"
-              />
-              <input
-                type="search"
-                value={filters.q}
-                onChange={(e) => setFilters((f) => ({ ...f, q: e.target.value }))}
-                placeholder="Search brand or model"
-                className="w-full rounded-md border border-navy-200 py-2 pl-9 pr-3 text-sm outline-none transition-shadow duration-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
-              />
-            </span>
-          </label>
-
-          <FilterGroup label="Brand">
-            {brands.map((b) => (
-              <CheckRow
-                key={b}
-                label={b}
-                checked={filters.brands.has(b)}
-                onChange={() => toggleSet("brands", b)}
-              />
-            ))}
-          </FilterGroup>
-
-          <FilterGroup label="Battery chemistry">
-            {chemistries.map((c) => (
-              <CheckRow
-                key={c}
-                label={c}
-                checked={filters.chemistries.has(c)}
-                onChange={() => toggleSet("chemistries", c)}
-              />
-            ))}
-          </FilterGroup>
-
-          <FilterGroup label="Use case">
-            {useCaseTags.map((t) => (
-              <CheckRow
-                key={t}
-                label={t}
-                checked={filters.useCases.has(t)}
-                onChange={() => toggleSet("useCases", t)}
-              />
-            ))}
-          </FilterGroup>
-
-          <SelectGroup
-            label="Minimum capacity"
-            options={CAPACITY_STEPS}
-            value={filters.minCapacity}
-            onChange={(v) => setFilters((f) => ({ ...f, minCapacity: v }))}
-          />
-          <SelectGroup
-            label="Minimum rated output"
-            options={OUTPUT_STEPS}
-            value={filters.minOutput}
-            onChange={(v) => setFilters((f) => ({ ...f, minOutput: v }))}
-          />
-          <SelectGroup
-            label="Maximum weight"
-            options={WEIGHT_STEPS}
-            value={filters.maxWeight}
-            onChange={(v) => setFilters((f) => ({ ...f, maxWeight: v }))}
-          />
-
-          <FilterGroup label="Capabilities">
-            <CheckRow
-              label="Solar input"
-              checked={filters.needsSolar}
-              onChange={() =>
-                setFilters((f) => ({ ...f, needsSolar: !f.needsSolar }))
-              }
-            />
-            <CheckRow
-              label="Expandable capacity"
-              checked={filters.needsExpandable}
-              onChange={() =>
-                setFilters((f) => ({ ...f, needsExpandable: !f.needsExpandable }))
-              }
-            />
-            <CheckRow
-              label="Native 120/240V"
-              checked={filters.needs240V}
-              onChange={() =>
-                setFilters((f) => ({ ...f, needs240V: !f.needs240V }))
-              }
-            />
-            <CheckRow
-              label="RV TT-30 outlet"
-              checked={filters.needsTT30}
-              onChange={() =>
-                setFilters((f) => ({ ...f, needsTT30: !f.needsTT30 }))
-              }
-            />
-            <CheckRow
-              label="UPS switchover (verified)"
-              checked={filters.needsUps}
-              onChange={() =>
-                setFilters((f) => ({ ...f, needsUps: !f.needsUps }))
-              }
-            />
-          </FilterGroup>
-          <p className="mt-3 text-[11px] leading-4 text-navy-500">
-            Capability filters only match products where that field is verified in
-            our data. A product with an unverified field is excluded from that
-            filter, not assumed.
-          </p>
+          {results.length === 0 ? (
+            <div className="glass-panel mt-4 flex flex-col items-center gap-2 bg-navy-900/60 p-10 text-center text-sm text-navy-300">
+              <SearchIcon width={28} height={28} className="text-navy-600" />
+              No products match these filters. Try clearing some.
+            </div>
+          ) : (
+            <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {results.map((p) => (
+                <ProductCard key={p.id} product={p} score={scores[p.id]} tone="dark" />
+              ))}
+            </div>
+          )}
         </div>
-      </aside>
-
-      <div>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm text-navy-600" role="status" aria-live="polite">
-            {results.length} of {products.length} products
-          </p>
-          <label className="flex items-center gap-2 text-sm">
-            <span className="text-navy-600">Sort by</span>
-            <select
-              value={sort}
-              onChange={(e) => setSort(e.target.value as SortKey)}
-              className="rounded-md border border-navy-200 py-1.5 pl-2 pr-7 text-sm outline-none transition-shadow duration-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
-            >
-              <option value="score">PowerMatch Score</option>
-              <option value="capacity">Capacity</option>
-              <option value="output">Rated output</option>
-              <option value="weight">Weight (lightest)</option>
-              <option value="brand">Brand / model</option>
-            </select>
-          </label>
-        </div>
-
-        {results.length === 0 ? (
-          <div className="card mt-4 flex flex-col items-center gap-2 p-10 text-center text-sm text-navy-600">
-            <SearchIcon width={28} height={28} className="text-navy-300" />
-            No products match these filters. Try clearing some.
-          </div>
-        ) : (
-          <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {results.map((p) => (
-              <ProductCard key={p.id} product={p} score={scores[p.id]} />
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );
@@ -344,8 +346,8 @@ function FilterGroup({
   children: React.ReactNode;
 }) {
   return (
-    <fieldset className="mt-4 border-t border-navy-100 pt-3">
-      <legend className="text-xs font-semibold uppercase tracking-wide text-navy-500">
+    <fieldset className="mt-4 border-t border-navy-700 pt-3">
+      <legend className="text-xs font-semibold uppercase tracking-wide text-navy-400">
         {label}
       </legend>
       <div className="mt-2 space-y-1.5">{children}</div>
@@ -366,14 +368,14 @@ function CheckRow({
     <label
       className={cn(
         "flex cursor-pointer items-center gap-2 rounded px-1 py-0.5 text-sm capitalize",
-        checked ? "text-navy-900" : "text-navy-600",
+        checked ? "text-white" : "text-navy-400",
       )}
     >
       <input
         type="checkbox"
         checked={checked}
         onChange={onChange}
-        className="h-4 w-4 rounded border-navy-300 text-brand-600 focus:ring-brand-500"
+        className="h-4 w-4 rounded border-navy-600 bg-navy-900 text-cyan-500 focus:ring-cyan-400"
       />
       {label}
     </label>
@@ -392,8 +394,8 @@ function SelectGroup({
   onChange: (v: number | null) => void;
 }) {
   return (
-    <label className="mt-4 block border-t border-navy-100 pt-3 text-sm">
-      <span className="text-xs font-semibold uppercase tracking-wide text-navy-500">
+    <label className="mt-4 block border-t border-navy-700 pt-3 text-sm">
+      <span className="text-xs font-semibold uppercase tracking-wide text-navy-400">
         {label}
       </span>
       <select
@@ -401,7 +403,7 @@ function SelectGroup({
         onChange={(e) =>
           onChange(e.target.value === "" ? null : Number(e.target.value))
         }
-        className="mt-2 w-full rounded-md border border-navy-200 py-1.5 pl-2 pr-7 text-sm outline-none transition-shadow duration-200 focus:border-brand-400 focus:ring-2 focus:ring-brand-100"
+        className="mt-2 w-full rounded-md border border-navy-700 bg-navy-950/60 py-1.5 pl-2 pr-7 text-sm text-white outline-none transition-shadow duration-200 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
       >
         {options.map((o) => (
           <option key={o.label} value={o.value ?? ""}>

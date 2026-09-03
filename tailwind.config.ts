@@ -125,6 +125,14 @@ const config: Config = {
           from: { opacity: "0", transform: "scale(0.92)" },
           to: { opacity: "1", transform: "scale(1)" },
         },
+        marquee: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-50%)" },
+        },
+        shimmer: {
+          from: { backgroundPosition: "-200% 0" },
+          to: { backgroundPosition: "200% 0" },
+        },
       },
       animation: {
         "fade-up": "fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both",
@@ -132,6 +140,9 @@ const config: Config = {
         "pulse-soft": "pulse-soft 3s ease-in-out infinite",
         float: "float 5s ease-in-out infinite",
         "count-in": "count-in 0.4s ease-out both",
+        marquee: "marquee 32s linear infinite",
+        shimmer: "shimmer 5s linear infinite",
+        "shimmer-slow": "shimmer 8s linear infinite",
       },
     },
   },

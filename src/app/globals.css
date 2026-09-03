@@ -72,7 +72,7 @@
   }
 
   .prose-pml {
-    @apply text-[15px] leading-7 text-navy-700;
+    @apply text-[15px] leading-7 text-navy-200;
   }
 
   .prose-pml p {
@@ -80,19 +80,39 @@
   }
 
   .prose-pml h2 {
-    @apply mb-3 mt-8 text-xl font-semibold text-navy-900;
+    @apply mb-3 mt-8 text-xl font-semibold text-white;
   }
 
   .prose-pml h3 {
-    @apply mb-2 mt-6 text-lg font-semibold text-navy-900;
+    @apply mb-2 mt-6 text-lg font-semibold text-white;
   }
 
   .prose-pml ul {
     @apply mb-4 list-disc space-y-1 pl-5;
   }
 
+  .prose-pml strong {
+    @apply text-white;
+  }
+
   .prose-pml a {
-    @apply underline decoration-brand-300 underline-offset-2 hover:decoration-brand-600;
+    @apply text-cyan-300 underline decoration-cyan-400/40 underline-offset-2 hover:decoration-cyan-300;
+  }
+
+  .prose-pml code {
+    @apply rounded bg-navy-800 px-1.5 py-0.5 text-[13px] text-cyan-200;
+  }
+
+  .prose-pml table {
+    @apply my-4 w-full border-collapse text-sm;
+  }
+
+  .prose-pml th {
+    @apply border-b border-navy-700 bg-navy-900/60 px-3 py-2 text-left font-semibold text-navy-200;
+  }
+
+  .prose-pml td {
+    @apply border-b border-navy-800 px-3 py-2 align-top text-navy-200;
   }
 }
 
@@ -117,14 +137,14 @@
    ------------------------------------------------------------------- */
 .reveal-armed {
   opacity: 0;
-  transform: translateY(14px);
+  transform: translateY(14px) scale(0.97);
   transition:
     opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .reveal-visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 @media (prefers-reduced-motion: reduce) {
   .reveal-armed {

@@ -13,7 +13,7 @@ import {
   type Crumb,
 } from "@/lib/seo";
 import { fmtDate } from "@/lib/format";
-import { PageIntro } from "@/components/layout/PageIntro";
+import { PageHero } from "@/components/layout/PageHero";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Callout } from "@/components/ui/Callout";
 import { JsonLd } from "@/components/ui/JsonLd";
@@ -78,9 +78,10 @@ export default async function GuidePage({
           faqJsonLd(guide.faq),
         ]}
       />
-      <PageIntro title={guide.title} crumbs={crumbs} />
+      <PageHero title={guide.title} crumbs={crumbs} />
 
-      <div className="container-page grid gap-10 py-10 lg:grid-cols-[1fr_280px]">
+      <div className="bg-navy-950 py-10 text-white">
+        <div className="container-page grid gap-10 lg:grid-cols-[1fr_280px]">
         <article className="prose-pml max-w-none">
           {guide.intro.map((p) => (
             <p key={p} className="text-base">
@@ -88,14 +89,17 @@ export default async function GuidePage({
             </p>
           ))}
 
-          <nav aria-label="On this page" className="my-6 rounded-lg border border-navy-100 bg-white p-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-navy-500">
+          <nav
+            aria-label="On this page"
+            className="my-6 rounded-lg border border-navy-700 bg-navy-900/60 p-4"
+          >
+            <p className="text-xs font-semibold uppercase tracking-wide text-navy-400">
               On this page
             </p>
             <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm">
               {guide.sections.map((s) => (
                 <li key={s.id}>
-                  <a href={`#${s.id}`} className="text-brand-700 hover:underline">
+                  <a href={`#${s.id}`} className="text-cyan-300 hover:underline">
                     {s.heading}
                   </a>
                 </li>
@@ -119,7 +123,7 @@ export default async function GuidePage({
             </section>
           ))}
 
-          <Callout tone="info" title="Put a number on it" className="my-8">
+          <Callout tone="info" dark title="Put a number on it" className="my-8">
             The{" "}
             <Link href="/power-calculator" className="underline">
               Power Calculator
@@ -130,15 +134,15 @@ export default async function GuidePage({
 
           {related.length ? (
             <section className="not-prose my-8">
-              <h2 className="mb-3 text-xl font-semibold">Related products</h2>
+              <h2 className="mb-3 text-xl font-semibold text-white">Related products</h2>
               <div className="grid gap-4 sm:grid-cols-2">
                 {related.map((p) => (
-                  <ProductCard key={p.id} product={p} score={scores.get(p.id)} />
+                  <ProductCard key={p.id} product={p} score={scores.get(p.id)} tone="dark" />
                 ))}
               </div>
               <Link
                 href={`/compare?ids=${related.map((p) => p.id).join(",")}`}
-                className="mt-3 inline-flex text-sm font-semibold text-brand-700 hover:underline"
+                className="mt-3 inline-flex text-sm font-semibold text-cyan-300 hover:underline"
               >
                 Compare these →
               </Link>
@@ -147,13 +151,13 @@ export default async function GuidePage({
 
           {relatedGuides.length ? (
             <section className="not-prose my-8">
-              <h2 className="mb-3 text-xl font-semibold">Related guides</h2>
+              <h2 className="mb-3 text-xl font-semibold text-white">Related guides</h2>
               <ul className="grid gap-3 sm:grid-cols-2">
                 {relatedGuides.map((g) => (
                   <li key={g.slug}>
                     <Link
                       href={`/guides/${g.slug}`}
-                      className="card block h-full p-4 text-sm font-semibold text-brand-700 hover:underline"
+                      className="block h-full rounded-xl border border-navy-700 bg-gradient-to-b from-navy-800 to-navy-900 p-4 text-sm font-semibold text-cyan-300 shadow-glow-soft transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-glow-cyan hover:underline"
                     >
                       {g.title}
                     </Link>
@@ -165,20 +169,31 @@ export default async function GuidePage({
 
           {guide.faq.length ? (
             <section className="not-prose my-8">
-              <h2 className="mb-3 text-xl font-semibold">FAQ</h2>
-              <dl className="space-y-3">
+              <h2 className="mb-3 text-xl font-semibold text-white">FAQ</h2>
+              <div className="space-y-3">
                 {guide.faq.map((f) => (
-                  <div key={f.question} className="card p-4">
-                    <dt className="font-semibold text-navy-900">{f.question}</dt>
-                    <dd className="mt-1 text-sm text-navy-600">{f.answer}</dd>
-                  </div>
+                  <details
+                    key={f.question}
+                    className="group rounded-xl border border-navy-700 bg-gradient-to-b from-navy-800 to-navy-900 p-4 open:shadow-glow-soft"
+                  >
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-semibold text-white">
+                      {f.question}
+                      <span
+                        aria-hidden="true"
+                        className="shrink-0 text-cyan-300 transition-transform duration-200 group-open:rotate-45"
+                      >
+                        +
+                      </span>
+                    </summary>
+                    <p className="mt-2 animate-fade-up text-sm text-navy-200">{f.answer}</p>
+                  </details>
                 ))}
-              </dl>
+              </div>
             </section>
           ) : null}
 
-          <div className="not-prose mt-8 rounded-lg border border-navy-100 bg-navy-50 p-4 text-xs text-navy-600">
-            <p className="font-semibold text-navy-800">Sources</p>
+          <div className="not-prose mt-8 rounded-lg border border-navy-700 bg-navy-900/60 p-4 text-xs text-navy-300">
+            <p className="font-semibold text-white">Sources</p>
             <ul className="mt-1 list-disc pl-5">
               {guide.sources.map((s) => {
                 const label = typeof s === "string" ? s : s.label;
@@ -190,7 +205,7 @@ export default async function GuidePage({
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="underline hover:text-navy-800"
+                        className="underline hover:text-white"
                       >
                         {label}
                       </a>
@@ -216,27 +231,28 @@ export default async function GuidePage({
         </article>
 
         <aside className="lg:sticky lg:top-20 lg:h-fit">
-          <div className="card p-4">
-            <h2 className="text-sm font-semibold">Next steps</h2>
+          <div className="glass-panel bg-navy-900/60 p-4">
+            <h2 className="text-sm font-semibold text-white">Next steps</h2>
             <ul className="mt-2 space-y-2 text-sm">
               <li>
-                <Link href="/power-calculator" className="text-brand-700 hover:underline">
+                <Link href="/power-calculator" className="text-cyan-300 hover:underline">
                   → Calculate your power needs
                 </Link>
               </li>
               <li>
-                <Link href="/compare" className="text-brand-700 hover:underline">
+                <Link href="/compare" className="text-cyan-300 hover:underline">
                   → Compare products side by side
                 </Link>
               </li>
               <li>
-                <Link href="/products" className="text-brand-700 hover:underline">
+                <Link href="/products" className="text-cyan-300 hover:underline">
                   → Browse the full catalog
                 </Link>
               </li>
             </ul>
           </div>
         </aside>
+        </div>
       </div>
     </>
   );

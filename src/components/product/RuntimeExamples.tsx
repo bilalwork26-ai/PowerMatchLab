@@ -10,9 +10,9 @@ export function RuntimeExamples({ product }: { product: Product }) {
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-navy-600">
+      <p className="text-sm text-navy-300">
         Estimated runtime ={" "}
-        <span className="font-mono text-[13px]">
+        <span className="font-mono text-[13px] text-cyan-200">
           capacity_wh × {RUNTIME_EFFICIENCY} ÷ device_watts
         </span>
         . This is a calculation using an assumed {pct}% usable efficiency — never a
@@ -21,17 +21,17 @@ export function RuntimeExamples({ product }: { product: Product }) {
       </p>
 
       {product.capacity_wh == null ? (
-        <Callout tone="warn">
+        <Callout tone="warn" dark>
           Battery capacity is not verified for this unit, so we cannot estimate
           runtime.
         </Callout>
       ) : (
-        <table className="w-full overflow-hidden rounded-lg border border-navy-100 text-sm">
+        <table className="w-full overflow-hidden rounded-lg border border-navy-700 text-sm">
           <caption className="sr-only">
             Estimated runtime for example loads
           </caption>
           <thead>
-            <tr className="bg-navy-50 text-left text-navy-600">
+            <tr className="bg-navy-900/70 text-left text-navy-300">
               <th scope="col" className="px-4 py-2 font-medium">
                 Example load
               </th>
@@ -45,12 +45,12 @@ export function RuntimeExamples({ product }: { product: Product }) {
           </thead>
           <tbody>
             {rows.map((r) => (
-              <tr key={r.key} className="border-t border-navy-100">
-                <th scope="row" className="px-4 py-2.5 text-left font-medium text-navy-700">
+              <tr key={r.key} className="border-t border-navy-800">
+                <th scope="row" className="px-4 py-2.5 text-left font-medium text-navy-200">
                   {r.label}
                 </th>
-                <td className="px-4 py-2.5 text-navy-600">{r.deviceWatts} W</td>
-                <td className="px-4 py-2.5 font-semibold text-navy-900">
+                <td className="px-4 py-2.5 text-navy-300">{r.deviceWatts} W</td>
+                <td className="px-4 py-2.5 font-semibold text-white">
                   {fmtHours(r.hours)}
                 </td>
               </tr>

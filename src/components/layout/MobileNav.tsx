@@ -26,7 +26,7 @@ export function MobileNav() {
   return (
     <nav
       aria-label="Bottom navigation"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-navy-100 bg-white/95 shadow-[0_-1px_12px_rgba(11,31,58,0.08)] backdrop-blur md:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-cyan-400/10 bg-navy-900/95 shadow-[0_-1px_12px_rgba(0,0,0,0.35)] backdrop-blur md:hidden"
     >
       <ul className="mx-auto flex max-w-content items-stretch justify-between px-2">
         {MOBILE_NAV.map((item) => {
@@ -42,7 +42,7 @@ export function MobileNav() {
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "relative flex flex-col items-center gap-0.5 px-1 py-2 text-[11px] font-medium transition-colors duration-200",
-                  active ? "text-brand-700" : "text-navy-500",
+                  active ? "text-cyan-300" : "text-navy-400",
                 )}
               >
                 {active ? (

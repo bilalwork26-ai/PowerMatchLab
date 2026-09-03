@@ -33,12 +33,12 @@ export function ProductCard({
       className={cn(
         "flex h-full flex-col p-4",
         dark
-          ? "rounded-xl border border-navy-700 bg-gradient-to-b from-navy-800 to-navy-900 shadow-glow-soft transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-glow-cyan"
+          ? "rounded-xl border border-navy-700 bg-gradient-to-b from-navy-800 to-navy-900 shadow-glow-soft transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:shadow-glow-cyan"
           : "card-interactive",
       )}
     >
       <div className="flex gap-4">
-        <ProductIllustration product={product} size={84} />
+        <ProductIllustration product={product} size={84} tone={tone} />
         <div className="min-w-0 flex-1">
           <p
             className={cn(
@@ -58,12 +58,12 @@ export function ProductCard({
           </h3>
           <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
             {product.battery_chemistry ? (
-              <Badge tone="neutral">{product.battery_chemistry}</Badge>
+              <Badge tone="neutral" dark={dark}>{product.battery_chemistry}</Badge>
             ) : null}
             {score?.overall != null ? (
-              <Badge tone="brand">Score {score.overall}/100</Badge>
+              <Badge tone="brand" dark={dark}>Score {score.overall}/100</Badge>
             ) : (
-              <Badge tone="warn">Score not published</Badge>
+              <Badge tone="warn" dark={dark}>Score not published</Badge>
             )}
           </div>
         </div>
@@ -111,7 +111,7 @@ export function ProductCard({
           >
             View product
           </Link>
-          <CompareToggleButton productId={product.id} size="sm" />
+          <CompareToggleButton productId={product.id} size="sm" tone={tone} />
           <AmazonCta product={product} size="sm" withDisclosure={false} tone={tone} />
         </div>
       ) : (
