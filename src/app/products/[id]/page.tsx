@@ -10,6 +10,7 @@ import {
   type Crumb,
 } from "@/lib/seo";
 import { fmtWh, fmtWatts, fmtKg, fmtMs, fmtText } from "@/lib/format";
+import { resolveAmazonLink } from "@/lib/amazon";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Badge } from "@/components/ui/Badge";
 import { JsonLd } from "@/components/ui/JsonLd";
@@ -59,6 +60,7 @@ export default async function ProductPage({
   const catalog = getAllProducts();
   const score = scoreProduct(product, catalog);
   const name = productDisplayName(product);
+  const { isAffiliate } = resolveAmazonLink(product);
 
   const crumbs: Crumb[] = [
     { name: "Home", path: "/" },
@@ -272,8 +274,11 @@ export default async function ProductPage({
           Specifications → Provenance ({fmtText(product.official_source)}, last
           verified {fmtText(product.last_verified)}). The PowerMatch Score is a
           PowerMatchLab editorial assessment. Runtime figures are calculations,
-          not tests. “Check Price on Amazon” currently opens the normal Amazon
-          product page; see the{" "}
+          not tests. “Check Price on Amazon”{" "}
+          {isAffiliate
+            ? "opens our Amazon Associates link for this exact product"
+            : "currently opens the normal Amazon product page (no affiliate link has been supplied for this product yet)"}
+          ; see the{" "}
           <Link href="/affiliate-disclosure" className="underline">
             affiliate disclosure
           </Link>
