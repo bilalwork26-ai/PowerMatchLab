@@ -219,9 +219,9 @@ export default async function GuidePage({
             <p className="mt-3">
               Last updated {fmtDate(guide.lastUpdated)}. This guide is educational
               and general; it does not assert product-specific performance beyond
-              what <code>products.json</code> verifies. PowerMatchLab may earn a
-              commission from Amazon links once the Associates programme is active
-              — see the{" "}
+              what <code>products.json</code> verifies. As an Amazon Associate,
+              PowerMatchLab earns from qualifying purchases made through Amazon
+              links on this page — see the{" "}
               <Link href="/affiliate-disclosure" className="underline">
                 disclosure
               </Link>
