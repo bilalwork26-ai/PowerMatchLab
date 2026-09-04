@@ -13,6 +13,7 @@ import {
   type Crumb,
 } from "@/lib/seo";
 import { fmtDate } from "@/lib/format";
+import { resolveAmazonLink } from "@/lib/amazon";
 import { PageHero } from "@/components/layout/PageHero";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Callout } from "@/components/ui/Callout";
@@ -57,6 +58,9 @@ export default async function GuidePage({
   const relatedGuides = (guide.relatedGuideSlugs ?? [])
     .map((s) => getGuide(s))
     .filter((g): g is NonNullable<typeof g> => g !== undefined);
+  const anyAffiliateLink = related.some((p) => resolveAmazonLink(p).isAffiliate);
+  const allAffiliateLinks =
+    related.length > 0 && related.every((p) => resolveAmazonLink(p).isAffiliate);
 
   const crumbs: Crumb[] = [
     { name: "Home", path: "/" },
@@ -83,11 +87,33 @@ export default async function GuidePage({
       <div className="bg-navy-950 py-10 text-white">
         <div className="container-page grid gap-10 lg:grid-cols-[1fr_280px]">
         <article className="prose-pml max-w-none">
+          <p className="not-prose -mt-2 mb-4 text-xs text-navy-400">
+            By PowerMatchLab Editorial Team · Last updated {fmtDate(guide.lastUpdated)}
+          </p>
+
           {guide.intro.map((p) => (
             <p key={p} className="text-base">
               {p}
             </p>
           ))}
+
+          {guide.keyTakeaways?.length ? (
+            <div className="not-prose my-6 rounded-lg border border-cyan-700/40 bg-navy-900/60 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-cyan-300">
+                Key takeaways
+              </p>
+              <ul className="mt-2 space-y-1.5 text-sm text-navy-200">
+                {guide.keyTakeaways.map((k) => (
+                  <li key={k} className="flex gap-2">
+                    <span aria-hidden="true" className="text-cyan-300">
+                      ✓
+                    </span>
+                    <span>{k}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
 
           <nav
             aria-label="On this page"
@@ -219,9 +245,13 @@ export default async function GuidePage({
             <p className="mt-3">
               Last updated {fmtDate(guide.lastUpdated)}. This guide is educational
               and general; it does not assert product-specific performance beyond
-              what <code>products.json</code> verifies. As an Amazon Associate,
-              PowerMatchLab earns from qualifying purchases made through Amazon
-              links on this page — see the{" "}
+              what <code>products.json</code> verifies.{" "}
+              {allAffiliateLinks
+                ? "As an Amazon Associate, PowerMatchLab earns from qualifying purchases made through the Amazon links on this page"
+                : anyAffiliateLink
+                  ? "Some Amazon links on this page are PowerMatchLab Associates links (we may earn from qualifying purchases); others are normal Amazon product links with no affiliate tracking yet"
+                  : "The Amazon links on this page are normal product links; affiliate tracking has not been added for these products yet"}{" "}
+              — see the{" "}
               <Link href="/affiliate-disclosure" className="underline">
                 disclosure
               </Link>
