@@ -7,8 +7,8 @@ import {
 } from "@/lib/power-setup-calc";
 
 const STATE_BADGE_CLASS: Record<BatteryVisualState, string> = {
-  charging: "bg-positive-500/15 text-positive-400 border-positive-500/40",
-  full: "bg-positive-500/15 text-positive-400 border-positive-500/40",
+  charging: "bg-positive-500/15 text-emerald-300 border-positive-500/40",
+  full: "bg-positive-500/15 text-emerald-300 border-positive-500/40",
   balanced: "bg-cyan-400/15 text-cyan-300 border-cyan-400/40",
   discharging: "bg-amber-400/15 text-amber-300 border-amber-400/40",
   low: "bg-red-500/15 text-red-300 border-red-500/40",

@@ -205,15 +205,21 @@
   animation: studio-scene-flash 0.5s ease-out both;
 }
 
-/* The battery glow node (.energy-path, dash-flow) sometimes also carries
-   Tailwind's `animate-pulse-soft` utility while actively charging/discharging.
-   Both set the full `animation` shorthand, so stacking them as two separate
-   classes would let whichever rule is later in the cascade silently replace
-   the other's animation entirely instead of combining. This compound
-   selector (higher specificity than either alone) runs both animations
-   together via one comma-separated `animation` value. */
-.energy-path.animate-pulse-soft {
-  animation:
-    dash-flow 6s linear infinite,
-    pulse-soft 3s ease-in-out infinite;
+/* ---------------------------------------------------------------------
+   Power Setup Studio: energy overlay polish.
+   These are intentionally separate from the shared .energy-path /
+   .energy-particles classes above (used by the homepage hero graphic),
+   so tuning the Studio's overlay never touches that unrelated component.
+   Sparse, thin traveling particles — a few soft beads of light along the
+   solar/device flow paths rather than a bright dashed line. The device
+   variant is smaller and slower than the solar one, per the "barely
+   there, integrated with scene lighting" treatment for device flow.
+   ------------------------------------------------------------------- */
+.studio-flow-particles-device {
+  stroke-dasharray: 0.6 13;
+  animation: dash-flow 3.6s linear infinite;
+}
+.studio-flow-particles-solar {
+  stroke-dasharray: 0.7 16;
+  animation: dash-flow 4.5s linear infinite;
 }
