@@ -177,6 +177,7 @@ export function PowerSetupStudio({ catalog }: { catalog: Product[] }) {
         <SceneStage
           scenario={scenario}
           activeIds={activeIds}
+          deviceState={deviceState}
           onToggle={toggleDevice}
           solarInputW={scenario.solarAnchor ? solarInputW : 0}
           batteryVisualState={batteryVisualState}
