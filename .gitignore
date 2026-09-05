@@ -32,3 +32,7 @@ next-env.d.ts
 
 # tooling
 /.tooling
+
+# local-machine IDE debug config (contains a local Windows user path) —
+# not needed to build, test, or deploy PowerMatchLab
+/.claude/launch.json

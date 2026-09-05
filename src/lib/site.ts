@@ -43,6 +43,8 @@ export const SITE = {
   url: resolveSiteUrl(),
   locale: "en_US",
   market: "United States",
+  /** The only published contact channel — never a personal address. */
+  email: "contact@powermatchlab.com",
 } as const;
 
 export interface NavItem {
@@ -77,6 +79,8 @@ export const BEST_FOR_NAV: NavItem[] = [
 
 export const LEGAL_NAV: NavItem[] = [
   { label: "About / Methodology", href: "/about-methodology" },
+  { label: "Editorial Policy", href: "/editorial-policy" },
+  { label: "Contact", href: "/contact" },
   { label: "Affiliate Disclosure", href: "/affiliate-disclosure" },
   { label: "Privacy Policy", href: "/privacy-policy" },
   { label: "Terms", href: "/terms" },

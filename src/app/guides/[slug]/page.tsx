@@ -88,7 +88,11 @@ export default async function GuidePage({
         <div className="container-page grid gap-10 lg:grid-cols-[1fr_280px]">
         <article className="prose-pml max-w-none">
           <p className="not-prose -mt-2 mb-4 text-xs text-navy-400">
-            By PowerMatchLab Editorial Team · Last updated {fmtDate(guide.lastUpdated)}
+            By{" "}
+            <Link href="/editorial-policy" className="underline hover:text-cyan-300">
+              PowerMatchLab Editorial
+            </Link>{" "}
+            · Last updated {fmtDate(guide.lastUpdated)}
           </p>
 
           {guide.intro.map((p) => (

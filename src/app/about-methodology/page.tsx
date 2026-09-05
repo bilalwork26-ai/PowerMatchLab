@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
+import { SITE } from "@/lib/site";
 import { PageHero } from "@/components/layout/PageHero";
 import { JsonLd } from "@/components/ui/JsonLd";
 import {
@@ -229,15 +230,51 @@ export default function MethodologyPage() {
           Associates affiliate URL. “Check Price on Amazon” uses the affiliate
           URL when one is stored for that product, and falls back to the direct
           product URL otherwise — never a fabricated tracking ID or an invented
-          link. See the{" "}
+          link. Amazon Associates commissions fund the site, but they do not
+          affect which products are listed, the PowerMatch Score, or any
+          recommendation — every product is scored and classified from the
+          same dataset whether or not it currently carries an affiliate link.
+          See the{" "}
           <Link href="/affiliate-disclosure">Affiliate Disclosure</Link>.
+        </p>
+
+        <h2>How products are added and removed</h2>
+        <p>
+          A product joins the catalog once it has a working, direct Amazon.com
+          listing for that exact model and manufacturer specifications we can
+          cite to an official source. A product is removed if its exact
+          listing stops being purchasable for that model — for example the
+          listing goes inactive, or the link now redirects to a different
+          model or a generic search page. We do not substitute a similar
+          model, variant, or bundle in a removed product&rsquo;s place, and we
+          remove its references everywhere on the site (related products,
+          comparisons, guides, calculator, sitemap) rather than leave a broken
+          link or an orphaned page. Full detail is in the{" "}
+          <Link href="/editorial-policy">Editorial Policy</Link>.
+        </p>
+
+        <h2>How specs and links are reviewed</h2>
+        <p>
+          Each product record carries an <code>official_source</code> label and
+          a <code>last_verified</code> date. A field with no confirmed
+          manufacturer value is shown as <strong>“Not verified”</strong> rather
+          than estimated or borrowed from a similar model. Reviews happen when
+          a product is added, when a reader flags something, or when we
+          revisit a listing for another reason — never on a fixed schedule we
+          could misrepresent as continuous monitoring.
         </p>
 
         <h2>Corrections</h2>
         <p>
           If a specification here is wrong or out of date, that is a bug. The
           canonical dataset is <code>products.json</code>; corrections there flow
-          through the whole site.
+          through the whole site. Report one to{" "}
+          <a href={`mailto:${SITE.email}`} className="underline">
+            {SITE.email}
+          </a>{" "}
+          — see <Link href="/contact">Contact</Link> for what else that address
+          is for, and the <Link href="/editorial-policy">Editorial Policy</Link>{" "}
+          for how we handle a report.
         </p>
       </div>
       </div>
