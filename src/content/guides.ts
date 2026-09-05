@@ -206,7 +206,7 @@ export const GUIDES: Guide[] = [
           "~300Wh-class (e.g. a compact unit): 300 × 0.85 ÷ 150 ≈ 1.7 hours",
           "~1,000Wh-class: 1,000 × 0.85 ÷ 150 ≈ 5.7 hours",
           "~2,000Wh-class: 2,000 × 0.85 ÷ 150 ≈ 11.3 hours",
-          "~4,600Wh-class (the largest currently listed): 4,600 × 0.85 ÷ 150 ≈ 26.1 hours",
+          "~4,100Wh-class (the largest currently listed): 4,100 × 0.85 ÷ 150 ≈ 23.2 hours",
         ],
       },
       {
@@ -221,7 +221,6 @@ export const GUIDES: Guide[] = [
     relatedProductIds: [
       "jackery-explorer-2000-v2",
       "bluetti-ac200l",
-      "zendure-superbase-v4600",
     ],
     relatedGuideSlugs: [
       "power-station-for-refrigerator",
@@ -289,7 +288,6 @@ export const GUIDES: Guide[] = [
     relatedProductIds: [
       "bluetti-elite-30-v2",
       "anker-solix-f3000",
-      "dji-power-500",
     ],
     relatedGuideSlugs: [
       "lifepo4-vs-lithium-ion",
@@ -558,7 +556,7 @@ export const GUIDES: Guide[] = [
           "~268Wh-class (e.g. a compact unit): 268 × 0.85 ÷ 40 ≈ 5.7 hours — well under one full 8-hour night",
           "~1,000Wh-class: 1,000 × 0.85 ÷ 40 ≈ 21.3 hours — roughly 2-3 nights",
           "~2,000Wh-class: 2,000 × 0.85 ÷ 40 ≈ 42.5 hours — roughly 5 nights",
-          "~4,600Wh-class (the largest currently listed): 4,600 × 0.85 ÷ 40 ≈ 97.8 hours — roughly 12 nights",
+          "~4,100Wh-class (the largest currently listed): 4,100 × 0.85 ÷ 40 ≈ 87.1 hours — roughly 11 nights",
         ],
       },
       {
@@ -579,8 +577,6 @@ export const GUIDES: Guide[] = [
       },
     ],
     relatedProductIds: [
-      "bluetti-eb3a",
-      "dji-power-500",
       "vtoman-flashspeed-1000",
     ],
     relatedGuideSlugs: [
@@ -695,7 +691,6 @@ export const GUIDES: Guide[] = [
       },
     ],
     relatedProductIds: [
-      "jackery-explorer-300-plus",
       "ecoflow-river-2-pro",
       "goal-zero-yeti-700",
     ],
@@ -1260,7 +1255,6 @@ export const GUIDES: Guide[] = [
     ],
     relatedProductIds: [
       "bluetti-ac180",
-      "vtoman-flashspeed-1500",
       "anker-solix-f3800",
     ],
     relatedGuideSlugs: [
@@ -1456,8 +1450,6 @@ export const GUIDES: Guide[] = [
     ],
     relatedProductIds: [
       "jackery-explorer-2000-v2",
-      "allpowers-r1500-lite",
-      "zendure-superbase-v4600",
     ],
     relatedGuideSlugs: [
       "solar-input-and-charging-times-explained",
@@ -1554,7 +1546,7 @@ export const GUIDES: Guide[] = [
         ],
       },
     ],
-    relatedProductIds: ["jackery-explorer-1000-v2", "dji-power-500"],
+    relatedProductIds: ["jackery-explorer-1000-v2"],
     relatedGuideSlugs: [
       "how-to-size-a-portable-power-station",
       "watts-vs-watt-hours",
@@ -1642,7 +1634,7 @@ export const GUIDES: Guide[] = [
         ],
       },
     ],
-    relatedProductIds: ["vtoman-flashspeed-1000", "dji-power-500", "ecoflow-river-2-pro"],
+    relatedProductIds: ["vtoman-flashspeed-1000", "ecoflow-river-2-pro"],
     relatedGuideSlugs: [
       "watts-vs-watt-hours",
       "how-to-size-a-portable-power-station",
@@ -1895,7 +1887,7 @@ export const GUIDES: Guide[] = [
         ],
       },
     ],
-    relatedProductIds: ["allpowers-r1500-lite", "ecoflow-river-3-plus"],
+    relatedProductIds: [],
     relatedGuideSlugs: [
       "solar-input-and-charging-times-explained",
       "how-many-solar-panels-do-i-need",
@@ -1962,7 +1954,7 @@ export const GUIDES: Guide[] = [
         heading: "Check the station's own solar input ceiling",
         body: [
           "Every station has a maximum solar input watts spec — pairing it with a panel array rated well above that ceiling doesn't help, since the charge controller simply won't accept more than its rated input regardless of what the panels could theoretically produce in perfect sun.",
-          "Among the current PowerMatchLab catalog, only the original 10 V1 products have a manufacturer-verified solar input spec on file; for the 25 products added since, this field is shown as \"Not verified\" until confirmed, rather than assumed from a similar model.",
+          "Among the current PowerMatchLab catalog, only the original 10 V1 products have a manufacturer-verified solar input spec on file; for the other products, this field is shown as \"Not verified\" until confirmed, rather than assumed from a similar model.",
         ],
       },
       {
