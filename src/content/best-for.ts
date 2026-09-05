@@ -27,6 +27,12 @@ export interface BestForContent {
    * /power-setup-studio URL — no scenario query param.
    */
   studioLinkLabel?: string;
+  /**
+   * When true, shows a brief notice that these picks are focused on the U.S.
+   * market and that plug/voltage/warranty/regional compatibility should be
+   * checked before buying. Optional — set per page as needed.
+   */
+  usMarketNotice?: boolean;
   lastUpdated: string;
 }
 
@@ -201,6 +207,7 @@ export const BEST_FOR: BestForContent[] = [
     ],
     relatedGuideSlugs: ["power-station-for-refrigerator", "can-a-power-station-run-a-refrigerator"],
     studioLinkLabel: "Try the Home Backup scenario in Power Setup Studio",
+    usMarketNotice: true,
     lastUpdated: "2026-09-01",
   },
   {

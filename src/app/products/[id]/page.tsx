@@ -9,7 +9,7 @@ import {
   productJsonLd,
   type Crumb,
 } from "@/lib/seo";
-import { fmtWh, fmtWatts, fmtKg, fmtMs, fmtText } from "@/lib/format";
+import { fmtWh, fmtWatts, fmtKg, fmtMs, fmtText, fmtDate } from "@/lib/format";
 import { resolveAmazonLink } from "@/lib/amazon";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Badge } from "@/components/ui/Badge";
@@ -43,7 +43,7 @@ export async function generateMetadata({
   const name = productDisplayName(product);
   return pageMetadata({
     title: `${name} — Specs, PowerMatch Score & Runtime`,
-    description: `${name}: verified manufacturer specifications, PowerMatchLab's editorial score where the data justifies one, estimated runtime examples, pros and cons, and a direct link to Amazon.`,
+    description: `${name}: manufacturer-published specifications, PowerMatchLab's editorial score where the data justifies one, estimated runtime examples, pros and cons, and a direct link to Amazon.`,
     path: `/products/${product.id}`,
   });
 }
@@ -128,9 +128,9 @@ export default async function ProductPage({
                 <p className="mt-4 max-w-prose text-[15px] leading-7 text-navy-200">
                   The {name} is a {fmtWh(product.capacity_wh)} LiFePO4-class
                   portable power station rated for {fmtWatts(product.rated_output_w)}{" "}
-                  of continuous output. PowerMatchLab summarises the verified
-                  manufacturer specification below; figures we have not confirmed
-                  are shown as “Not verified”.
+                  of continuous output. PowerMatchLab summarizes the
+                  manufacturer-published specifications below; figures we could
+                  not confirm are shown as “Not verified”.
                 </p>
 
                 <dl className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -173,6 +173,13 @@ export default async function ProductPage({
                   <AmazonCta product={product} size="md" tone="dark" />
                   <CompareToggleButton productId={product.id} tone="dark" />
                 </div>
+
+                <Link
+                  href="/power-calculator"
+                  className="mt-3 inline-block text-xs font-medium text-cyan-300 hover:underline"
+                >
+                  Add your devices and check if this model fits →
+                </Link>
 
                 {product.best_for.length ? (
                   <div className="mt-4 border-t border-navy-700 pt-3">
@@ -270,11 +277,13 @@ export default async function ProductPage({
       <div className="bg-navy-950 pb-12 text-white">
         <div className="container-page">
         <Callout tone="warn" dark title="How to read this page">
-          Specifications are manufacturer claims tied to the official source under
+          Specifications are recorded from manufacturer-published information.
+          Source labels and the last-checked date appear under
           Specifications → Provenance ({fmtText(product.official_source)}, last
-          verified {fmtText(product.last_verified)}). The PowerMatch Score is a
-          PowerMatchLab editorial assessment. Runtime figures are calculations,
-          not tests. “Check Price on Amazon”{" "}
+          checked {fmtDate(product.last_verified)}); direct manufacturer URLs
+          will be added when available. The PowerMatch Score is a PowerMatchLab
+          editorial assessment. Runtime figures are calculations, not tests.
+          “Check Price on Amazon”{" "}
           {isAffiliate
             ? "opens our Amazon Associates link for this exact product"
             : "currently opens the normal Amazon product page (no affiliate link has been supplied for this product yet)"}

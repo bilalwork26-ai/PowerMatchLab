@@ -236,7 +236,7 @@ export function HeroVisual() {
           </p>
           <p className="mt-0.5 max-w-sm text-sm text-navy-200">
             Add your real devices in the calculator — every recommendation applies
-            verified specs and a transparent usable-energy assumption.
+            manufacturer-published specs and a transparent usable-energy assumption.
           </p>
         </div>
         <div className="shrink-0 sm:w-36">

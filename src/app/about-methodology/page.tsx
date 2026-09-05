@@ -52,8 +52,9 @@ export default function MethodologyPage() {
         <ul>
           <li>
             <strong>Manufacturer claim</strong> — a specification published by
-            the maker. Tied to an official source and a “last verified” date on
-            each product page. We have not independently measured it.
+            the maker, recorded with a source label and a “last checked” date on
+            each product page. We have not independently measured it. Direct
+            manufacturer links are added when available.
           </li>
           <li>
             <strong>PowerMatchLab calculation</strong> — a figure we compute from
@@ -242,7 +243,7 @@ export default function MethodologyPage() {
         <p>
           A product joins the catalog once it has a working, direct Amazon.com
           listing for that exact model and manufacturer specifications we can
-          cite to an official source. A product is removed if its exact
+          attribute to a named manufacturer source. A product is removed if its exact
           listing stops being purchasable for that model — for example the
           listing goes inactive, or the link now redirects to a different
           model or a generic search page. We do not substitute a similar

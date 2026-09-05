@@ -23,6 +23,7 @@ import {
 import { fmtWh, fmtWatts } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import { Callout } from "@/components/ui/Callout";
+import { EstimateFactorsDisclosure } from "@/components/ui/EstimateFactorsDisclosure";
 import { EnergyLines } from "@/components/ui/EnergyLines";
 import { AnimatedStat } from "@/components/ui/AnimatedStat";
 import { RecommendationCard } from "./RecommendationCard";
@@ -650,6 +651,8 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
                 </div>
               </div>
 
+              <EstimateFactorsDisclosure className="mt-4" />
+
               <div className="mt-4 flex flex-wrap gap-2 text-xs">
                 <Link
                   href="/about-methodology#calculator"
@@ -728,9 +731,9 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
               <Callout tone="neutral" dark className="mt-8" title="Why these results?">
                 Recommendations are deterministic. We compare your required
                 continuous output, capacity (with reserve) and estimated surge
-                against each unit’s verified specs, then apply your stated
-                requirements (240V, TT-30, expansion, portability). Nothing here
-                is sponsored, and no score is invented to rank a product.
+                against each unit’s manufacturer-published specs, then apply your
+                stated requirements (240V, TT-30, expansion, portability). Nothing
+                here is sponsored, and no score is invented to rank a product.
               </Callout>
 
               <div className="mt-4 flex gap-3">

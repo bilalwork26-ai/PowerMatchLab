@@ -169,6 +169,14 @@ export default async function GuidePage({
           {related.length ? (
             <section className="not-prose my-8">
               <h2 className="mb-3 text-xl font-semibold text-white">Related products</h2>
+              {guide.usMarketNotice ? (
+                <p className="mb-3 text-xs text-navy-400">
+                  These picks are focused on the U.S. market. Before buying, confirm
+                  plug type, voltage (120V), warranty terms, and regional availability
+                  on the Amazon listing — especially if you are ordering to another
+                  country.
+                </p>
+              ) : null}
               <div className="grid gap-4 sm:grid-cols-2">
                 {related.map((p) => (
                   <ProductCard key={p.id} product={p} score={scores.get(p.id)} tone="dark" />

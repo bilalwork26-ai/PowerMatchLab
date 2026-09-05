@@ -27,8 +27,8 @@ import { HeroVisual } from "@/components/home/HeroVisual";
  * matching the approved reference design. Every other route is unaffected.
  */
 
-const HERO_TRUST = [
-  { label: "Verified specifications", Icon: ShieldIcon },
+export const HERO_TRUST = [
+  { label: "Manufacturer-sourced specs", Icon: ShieldIcon },
   { label: "Transparent calculations", Icon: CalculatorIcon },
   { label: "No paid placement", Icon: CheckIcon },
 ];
@@ -110,9 +110,9 @@ export function Hero() {
             </div>
             <div className="flex items-baseline gap-1">
               <dt className="font-semibold text-white">
-                <AnimatedStat value={100} suffix="%" />
+                <AnimatedStat value={0} />
               </dt>
-              <dd>unbiased, no paid placement</dd>
+              <dd>paid placements — rankings follow our published methodology</dd>
             </div>
           </dl>
         </Reveal>
@@ -152,7 +152,7 @@ export function Hero() {
   );
 }
 
-const TOOLS = [
+export const TOOLS = [
   {
     href: "/power-calculator",
     title: "Power Calculator",
@@ -293,8 +293,9 @@ export function TopProducts({
   );
 }
 
-const USE_CASES = [
+export const USE_CASES = [
   {
+    id: "camping",
     href: "/best-for-camping",
     title: "Camping & Outdoors",
     body: "Lightweight, portable and quiet units for outdoor adventures.",
@@ -303,6 +304,7 @@ const USE_CASES = [
     cta: "View picks →",
   },
   {
+    id: "van-life-rv",
     href: "/best-for-rv",
     title: "Van Life & RV",
     body: "Units with the right outlets, output and expansion for life on the road.",
@@ -311,6 +313,7 @@ const USE_CASES = [
     cta: "View picks →",
   },
   {
+    id: "home-backup",
     href: "/best-for-home-backup",
     title: "Home Backup",
     body: "Fast switchover and enough capacity for your essential circuit.",
@@ -319,6 +322,7 @@ const USE_CASES = [
     cta: "View picks →",
   },
   {
+    id: "work-remote-sites",
     href: "/products",
     title: "Work & Remote Sites",
     body: "Power tools, laptops and equipment away from a wall outlet.",
@@ -327,6 +331,7 @@ const USE_CASES = [
     cta: "Browse products →",
   },
   {
+    id: "boating-off-grid",
     href: "/products",
     title: "Boating & Off-Grid",
     body: "Reliable power for electronics and equipment away from shore.",
@@ -346,8 +351,8 @@ export function UseCaseCards() {
           </h2>
         </Reveal>
         <div className="mt-6 grid grid-cols-2 gap-5 lg:grid-cols-5">
-          {USE_CASES.map(({ href, title, body, image, alt, cta }, i) => (
-            <Reveal key={href} delayMs={i * 90}>
+          {USE_CASES.map(({ id, href, title, body, image, alt, cta }, i) => (
+            <Reveal key={id} delayMs={i * 90}>
               <Link
                 href={href}
                 className="group relative block aspect-[4/5] overflow-hidden rounded-2xl border border-navy-800 shadow-glow-soft transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-cyan-400/40 hover:shadow-glow-cyan"
@@ -379,10 +384,10 @@ export function UseCaseCards() {
   );
 }
 
-const TRUST = [
+export const TRUST = [
   {
-    title: "Verified data",
-    body: "Every spec is a manufacturer claim tied to an official source and a last-verified date. Unknowns stay “Not verified”.",
+    title: "Manufacturer-sourced data",
+    body: "Every spec is recorded from manufacturer-published information, with a source label and a last-checked date. Unknowns stay “Not verified”.",
     Icon: ShieldIcon,
   },
   {
