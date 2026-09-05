@@ -8,7 +8,7 @@ import { JsonLd } from "@/components/ui/JsonLd";
 export const metadata: Metadata = pageMetadata({
   title: "Privacy Policy",
   description:
-    "What PowerMatchLab does and does not collect: the Power Calculator runs only in memory in your browser, the Compare tool stores your selection in local storage, and no analytics or advertising is served today beyond a loaded AdSense verification script.",
+    "What PowerMatchLab does and does not collect: the Power Calculator runs only in memory in your browser, the Compare tool stores your selection in local storage, and Cloudflare Web Analytics provides aggregated, cookie-free traffic statistics.",
   path: "/privacy-policy",
 });
 
@@ -74,8 +74,20 @@ export default function PrivacyPolicyPage() {
           policies — PowerMatchLab does not control that behavior and does
           not receive any data from it. If ad units are added later, this
           section will be updated to describe what is actually shown and
-          what it does. We do not run Google Analytics or any other analytics
-          script.
+          what it does.
+        </p>
+
+        <h2>Cloudflare Web Analytics</h2>
+        <p>
+          Every page loads Cloudflare Web Analytics, which reports aggregated
+          traffic statistics — things like page views, approximate visitor
+          origin and country, device type, and page performance. As described
+          in Cloudflare&rsquo;s own documentation, Web Analytics does not use
+          cookies or <code>localStorage</code>, does not build individual
+          visitor profiles, and does not use fingerprinting to identify
+          returning visitors. We do not run Google Analytics, Google Tag
+          Manager, or any other analytics script beyond Cloudflare Web
+          Analytics.
         </p>
 
         <h2>Server logs</h2>
