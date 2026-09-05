@@ -2,6 +2,7 @@ import type { CalculatorResult } from "@/lib/calculator";
 import { DEFAULT_ASSUMPTIONS } from "@/lib/assumptions";
 import { fmtWh, fmtWatts } from "@/lib/format";
 import { Callout } from "@/components/ui/Callout";
+import { EstimateFactorsDisclosure } from "@/components/ui/EstimateFactorsDisclosure";
 
 export function StudioResults({ result }: { result: CalculatorResult }) {
   const effPct = Math.round(DEFAULT_ASSUMPTIONS.systemEfficiency * 100);
@@ -32,6 +33,8 @@ export function StudioResults({ result }: { result: CalculatorResult }) {
         />
         <ResultStat label="Required surge" value={fmtWatts(result.requiredSurgeOutputW)} />
       </dl>
+
+      <EstimateFactorsDisclosure className="mt-4" />
 
       {!result.hasSurgeData ? (
         <Callout tone="warn" dark className="mt-4">

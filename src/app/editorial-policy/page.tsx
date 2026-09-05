@@ -50,7 +50,7 @@ export default function EditorialPolicyPage() {
           <p>
             A product is added to the catalog once we have a working, direct
             Amazon.com listing for that exact model and a set of manufacturer
-            specifications we can cite to an official source. A product is
+            specifications we can attribute to a named manufacturer source. A product is
             removed if its exact listing stops resolving to a purchasable page
             for that model — for example if the listing goes inactive, or the
             link now redirects to a different model or a generic search page.
@@ -65,8 +65,8 @@ export default function EditorialPolicyPage() {
           <ul>
             <li>
               <strong>Manufacturer claim</strong> — a specification published
-              by the maker, tied to an official source and a last-verified
-              date.
+              by the maker, recorded with a source label and a last-checked
+              date. Direct manufacturer links are added when available.
             </li>
             <li>
               <strong>PowerMatchLab calculation</strong> — a figure computed
@@ -90,8 +90,8 @@ export default function EditorialPolicyPage() {
             a similar model, or borrow a competitor&rsquo;s figure. A field
             reading “Not verified” is not evidence of a bad product — it means
             we have not found a manufacturer-published number for it yet.
-            Every verified product record carries a “last verified” date so
-            you can see how current the data is.
+            Every product record with data on file carries a “last checked”
+            date so you can see how current the data is.
           </p>
 
           <h2>Prices, availability and ratings</h2>

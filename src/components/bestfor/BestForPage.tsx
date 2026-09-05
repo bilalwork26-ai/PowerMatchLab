@@ -115,6 +115,14 @@ export function BestForPage({ content }: { content: BestForContent }) {
             <h2 className="text-lg font-bold text-white">
               Best picks for {content.title.replace("Best Power Stations for ", "")}
             </h2>
+            {content.usMarketNotice ? (
+              <p className="mt-1 text-xs text-navy-400">
+                These picks are focused on the U.S. market. Before buying, confirm
+                plug type, voltage (120V), warranty terms, and regional availability
+                on the Amazon listing — especially if you are ordering to another
+                country.
+              </p>
+            ) : null}
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               {top.map((e) => (
                 <div key={e.product.id}>

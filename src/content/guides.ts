@@ -64,6 +64,13 @@ export interface Guide {
    * points to the flat /power-setup-studio URL — no scenario query param.
    */
   studioLinkLabel?: string;
+  /**
+   * When true, shows a brief notice that recommendations are focused on the
+   * U.S. market and that plug/voltage/warranty/regional compatibility should
+   * be checked before buying. Optional — only set for guides whose "Related
+   * products" section carries real purchase weight.
+   */
+  usMarketNotice?: boolean;
   faq: GuideFaq[];
   sources: GuideSource[];
   lastUpdated: string; // ISO date
@@ -172,7 +179,7 @@ export const GUIDES: Guide[] = [
         label: "U.S. Department of Energy — Estimating Appliance and Home Electronic Energy Use",
         url: "https://www.energy.gov/energysaver/estimating-appliance-and-home-electronic-energy-use",
       },
-      "Manufacturer specification sheets referenced in products.json",
+      "Manufacturer-published specifications, attributed by brand in products.json",
     ],
     lastUpdated: "2026-09-01",
   },
@@ -230,6 +237,7 @@ export const GUIDES: Guide[] = [
         body: [
           "Pairing the station with solar input can extend or indefinitely sustain fridge-only operation in good conditions.",
           "Expandable platforms let you bolt on extra battery capacity for multi-day outages.",
+          "For a number tied to your exact fridge rather than the ~150 W reference used above, use the Power Calculator — it already starts with a refrigerator pre-added as an example device, so you can edit its running watts and hours to match your own model directly.",
         ],
       },
     ],
@@ -244,6 +252,7 @@ export const GUIDES: Guide[] = [
     ],
     relatedBestForSlug: "best-for-refrigerator-backup",
     studioLinkLabel: "Try the Home Backup scenario in Power Setup Studio",
+    usMarketNotice: true,
     faq: [
       {
         question: "Will a 300Wh power station run a fridge?",
@@ -258,7 +267,7 @@ export const GUIDES: Guide[] = [
     ],
     sources: [
       "ENERGY STAR — Refrigerator energy use references",
-      "Manufacturer specification sheets referenced in products.json",
+      "Manufacturer-published specifications, attributed by brand in products.json",
     ],
     lastUpdated: "2026-09-01",
   },
@@ -463,6 +472,19 @@ export const GUIDES: Guide[] = [
         ],
       },
       {
+        id: "blackout-scenarios-fridge",
+        heading: "Sizing for a specific blackout length: 8, 12, or 24 hours",
+        body: [
+          "If you're planning around a specific outage length rather than a full day, prorate the same 1,200 Wh/day reference figure by the fraction of a day you need to cover, then apply the same 85% usable-energy and 20% reserve adjustments as Step 4. This assumes the fridge's energy use is spread roughly evenly across the day — a reasonable planning simplification, not a precise model of its actual cycling.",
+          "The Power Calculator already starts with a refrigerator pre-added as an example device (150 W running, 8 hours/day) — edit its running watts and hours to match your own model's real numbers, then set your target hours or days of autonomy for a figure tied to your exact fridge rather than this reference range.",
+        ],
+        bullets: [
+          "8 hours: 1,200 × (8 ÷ 24) = 400 Wh ÷ 0.85 × 1.2 ≈ 565 Wh minimum recommended capacity",
+          "12 hours: 1,200 × (12 ÷ 24) = 600 Wh ÷ 0.85 × 1.2 ≈ 847 Wh minimum recommended capacity",
+          "24 hours: 1,200 Wh ÷ 0.85 × 1.2 ≈ 1,694 Wh minimum recommended capacity — the same figure as the worked example above",
+        ],
+      },
+      {
         id: "continuous-output-fridge",
         heading: "Step 5: Confirm continuous output covers everything running at once",
         body: [
@@ -499,6 +521,7 @@ export const GUIDES: Guide[] = [
     ],
     relatedBestForSlug: "best-for-refrigerator-backup",
     studioLinkLabel: "Try the Home Backup scenario in Power Setup Studio",
+    usMarketNotice: true,
     faq: [
       {
         question: "Will a small, ~300Wh power station run a refrigerator?",
@@ -522,7 +545,7 @@ export const GUIDES: Guide[] = [
         label: "U.S. Department of Energy — \"Your Refrigerator Is Only As Efficient As You\"",
         url: "https://www.energy.gov/energysaver/articles/your-refrigerator-only-efficient-you",
       },
-      "Manufacturer specification sheets referenced in products.json",
+      "Manufacturer-published specifications, attributed by brand in products.json",
     ],
     lastUpdated: "2026-09-03",
   },
@@ -759,7 +782,7 @@ export const GUIDES: Guide[] = [
         label: "U.S. Department of Energy / NREL — Understanding Solar Photovoltaic System Performance",
         url: "https://www.energy.gov/sites/default/files/2022-01/understanding-solar-photovoltaic-system-performance.pdf",
       },
-      "Manufacturer specification sheets referenced in products.json",
+      "Manufacturer-published specifications, attributed by brand in products.json",
     ],
     lastUpdated: "2026-09-03",
   },
@@ -882,7 +905,7 @@ export const GUIDES: Guide[] = [
         label: "U.S. Department of Energy — Estimating Appliance and Home Electronic Energy Use",
         url: "https://www.energy.gov/energysaver/estimating-appliance-and-home-electronic-energy-use",
       },
-      "Manufacturer specification sheets referenced in products.json",
+      "Manufacturer-published specifications, attributed by brand in products.json",
     ],
     lastUpdated: "2026-09-03",
   },
@@ -1004,7 +1027,7 @@ export const GUIDES: Guide[] = [
         label: "U.S. Department of Energy / NREL — Understanding Solar Photovoltaic System Performance",
         url: "https://www.energy.gov/sites/default/files/2022-01/understanding-solar-photovoltaic-system-performance.pdf",
       },
-      "Manufacturer specification sheets referenced in products.json",
+      "Manufacturer-published specifications, attributed by brand in products.json",
     ],
     lastUpdated: "2026-09-03",
   },
@@ -1118,7 +1141,7 @@ export const GUIDES: Guide[] = [
         label: "U.S. Consumer Product Safety Commission — Carbon Monoxide Fact Sheet",
         url: "https://www.cpsc.gov/safety-education/safety-guides/carbon-monoxide/carbon-monoxide-fact-sheet",
       },
-      "Manufacturer specification sheets referenced in products.json",
+      "Manufacturer-published specifications, attributed by brand in products.json",
     ],
     lastUpdated: "2026-09-03",
   },
@@ -1217,7 +1240,7 @@ export const GUIDES: Guide[] = [
         label: "U.S. Department of Energy — Estimating Appliance and Home Electronic Energy Use",
         url: "https://www.energy.gov/energysaver/estimating-appliance-and-home-electronic-energy-use",
       },
-      "Manufacturer specification sheets referenced in products.json",
+      "Manufacturer-published specifications, attributed by brand in products.json",
     ],
     lastUpdated: "2026-09-03",
   },
@@ -1422,7 +1445,7 @@ export const GUIDES: Guide[] = [
         label: "U.S. Department of Energy — Estimating Appliance and Home Electronic Energy Use",
         url: "https://www.energy.gov/energysaver/estimating-appliance-and-home-electronic-energy-use",
       },
-      "Manufacturer specification sheets referenced in products.json",
+      "Manufacturer-published specifications, attributed by brand in products.json",
     ],
     lastUpdated: "2026-09-03",
   },
@@ -1602,7 +1625,7 @@ export const GUIDES: Guide[] = [
     ],
     sources: [
       { label: "U.S. Department of Energy — DOE Explains...Batteries", url: "https://www.energy.gov/science/doe-explainsbatteries" },
-      "Manufacturer specification sheets referenced in products.json",
+      "Manufacturer-published specifications, attributed by brand in products.json",
     ],
     lastUpdated: "2026-09-04",
   },
@@ -1693,7 +1716,7 @@ export const GUIDES: Guide[] = [
         label: "U.S. Department of Energy — Estimating Appliance and Home Electronic Energy Use",
         url: "https://www.energy.gov/energysaver/estimating-appliance-and-home-electronic-energy-use",
       },
-      "Manufacturer specification sheets referenced in products.json",
+      "Manufacturer-published specifications, attributed by brand in products.json",
     ],
     lastUpdated: "2026-09-04",
   },
@@ -1773,7 +1796,7 @@ export const GUIDES: Guide[] = [
         label: "U.S. Department of Energy — Estimating Appliance and Home Electronic Energy Use",
         url: "https://www.energy.gov/energysaver/estimating-appliance-and-home-electronic-energy-use",
       },
-      "Manufacturer specification sheets referenced in products.json",
+      "Manufacturer-published specifications, attributed by brand in products.json",
     ],
     lastUpdated: "2026-09-04",
   },
@@ -1865,7 +1888,7 @@ export const GUIDES: Guide[] = [
         label: "U.S. Department of Energy — Estimating Appliance and Home Electronic Energy Use",
         url: "https://www.energy.gov/energysaver/estimating-appliance-and-home-electronic-energy-use",
       },
-      "Manufacturer specification sheets referenced in products.json",
+      "Manufacturer-published specifications, attributed by brand in products.json",
     ],
     lastUpdated: "2026-09-04",
   },
@@ -1944,7 +1967,7 @@ export const GUIDES: Guide[] = [
       },
     ],
     sources: [
-      "Manufacturer specification sheets referenced in products.json",
+      "Manufacturer-published specifications, attributed by brand in products.json",
     ],
     lastUpdated: "2026-09-04",
   },
@@ -2217,7 +2240,7 @@ export const GUIDES: Guide[] = [
       },
     ],
     sources: [
-      "Manufacturer specification sheets referenced in products.json",
+      "Manufacturer-published specifications, attributed by brand in products.json",
     ],
     lastUpdated: "2026-09-04",
   },

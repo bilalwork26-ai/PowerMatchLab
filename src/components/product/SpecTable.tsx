@@ -4,12 +4,31 @@ import {
   NOT_VERIFIED,
   fmtBool,
   fmtCount,
+  fmtDate,
   fmtKg,
   fmtMs,
   fmtText,
   fmtWatts,
   fmtWh,
 } from "@/lib/format";
+
+/**
+ * `official_source` is currently an attribution label (e.g. "Jackery US"),
+ * not a URL, for every product in the catalog — so this renders it as plain
+ * text today. If a real manufacturer URL is added later, this already
+ * renders it as a clickable link with no further template change needed.
+ */
+function officialSourceValue(value: string | null): ReactNode {
+  const text = fmtText(value);
+  if (value && /^https?:\/\//.test(value)) {
+    return (
+      <a href={value} target="_blank" rel="noopener noreferrer" className="underline">
+        {text}
+      </a>
+    );
+  }
+  return text;
+}
 
 interface Row {
   label: string;
@@ -77,8 +96,8 @@ export function buildSpecGroups(product: Product) {
       { label: "Bluetooth", value: fmtBool(product.bluetooth) },
     ]),
     group("Provenance", [
-      { label: "Official source", value: fmtText(product.official_source) },
-      { label: "Last verified", value: fmtText(product.last_verified) },
+      { label: "Official source", value: officialSourceValue(product.official_source) },
+      { label: "Last checked", value: fmtDate(product.last_verified) },
       { label: "Amazon ASIN", value: fmtText(product.amazon_asin) },
     ]),
   ];
