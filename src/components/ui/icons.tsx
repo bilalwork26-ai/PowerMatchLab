@@ -172,3 +172,57 @@ export const CpapIcon = (p: IconProps) => (
     <path d="M17 13h3a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-3M8 19v-4M13 19v-4" />
   </Base>
 );
+
+export const RouterIcon = (p: IconProps) => (
+  <Base {...p}>
+    <rect x="3" y="14" width="18" height="6" rx="1.5" />
+    <path d="M8 8v6M12 5v9M16 8v6" />
+    <path d="M7 17h.01M11 17h.01" />
+  </Base>
+);
+
+export const PhoneIcon = (p: IconProps) => (
+  <Base {...p}>
+    <rect x="7" y="2" width="10" height="20" rx="2" />
+    <path d="M11 18h2" />
+  </Base>
+);
+
+export const FanIcon = (p: IconProps) => (
+  <Base {...p}>
+    <circle cx="12" cy="12" r="1.5" />
+    <path d="M12 10.5c0-3 1.5-6 4-6.5s3 2 1.5 4.5-4 2-5.5 2Z" />
+    <path d="M12 13.5c0 3-1.5 6-4 6.5s-3-2-1.5-4.5 4-2 5.5-2Z" />
+    <path d="M10.5 12c-3 0-6-1.5-6.5-4s2-3 4.5-1.5 2 4 2 5.5Z" />
+    <path d="M13.5 12c3 0 6 1.5 6.5 4s-2 3-4.5 1.5-2-4-2-5.5Z" />
+  </Base>
+);
+
+export const MonitorIcon = (p: IconProps) => (
+  <Base {...p}>
+    <rect x="3" y="4" width="18" height="12" rx="1.5" />
+    <path d="M9 20h6M12 16v4" />
+  </Base>
+);
+
+export const CoolerIcon = (p: IconProps) => (
+  <Base {...p}>
+    <rect x="3" y="8" width="18" height="12" rx="2" />
+    <path d="M3 12h18M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+  </Base>
+);
+
+export const LanternIcon = (p: IconProps) => (
+  <Base {...p}>
+    <path d="M9 8h6l-1 10H10L9 8Z" />
+    <path d="M10 8V6h4v2M11 4h2M9 18h6" />
+  </Base>
+);
+
+export const BatteryIcon = (p: IconProps) => (
+  <Base {...p}>
+    <rect x="2" y="7" width="18" height="10" rx="2" />
+    <path d="M22 10v4" />
+    <path d="M6 10v4M10 10v4M14 10v4" />
+  </Base>
+);

@@ -209,6 +209,50 @@ export function ToolsSection() {
   );
 }
 
+/**
+ * Standalone, self-contained teaser card for the Power Setup Studio tool.
+ * Deliberately its own small section (not folded into ToolsSection's
+ * 3-tile grid above) so adding it never reflows or restyles any existing
+ * home page section.
+ */
+export function StudioTeaser() {
+  return (
+    <section className="bg-navy-950 py-9 text-white">
+      <div className="container-page">
+        <Reveal>
+          <Link
+            href="/power-setup-studio"
+            className="glass-panel group flex flex-col items-center gap-5 p-6 text-center transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-glow-cyan sm:flex-row sm:text-left"
+          >
+            <div className="relative h-28 w-full shrink-0 overflow-hidden rounded-xl border border-navy-700 sm:h-24 sm:w-40">
+              <Image
+                src="/power-setup-studio/power-setup-studio-home-backup.png"
+                alt="Interactive illustrative scene — not an exact product or installation."
+                fill
+                sizes="160px"
+                className="object-cover"
+              />
+            </div>
+            <div className="flex-1">
+              <p className="text-xs font-semibold uppercase tracking-wide text-cyan-300">
+                New · Interactive
+              </p>
+              <h2 className="mt-1 text-xl font-bold text-white">Power Setup Studio</h2>
+              <p className="mt-1 text-sm text-navy-300">
+                Visualize how energy moves through your setup — pick a scenario,
+                switch devices on and off, and see which real stations fit.
+              </p>
+            </div>
+            <span className="shrink-0 text-sm font-semibold text-cyan-300 group-hover:underline">
+              Try the Studio →
+            </span>
+          </Link>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
 export function TopProducts({
   items,
 }: {

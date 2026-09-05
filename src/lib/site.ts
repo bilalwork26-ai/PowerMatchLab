@@ -57,9 +57,16 @@ export const PRIMARY_NAV: NavItem[] = [
   { label: "Products", href: "/products" },
   { label: "Compare", href: "/compare" },
   { label: "Power Calculator", href: "/power-calculator" },
+  { label: "Studio", href: "/power-setup-studio" },
   { label: "Guides", href: "/guides" },
   { label: "Deals", href: "/deals" },
 ];
+
+/** Full descriptive label for the footer link, distinct from the short "Studio" nav label above. */
+export const POWER_SETUP_STUDIO_NAV: NavItem = {
+  label: "Power Setup Studio",
+  href: "/power-setup-studio",
+};
 
 /** Compact bottom navigation for small screens (see mobile reference). */
 export const MOBILE_NAV: NavItem[] = [

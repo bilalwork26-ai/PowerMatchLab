@@ -152,6 +152,39 @@ export const APPLIANCE_EXAMPLES: ApplianceExample[] = [
     hoursPerDay: 4,
     category: "outdoors",
   },
+  {
+    key: "electric-cooler",
+    name: "Electric cooler (12V compressor)",
+    runningWatts: 55,
+    surgeWatts: 150,
+    hoursPerDay: 24,
+    category: "outdoors",
+    note: "Compressor cycles on and off like a fridge; runs continuously to hold temperature.",
+  },
+  {
+    key: "lantern",
+    name: "LED lantern",
+    runningWatts: 5,
+    surgeWatts: null,
+    hoursPerDay: 5,
+    category: "outdoors",
+  },
+  {
+    key: "external-monitor",
+    name: "External monitor",
+    runningWatts: 30,
+    surgeWatts: null,
+    hoursPerDay: 8,
+    category: "work",
+  },
+  {
+    key: "desk-light",
+    name: "Desk lamp (LED)",
+    runningWatts: 10,
+    surgeWatts: null,
+    hoursPerDay: 6,
+    category: "work",
+  },
 ];
 
 export function getApplianceExample(key: string): ApplianceExample | undefined {
