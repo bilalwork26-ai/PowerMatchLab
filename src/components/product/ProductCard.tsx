@@ -62,9 +62,7 @@ export function ProductCard({
             ) : null}
             {score?.overall != null ? (
               <Badge tone="brand" dark={dark}>Score {score.overall}/100</Badge>
-            ) : (
-              <Badge tone="warn" dark={dark}>Score not published</Badge>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
@@ -73,7 +71,7 @@ export function ProductCard({
         {[
           ["Capacity", fmtWh(product.capacity_wh)],
           ["Output", fmtWatts(product.rated_output_w)],
-          ["Weight", product.weight_kg == null ? "Not verified" : `${product.weight_kg} kg`],
+          ["Weight", fmtKg(product.weight_kg)],
         ].map(([label, value]) => (
           <div
             key={label}

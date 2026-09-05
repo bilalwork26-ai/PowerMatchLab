@@ -43,16 +43,16 @@ const V1_IDS = Object.keys(EXPECTED_AFFILIATE_LINKS);
 const V2_IDS = [
   "ecoflow-river-3-plus", "jackery-explorer-300-plus", "bluetti-eb3a", "dji-power-500",
   "anker-solix-c300", "ecoflow-river-2-pro", "jackery-explorer-1000-plus", "goal-zero-yeti-700",
-  "allpowers-r1500-lite", "segway-cube-1000", "growatt-infinity-1300", "vtoman-flashspeed-1000",
+  "allpowers-r1500-lite", "segway-cube-1000", "vtoman-flashspeed-1000",
   "ecoflow-delta-2-max", "jackery-explorer-2000-plus", "bluetti-ac200l", "anker-solix-f2000",
-  "pecron-e2400lfp", "growatt-infinity-1500", "vtoman-flashspeed-1500", "pecron-e3600lfp",
-  "oukitel-p5000", "mango-power-e", "bluetti-elite-300", "anker-solix-f3000",
+  "pecron-e2400lfp", "vtoman-flashspeed-1500", "pecron-e3600lfp",
+  "bluetti-elite-300", "anker-solix-f3000",
   "zendure-superbase-v4600",
 ];
 
 describe("catalog data integrity", () => {
-  it("loads the full V1 + V2 catalog (10 + 25 = 35 records)", () => {
-    expect(products).toHaveLength(35);
+  it("loads the full V1 + V2 catalog (10 + 21 = 31 records)", () => {
+    expect(products).toHaveLength(31);
   });
 
   it("still contains every V1 record", () => {

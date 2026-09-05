@@ -206,7 +206,7 @@ export const GUIDES: Guide[] = [
           "~300Wh-class (e.g. a compact unit): 300 × 0.85 ÷ 150 ≈ 1.7 hours",
           "~1,000Wh-class: 1,000 × 0.85 ÷ 150 ≈ 5.7 hours",
           "~2,000Wh-class: 2,000 × 0.85 ÷ 150 ≈ 11.3 hours",
-          "~5,000Wh-class (the largest currently listed): 5,000 × 0.85 ÷ 150 ≈ 28.3 hours",
+          "~4,600Wh-class (the largest currently listed): 4,600 × 0.85 ÷ 150 ≈ 26.1 hours",
         ],
       },
       {
@@ -359,7 +359,6 @@ export const GUIDES: Guide[] = [
     ],
     relatedProductIds: [
       "ecoflow-delta-3-classic",
-      "growatt-infinity-1500",
       "anker-solix-f3800",
     ],
     relatedGuideSlugs: [
@@ -559,7 +558,7 @@ export const GUIDES: Guide[] = [
           "~268Wh-class (e.g. a compact unit): 268 × 0.85 ÷ 40 ≈ 5.7 hours — well under one full 8-hour night",
           "~1,000Wh-class: 1,000 × 0.85 ÷ 40 ≈ 21.3 hours — roughly 2-3 nights",
           "~2,000Wh-class: 2,000 × 0.85 ÷ 40 ≈ 42.5 hours — roughly 5 nights",
-          "~5,000Wh-class (the largest currently listed): 5,000 × 0.85 ÷ 40 ≈ 106.3 hours — roughly 13 nights",
+          "~4,600Wh-class (the largest currently listed): 4,600 × 0.85 ÷ 40 ≈ 97.8 hours — roughly 12 nights",
         ],
       },
       {
@@ -826,7 +825,6 @@ export const GUIDES: Guide[] = [
     relatedProductIds: [
       "ecoflow-delta-pro-3",
       "anker-solix-f3000",
-      "mango-power-e",
     ],
     relatedGuideSlugs: [
       "power-station-for-power-outage",
@@ -1059,7 +1057,6 @@ export const GUIDES: Guide[] = [
     ],
     relatedProductIds: [
       "jackery-explorer-1000-v2",
-      "growatt-infinity-1300",
       "anker-solix-s2000",
     ],
     relatedGuideSlugs: [
@@ -1372,7 +1369,6 @@ export const GUIDES: Guide[] = [
     relatedProductIds: [
       "anker-solix-c300",
       "ecoflow-delta-2-max",
-      "oukitel-p5000",
     ],
     relatedGuideSlugs: [
       "how-to-size-a-portable-power-station",
@@ -1558,7 +1554,7 @@ export const GUIDES: Guide[] = [
         ],
       },
     ],
-    relatedProductIds: ["jackery-explorer-1000-v2", "dji-power-500", "oukitel-p5000"],
+    relatedProductIds: ["jackery-explorer-1000-v2", "dji-power-500"],
     relatedGuideSlugs: [
       "how-to-size-a-portable-power-station",
       "watts-vs-watt-hours",
@@ -1899,7 +1895,7 @@ export const GUIDES: Guide[] = [
         ],
       },
     ],
-    relatedProductIds: ["allpowers-r1500-lite", "oukitel-p5000", "ecoflow-river-3-plus"],
+    relatedProductIds: ["allpowers-r1500-lite", "ecoflow-river-3-plus"],
     relatedGuideSlugs: [
       "solar-input-and-charging-times-explained",
       "how-many-solar-panels-do-i-need",

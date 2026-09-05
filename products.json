@@ -532,7 +532,7 @@
     "surge_output_w": 1200,
     "battery_chemistry": "LiFePO4",
     "cycle_life": null,
-    "weight_kg": null,
+    "weight_kg": 4.54,
     "dimensions": null,
     "solar_input_w": null,
     "ac_charging_w": null,
@@ -562,11 +562,10 @@
       "1200W X-Boost surge on a 600W-rated unit"
     ],
     "cons": [
-      "Limited 286Wh capacity",
-      "Weight not independently verified"
+      "Limited 286Wh capacity"
     ],
     "official_source": "EcoFlow US",
-    "last_verified": "2026-09-04",
+    "last_verified": "2026-09-05",
     "amazon_asin": "B0F1CWZDYM",
     "amazon_product_url": "https://www.amazon.com/dp/B0F1CWZDYM",
     "amazon_affiliate_url": null
@@ -1014,54 +1013,6 @@
     "amazon_affiliate_url": null
   },
   {
-    "id": "growatt-infinity-1300",
-    "brand": "Growatt",
-    "model": "INFINITY 1300",
-    "market": "US",
-    "category": "portable-power-station",
-    "capacity_wh": 1382,
-    "rated_output_w": 1800,
-    "surge_output_w": 3600,
-    "battery_chemistry": "LiFePO4",
-    "cycle_life": null,
-    "weight_kg": 19.2,
-    "dimensions": null,
-    "solar_input_w": null,
-    "ac_charging_w": null,
-    "charging_time": null,
-    "ac_outlets": null,
-    "usb_c": null,
-    "usb_a": null,
-    "dc_output": null,
-    "rv_tt30": null,
-    "voltage_240v": null,
-    "ups_ms": null,
-    "expandable": null,
-    "max_expanded_capacity_wh": null,
-    "wifi": null,
-    "bluetooth": null,
-    "warranty": null,
-    "idle_consumption_w": null,
-    "best_for": [
-      "camping",
-      "RV use",
-      "home backup"
-    ],
-    "pros": [
-      "LiFePO4 battery",
-      "3600W surge capability"
-    ],
-    "cons": [
-      "New brand to the catalog",
-      "Weight (19.2 kg) heavier than some same-tier competitors"
-    ],
-    "official_source": "Growatt Portable US",
-    "last_verified": "2026-09-04",
-    "amazon_asin": "B0C3RSCH68",
-    "amazon_product_url": "https://www.amazon.com/dp/B0C3RSCH68",
-    "amazon_affiliate_url": null
-  },
-  {
     "id": "vtoman-flashspeed-1000",
     "brand": "VTOMAN",
     "model": "FlashSpeed 1000",
@@ -1351,53 +1302,6 @@
     "amazon_affiliate_url": null
   },
   {
-    "id": "growatt-infinity-1500",
-    "brand": "Growatt",
-    "model": "INFINITY 1500",
-    "market": "US",
-    "category": "portable-power-station",
-    "capacity_wh": 1512,
-    "rated_output_w": 2000,
-    "surge_output_w": 4000,
-    "battery_chemistry": "LiFePO4",
-    "cycle_life": null,
-    "weight_kg": null,
-    "dimensions": null,
-    "solar_input_w": null,
-    "ac_charging_w": null,
-    "charging_time": null,
-    "ac_outlets": null,
-    "usb_c": null,
-    "usb_a": null,
-    "dc_output": null,
-    "rv_tt30": null,
-    "voltage_240v": null,
-    "ups_ms": null,
-    "expandable": null,
-    "max_expanded_capacity_wh": null,
-    "wifi": null,
-    "bluetooth": null,
-    "warranty": null,
-    "idle_consumption_w": null,
-    "best_for": [
-      "home backup",
-      "camping"
-    ],
-    "pros": [
-      "2000W continuous / 4000W surge from a 1512Wh unit",
-      "LiFePO4 battery"
-    ],
-    "cons": [
-      "Weight not independently verified (conflicting figures across sources)",
-      "New brand to the catalog"
-    ],
-    "official_source": "Growatt Portable US",
-    "last_verified": "2026-09-04",
-    "amazon_asin": "B0BKYZYVYV",
-    "amazon_product_url": "https://www.amazon.com/dp/B0BKYZYVYV",
-    "amazon_affiliate_url": null
-  },
-  {
     "id": "vtoman-flashspeed-1500",
     "brand": "VTOMAN",
     "model": "FlashSpeed 1500",
@@ -1493,105 +1397,6 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0D83QYRDS",
     "amazon_product_url": "https://www.amazon.com/dp/B0D83QYRDS",
-    "amazon_affiliate_url": null
-  },
-  {
-    "id": "oukitel-p5000",
-    "brand": "OUKITEL",
-    "model": "P5000",
-    "market": "US",
-    "category": "portable-power-station",
-    "capacity_wh": 5120,
-    "rated_output_w": 2200,
-    "surge_output_w": 4000,
-    "battery_chemistry": "LiFePO4",
-    "cycle_life": null,
-    "weight_kg": 51,
-    "dimensions": null,
-    "solar_input_w": null,
-    "ac_charging_w": null,
-    "charging_time": null,
-    "ac_outlets": null,
-    "usb_c": null,
-    "usb_a": null,
-    "dc_output": null,
-    "rv_tt30": null,
-    "voltage_240v": null,
-    "ups_ms": null,
-    "expandable": null,
-    "max_expanded_capacity_wh": null,
-    "wifi": null,
-    "bluetooth": null,
-    "warranty": null,
-    "idle_consumption_w": null,
-    "best_for": [
-      "whole-home backup",
-      "emergency backup",
-      "off-grid use"
-    ],
-    "pros": [
-      "Largest capacity in this expansion (5120Wh)",
-      "LiFePO4 battery"
-    ],
-    "cons": [
-      "Very heavy (51 kg)",
-      "New brand to the catalog",
-      "Continuous output modest relative to its capacity"
-    ],
-    "official_source": "OUKITEL Power US",
-    "last_verified": "2026-09-04",
-    "amazon_asin": "B0DLP5S3C4",
-    "amazon_product_url": "https://www.amazon.com/dp/B0DLP5S3C4",
-    "amazon_affiliate_url": null
-  },
-  {
-    "id": "mango-power-e",
-    "brand": "Mango Power",
-    "model": "Mango Power E",
-    "market": "US",
-    "category": "portable-power-station",
-    "capacity_wh": 3500,
-    "rated_output_w": 3000,
-    "surge_output_w": 6000,
-    "battery_chemistry": "LiFePO4",
-    "cycle_life": null,
-    "weight_kg": 45.4,
-    "dimensions": null,
-    "solar_input_w": null,
-    "ac_charging_w": null,
-    "charging_time": null,
-    "ac_outlets": null,
-    "usb_c": null,
-    "usb_a": null,
-    "dc_output": null,
-    "rv_tt30": null,
-    "voltage_240v": null,
-    "ups_ms": null,
-    "expandable": true,
-    "max_expanded_capacity_wh": 14000,
-    "wifi": null,
-    "bluetooth": null,
-    "warranty": null,
-    "idle_consumption_w": null,
-    "best_for": [
-      "home backup",
-      "off-grid use",
-      "RV use"
-    ],
-    "pros": [
-      "LiFePO4 battery (CATL cells)",
-      "Modular expansion up to 14kWh (per manufacturer)",
-      "Built-in touchscreen (per manufacturer)"
-    ],
-    "cons": [
-      "Heavy (45.4 kg)",
-      "New brand to the catalog",
-      "Capacity rounded by manufacturer (~3,500Wh; 3,533Wh cited by one retailer)"
-    ],
-    "official_source": "Mango Power US",
-    "last_verified": "2026-09-04",
-    "amazon_asin": "B0C7GYQW6K",
-    "amazon_product_url": "https://www.amazon.com/dp/B0C7GYQW6K",
     "amazon_affiliate_url": null
   },
   {
