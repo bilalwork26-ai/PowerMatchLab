@@ -81,6 +81,21 @@ export default function RootLayout({
           crossOrigin="anonymous"
           strategy="beforeInteractive"
         />
+        {/*
+          Cloudflare Web Analytics — the official beacon snippet, unmodified,
+          loaded once here so every route gets it exactly once. `afterInteractive`
+          is Next.js's documented strategy for third-party analytics scripts: it
+          loads after the page has hydrated, so it never blocks initial render
+          or contributes to a hydration mismatch. Cloudflare's own snippet
+          already declares `type="module"`, which next/script passes straight
+          through to the underlying <script> tag.
+        */}
+        <Script
+          type="module"
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon='{"token": "d8fa61340b12435abf555f463e9a9f5b"}'
+          strategy="afterInteractive"
+        />
         <JsonLd data={[organizationJsonLd(), webSiteJsonLd()]} />
         <a href="#main" className="skip-link">
           Skip to main content
