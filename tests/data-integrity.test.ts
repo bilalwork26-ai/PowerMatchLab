@@ -10,9 +10,15 @@ const products = getAllProducts();
  * SiteStripe, tracking ID `powermatchlab-20`). This pins every button to its
  * verified counterpart and catches any accidental mismatch, duplication, or
  * drift.
+ *
+ * "ecoflow-delta-pro-3" is intentionally NOT in this map: its old amzn.to
+ * link was generated against a stale/typo'd ASIN (B0D14FMEZD) that resolved
+ * to no real listing. The site owner manually verified the correct ASIN
+ * (B0D14FMFZD) on Amazon.com and had the old affiliate link cleared rather
+ * than kept pointing at the wrong product — see EXPECTED_NO_AFFILIATE_V1_IDS.
+ * A fresh Associates link for the corrected ASIN is still pending.
  */
 const EXPECTED_AFFILIATE_LINKS: Record<string, string> = {
-  "ecoflow-delta-pro-3": "https://amzn.to/4daJPev",
   "anker-solix-f3800": "https://amzn.to/3UsOl1K",
   "anker-solix-s2000": "https://amzn.to/462BxBM",
   "anker-solix-c1000-gen-2": "https://amzn.to/4zTzRrS",
@@ -25,7 +31,15 @@ const EXPECTED_AFFILIATE_LINKS: Record<string, string> = {
 };
 
 /** The 10 original V1 product ids, still expected to be present after V2. */
-const V1_IDS = Object.keys(EXPECTED_AFFILIATE_LINKS);
+const V1_IDS = [...Object.keys(EXPECTED_AFFILIATE_LINKS), "ecoflow-delta-pro-3"];
+
+/**
+ * V1 products with no current Amazon Associates link. Currently just the
+ * DELTA Pro 3, pending a fresh affiliate link for its corrected ASIN — see
+ * the comment on EXPECTED_AFFILIATE_LINKS above. Falls back to the direct
+ * product URL for its CTA, the same as a V2 product.
+ */
+const EXPECTED_NO_AFFILIATE_V1_IDS = ["ecoflow-delta-pro-3"];
 
 /**
  * The 25 V2 catalog-expansion product ids. These ship with a verified direct
@@ -55,11 +69,20 @@ describe("catalog data integrity", () => {
     }
   });
 
-  it("gives every V1 product a verified Amazon Associates affiliate URL", () => {
-    for (const id of V1_IDS) {
+  it("gives every V1 product (except those pending a fresh link) a verified Amazon Associates affiliate URL", () => {
+    for (const id of Object.keys(EXPECTED_AFFILIATE_LINKS)) {
       const p = getProductById(id)!;
       expect(p.amazon_affiliate_url).not.toBeNull();
       expect(p.amazon_affiliate_url).toMatch(/^https:\/\/amzn\.to\/[A-Za-z0-9]+$/);
+    }
+  });
+
+  it("leaves V1 products pending a fresh affiliate link without one, but with a verified direct link", () => {
+    for (const id of EXPECTED_NO_AFFILIATE_V1_IDS) {
+      const p = getProductById(id)!;
+      expect(p, `V1 product "${id}" should exist`).toBeDefined();
+      expect(p.amazon_affiliate_url).toBeNull();
+      expect(p.amazon_product_url).toMatch(/^https:\/\/www\.amazon\.com\/dp\/[A-Z0-9]{10}$/);
     }
   });
 
@@ -86,8 +109,8 @@ describe("catalog data integrity", () => {
     expect(new Set(productUrls).size).toBe(productUrls.length);
   });
 
-  it("uses the Amazon Associates affiliate URL for the CTA on V1 products", () => {
-    for (const id of V1_IDS) {
+  it("uses the Amazon Associates affiliate URL for the CTA on V1 products with one", () => {
+    for (const id of Object.keys(EXPECTED_AFFILIATE_LINKS)) {
       const p = getProductById(id)!;
       const link = resolveAmazonLink(p);
       expect(link.isAffiliate).toBe(true);
@@ -95,8 +118,8 @@ describe("catalog data integrity", () => {
     }
   });
 
-  it("falls back to the direct product URL for the CTA on V2 products", () => {
-    for (const id of V2_IDS) {
+  it("falls back to the direct product URL for the CTA on V2 products and V1 products pending a fresh link", () => {
+    for (const id of [...V2_IDS, ...EXPECTED_NO_AFFILIATE_V1_IDS]) {
       const p = getProductById(id)!;
       const link = resolveAmazonLink(p);
       expect(link.isAffiliate).toBe(false);
@@ -112,12 +135,17 @@ describe("catalog data integrity", () => {
     expect(link.href).toMatch(/^https:\/\/www\.amazon\.com\/dp\//);
   });
 
-  it("keeps the EcoFlow DELTA Pro 3 ASIN and product URL consistent after the E/F correction", () => {
+  it("keeps the EcoFlow DELTA Pro 3 ASIN and product URL on the manually-verified listing", () => {
+    // B0D14FMEZD (note the "E") was a one-character typo of the real ASIN —
+    // it resolved to no listing at all, which is what caused Amazon's short
+    // link to fall back to a generic search page. B0D14FMFZD (note the "F")
+    // is the real, standalone DELTA Pro 3 listing, manually confirmed on
+    // Amazon.com by the site owner on 2026-09-05.
     const deltaPro3 = getProductById("ecoflow-delta-pro-3");
     expect(deltaPro3).toBeDefined();
-    expect(deltaPro3!.amazon_asin).toBe("B0D14FMEZD");
+    expect(deltaPro3!.amazon_asin).toBe("B0D14FMFZD");
     expect(deltaPro3!.amazon_product_url).toBe(
-      "https://www.amazon.com/dp/B0D14FMEZD",
+      "https://www.amazon.com/dp/B0D14FMFZD",
     );
   });
 
