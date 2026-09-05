@@ -347,13 +347,13 @@ const TRUST = [
     Icon: CalculatorIcon,
   },
   {
-    title: "Fair comparisons",
-    body: "We never invent a score to fill a chart. If the data does not justify a dimension, it is not shown.",
+    title: "Editorial independence",
+    body: "Amazon Associates commissions fund the site, but never influence which products are listed or how they are scored.",
     Icon: ScaleIcon,
   },
   {
-    title: "No fake urgency",
-    body: "No countdown timers, invented discounts or “only 2 left” warnings. Deals appear only when verified.",
+    title: "Corrections welcomed",
+    body: "Spot a wrong spec or a broken link? Tell us and we will check it against the manufacturer's own source.",
     Icon: SunIcon,
   },
 ];

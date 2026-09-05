@@ -156,7 +156,10 @@ export const GUIDES: Guide[] = [
       },
     ],
     sources: [
-      "U.S. Department of Energy — Appliance and electronic energy use guidance",
+      {
+        label: "U.S. Department of Energy — Estimating Appliance and Home Electronic Energy Use",
+        url: "https://www.energy.gov/energysaver/estimating-appliance-and-home-electronic-energy-use",
+      },
       "Manufacturer specification sheets referenced in products.json",
     ],
     lastUpdated: "2026-09-01",
@@ -377,7 +380,10 @@ export const GUIDES: Guide[] = [
       },
     ],
     sources: [
-      "National Renewable Energy Laboratory — photovoltaic performance basics",
+      {
+        label: "U.S. Department of Energy / NREL — Understanding Solar Photovoltaic System Performance",
+        url: "https://www.energy.gov/sites/default/files/2022-01/understanding-solar-photovoltaic-system-performance.pdf",
+      },
       "Manufacturer charging specifications referenced in products.json",
     ],
     lastUpdated: "2026-09-01",

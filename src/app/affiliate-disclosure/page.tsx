@@ -78,7 +78,9 @@ export default function AffiliateDisclosurePage() {
 
         <p>
           Questions about how the site works? See the{" "}
-          <Link href="/about-methodology">Methodology</Link>.
+          <Link href="/about-methodology">Methodology</Link> and the{" "}
+          <Link href="/editorial-policy">Editorial Policy</Link>, or{" "}
+          <Link href="/contact">contact us</Link>.
         </p>
       </div>
       </div>
