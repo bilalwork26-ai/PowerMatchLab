@@ -24,12 +24,13 @@ export function fmtWatts(value: Numish): string {
   return `${fmtNumber(value)} W`;
 }
 
+/** US-market display: pounds first, kilograms in parentheses (e.g. "10.4 lb (4.7 kg)"). */
 export function fmtKg(value: Numish): string {
   if (value === null || value === undefined || Number.isNaN(value)) return NOT_VERIFIED;
   const lb = value * 2.2046226218;
-  return `${fmtNumber(value, { maximumFractionDigits: 1 })} kg (${fmtNumber(lb, {
+  return `${fmtNumber(lb, { maximumFractionDigits: 1 })} lb (${fmtNumber(value, {
     maximumFractionDigits: 1,
-  })} lb)`;
+  })} kg)`;
 }
 
 export function fmtMs(value: Numish): string {
