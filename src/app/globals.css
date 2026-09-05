@@ -171,3 +171,49 @@
 .glass-panel {
   @apply rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm;
 }
+
+/* ---------------------------------------------------------------------
+   Power Setup Studio: scenario-switch crossfade.
+   Both classes are keyed by scenario id in SceneStage.tsx, so React mounts
+   a fresh element (and restarts the animation) on every scenario change.
+   The global prefers-reduced-motion rule above already collapses these
+   animation-durations to ~0, so a reduced-motion visitor gets an instant
+   swap with no separate branch needed here.
+   ------------------------------------------------------------------- */
+@keyframes studio-scene-in {
+  from {
+    opacity: 0;
+    transform: scale(1.015);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.studio-scene-fade {
+  animation: studio-scene-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes studio-scene-flash {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 0;
+  }
+}
+.studio-scene-flash {
+  animation: studio-scene-flash 0.5s ease-out both;
+}
+
+/* The battery glow node (.energy-path, dash-flow) sometimes also carries
+   Tailwind's `animate-pulse-soft` utility while actively charging/discharging.
+   Both set the full `animation` shorthand, so stacking them as two separate
+   classes would let whichever rule is later in the cascade silently replace
+   the other's animation entirely instead of combining. This compound
+   selector (higher specificity than either alone) runs both animations
+   together via one comma-separated `animation` value. */
+.energy-path.animate-pulse-soft {
+  animation:
+    dash-flow 6s linear infinite,
+    pulse-soft 3s ease-in-out infinite;
+}

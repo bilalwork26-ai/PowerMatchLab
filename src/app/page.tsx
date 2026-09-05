@@ -3,6 +3,7 @@ import { scoreCatalog } from "@/lib/score";
 import {
   FinalCalculatorCta,
   Hero,
+  StudioTeaser,
   ToolsSection,
   TopProducts,
   TrustBand,
@@ -21,6 +22,7 @@ export default function HomePage() {
     <>
       <Hero />
       <ToolsSection />
+      <StudioTeaser />
       <TopProducts items={ranked} />
       <UseCaseCards />
       <TrustBand />

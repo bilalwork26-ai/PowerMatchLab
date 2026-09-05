@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Recommendation, MatchStatus } from "@/lib/recommend";
 import { productDisplayName } from "@/data/products";
-import { fmtWh, fmtWatts } from "@/lib/format";
+import { fmtWh, fmtWatts, fmtKg } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import { ProductIllustration } from "@/components/ui/ProductIllustration";
 import { ScoreCircle } from "@/components/ui/ScoreCircle";
@@ -58,6 +58,7 @@ export function RecommendationCard({
             </h3>
             <p className={cn("mt-0.5 text-xs", dark ? "text-navy-400" : "text-navy-500")}>
               {fmtWh(product.capacity_wh)} · {fmtWatts(product.rated_output_w)} rated
+              {product.weight_kg != null ? <> · {fmtKg(product.weight_kg)}</> : null}
             </p>
             <span
               className={cn(

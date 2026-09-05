@@ -3,6 +3,7 @@ import {
   AFFILIATE_DISCLOSURE_SHORT,
   BEST_FOR_NAV,
   LEGAL_NAV,
+  POWER_SETUP_STUDIO_NAV,
   PRIMARY_NAV,
   SITE,
 } from "@/lib/site";
@@ -27,13 +28,21 @@ export function Footer() {
             Explore
           </h2>
           <ul className="space-y-2">
-            {PRIMARY_NAV.map((i) => (
+            {PRIMARY_NAV.filter((i) => i.href !== POWER_SETUP_STUDIO_NAV.href).map((i) => (
               <li key={i.href}>
                 <Link href={i.href} className="text-navy-200 hover:text-cyan-300">
                   {i.label}
                 </Link>
               </li>
             ))}
+            <li>
+              <Link
+                href={POWER_SETUP_STUDIO_NAV.href}
+                className="text-navy-200 hover:text-cyan-300"
+              >
+                {POWER_SETUP_STUDIO_NAV.label}
+              </Link>
+            </li>
           </ul>
         </nav>
 

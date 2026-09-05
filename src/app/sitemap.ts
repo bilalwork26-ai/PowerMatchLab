@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/products",
     "/compare",
     "/power-calculator",
+    "/power-setup-studio",
     "/guides",
     "/deals",
     "/about-methodology",
