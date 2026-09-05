@@ -522,203 +522,6 @@
     "amazon_affiliate_url": "https://amzn.to/3UsOl1K"
   },
   {
-    "id": "ecoflow-river-3-plus",
-    "brand": "EcoFlow",
-    "model": "RIVER 3 Plus",
-    "market": "US",
-    "category": "portable-power-station",
-    "capacity_wh": 286,
-    "rated_output_w": 600,
-    "surge_output_w": 1200,
-    "battery_chemistry": "LiFePO4",
-    "cycle_life": null,
-    "weight_kg": 4.54,
-    "dimensions": null,
-    "solar_input_w": null,
-    "ac_charging_w": null,
-    "charging_time": null,
-    "ac_outlets": null,
-    "usb_c": null,
-    "usb_a": null,
-    "dc_output": null,
-    "rv_tt30": null,
-    "voltage_240v": null,
-    "ups_ms": null,
-    "expandable": null,
-    "max_expanded_capacity_wh": null,
-    "wifi": null,
-    "bluetooth": null,
-    "warranty": null,
-    "idle_consumption_w": null,
-    "best_for": [
-      "camping",
-      "day trips",
-      "small electronics",
-      "light emergency backup"
-    ],
-    "pros": [
-      "Compact entry-level capacity class",
-      "LiFePO4 battery",
-      "1200W X-Boost surge on a 600W-rated unit"
-    ],
-    "cons": [
-      "Limited 286Wh capacity"
-    ],
-    "official_source": "EcoFlow US",
-    "last_verified": "2026-09-05",
-    "amazon_asin": "B0F1CWZDYM",
-    "amazon_product_url": "https://www.amazon.com/dp/B0F1CWZDYM",
-    "amazon_affiliate_url": null
-  },
-  {
-    "id": "jackery-explorer-300-plus",
-    "brand": "Jackery",
-    "model": "Explorer 300 Plus",
-    "market": "US",
-    "category": "portable-power-station",
-    "capacity_wh": 288,
-    "rated_output_w": 300,
-    "surge_output_w": 600,
-    "battery_chemistry": "LiFePO4",
-    "cycle_life": null,
-    "weight_kg": 3.75,
-    "dimensions": null,
-    "solar_input_w": null,
-    "ac_charging_w": null,
-    "charging_time": null,
-    "ac_outlets": null,
-    "usb_c": null,
-    "usb_a": null,
-    "dc_output": null,
-    "rv_tt30": null,
-    "voltage_240v": null,
-    "ups_ms": null,
-    "expandable": null,
-    "max_expanded_capacity_wh": null,
-    "wifi": null,
-    "bluetooth": null,
-    "warranty": null,
-    "idle_consumption_w": null,
-    "best_for": [
-      "camping",
-      "travel",
-      "small electronics",
-      "light emergency backup"
-    ],
-    "pros": [
-      "Lightweight (3.75 kg)",
-      "LiFePO4 battery"
-    ],
-    "cons": [
-      "Limited 288Wh capacity and 300W continuous output",
-      "Not designed for high-draw appliances"
-    ],
-    "official_source": "Jackery US",
-    "last_verified": "2026-09-04",
-    "amazon_asin": "B0CFV93GZM",
-    "amazon_product_url": "https://www.amazon.com/dp/B0CFV93GZM",
-    "amazon_affiliate_url": null
-  },
-  {
-    "id": "bluetti-eb3a",
-    "brand": "BLUETTI",
-    "model": "EB3A",
-    "market": "US",
-    "category": "portable-power-station",
-    "capacity_wh": 268,
-    "rated_output_w": 600,
-    "surge_output_w": 1200,
-    "battery_chemistry": "LiFePO4",
-    "cycle_life": null,
-    "weight_kg": 4.6,
-    "dimensions": null,
-    "solar_input_w": null,
-    "ac_charging_w": null,
-    "charging_time": null,
-    "ac_outlets": null,
-    "usb_c": null,
-    "usb_a": null,
-    "dc_output": null,
-    "rv_tt30": null,
-    "voltage_240v": null,
-    "ups_ms": null,
-    "expandable": null,
-    "max_expanded_capacity_wh": null,
-    "wifi": null,
-    "bluetooth": null,
-    "warranty": null,
-    "idle_consumption_w": null,
-    "best_for": [
-      "camping",
-      "day trips",
-      "small electronics",
-      "light emergency backup"
-    ],
-    "pros": [
-      "LiFePO4 battery",
-      "1200W surge on a 600W-rated unit"
-    ],
-    "cons": [
-      "Smallest capacity in the catalog (268Wh)",
-      "Not designed for extended home backup"
-    ],
-    "official_source": "BLUETTI",
-    "last_verified": "2026-09-04",
-    "amazon_asin": "B09WW3CTF4",
-    "amazon_product_url": "https://www.amazon.com/dp/B09WW3CTF4",
-    "amazon_affiliate_url": null
-  },
-  {
-    "id": "dji-power-500",
-    "brand": "DJI",
-    "model": "Power 500",
-    "market": "US",
-    "category": "portable-power-station",
-    "capacity_wh": 512,
-    "rated_output_w": 1000,
-    "surge_output_w": null,
-    "battery_chemistry": "LiFePO4",
-    "cycle_life": null,
-    "weight_kg": 7.3,
-    "dimensions": null,
-    "solar_input_w": null,
-    "ac_charging_w": null,
-    "charging_time": null,
-    "ac_outlets": null,
-    "usb_c": null,
-    "usb_a": null,
-    "dc_output": null,
-    "rv_tt30": null,
-    "voltage_240v": null,
-    "ups_ms": null,
-    "expandable": null,
-    "max_expanded_capacity_wh": null,
-    "wifi": null,
-    "bluetooth": null,
-    "warranty": null,
-    "idle_consumption_w": null,
-    "best_for": [
-      "content creation",
-      "drone and camera gear charging",
-      "camping",
-      "light home backup"
-    ],
-    "pros": [
-      "1000W continuous output relative to its 512Wh capacity",
-      "LiFePO4 battery",
-      "DJI SDC fast-charge port for compatible drones/gimbals"
-    ],
-    "cons": [
-      "Surge/peak output not documented by the manufacturer",
-      "New brand to the catalog"
-    ],
-    "official_source": "DJI US",
-    "last_verified": "2026-09-04",
-    "amazon_asin": "B0CZ6F44CL",
-    "amazon_product_url": "https://www.amazon.com/dp/B0CZ6F44CL",
-    "amazon_affiliate_url": null
-  },
-  {
     "id": "anker-solix-c300",
     "brand": "Anker SOLIX",
     "model": "C300",
@@ -765,7 +568,7 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0D62GMQ3F",
     "amazon_product_url": "https://www.amazon.com/dp/B0D62GMQ3F",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": "https://amzn.to/4zYmJSb"
   },
   {
     "id": "ecoflow-river-2-pro",
@@ -814,57 +617,7 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0BVLPGS79",
     "amazon_product_url": "https://www.amazon.com/dp/B0BVLPGS79",
-    "amazon_affiliate_url": null
-  },
-  {
-    "id": "jackery-explorer-1000-plus",
-    "brand": "Jackery",
-    "model": "Explorer 1000 Plus",
-    "market": "US",
-    "category": "portable-power-station",
-    "capacity_wh": 1264,
-    "rated_output_w": 2000,
-    "surge_output_w": 4000,
-    "battery_chemistry": "LiFePO4",
-    "cycle_life": null,
-    "weight_kg": null,
-    "dimensions": null,
-    "solar_input_w": null,
-    "ac_charging_w": null,
-    "charging_time": null,
-    "ac_outlets": null,
-    "usb_c": null,
-    "usb_a": null,
-    "dc_output": null,
-    "rv_tt30": null,
-    "voltage_240v": null,
-    "ups_ms": null,
-    "expandable": true,
-    "max_expanded_capacity_wh": null,
-    "wifi": null,
-    "bluetooth": null,
-    "warranty": null,
-    "idle_consumption_w": null,
-    "best_for": [
-      "home backup",
-      "RV use",
-      "camping",
-      "high-power appliances"
-    ],
-    "pros": [
-      "2000W continuous / 4000W surge from a 1264Wh unit",
-      "LiFePO4 battery",
-      "Expandable design (per manufacturer)"
-    ],
-    "cons": [
-      "Weight not independently verified",
-      "Heavier-duty than compact camping units"
-    ],
-    "official_source": "Jackery US",
-    "last_verified": "2026-09-04",
-    "amazon_asin": "B0C37CWBKZ",
-    "amazon_product_url": "https://www.amazon.com/dp/B0C37CWBKZ",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": "https://amzn.to/4djByFa"
   },
   {
     "id": "goal-zero-yeti-700",
@@ -912,57 +665,7 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0CRCVKNHR",
     "amazon_product_url": "https://www.amazon.com/dp/B0CRCVKNHR",
-    "amazon_affiliate_url": null
-  },
-  {
-    "id": "allpowers-r1500-lite",
-    "brand": "ALLPOWERS",
-    "model": "R1500 LITE",
-    "market": "US",
-    "category": "portable-power-station",
-    "capacity_wh": 1056,
-    "rated_output_w": 1600,
-    "surge_output_w": 3200,
-    "battery_chemistry": "LiFePO4",
-    "cycle_life": null,
-    "weight_kg": null,
-    "dimensions": null,
-    "solar_input_w": null,
-    "ac_charging_w": null,
-    "charging_time": null,
-    "ac_outlets": null,
-    "usb_c": null,
-    "usb_a": null,
-    "dc_output": null,
-    "rv_tt30": null,
-    "voltage_240v": null,
-    "ups_ms": null,
-    "expandable": null,
-    "max_expanded_capacity_wh": null,
-    "wifi": null,
-    "bluetooth": null,
-    "warranty": null,
-    "idle_consumption_w": null,
-    "best_for": [
-      "home backup",
-      "off-grid use",
-      "CPAP use",
-      "camping"
-    ],
-    "pros": [
-      "1600W continuous / 3200W surge from a 1056Wh unit",
-      "LiFePO4 battery",
-      "Wireless charging pads (per manufacturer)"
-    ],
-    "cons": [
-      "Weight not independently verified",
-      "New brand to the catalog"
-    ],
-    "official_source": "ALLPOWERS",
-    "last_verified": "2026-09-04",
-    "amazon_asin": "B0F311D7JP",
-    "amazon_product_url": "https://www.amazon.com/dp/B0F311D7JP",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": "https://amzn.to/4qVjKWB"
   },
   {
     "id": "segway-cube-1000",
@@ -1010,7 +713,7 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0CS8GMQ7Q",
     "amazon_product_url": "https://www.amazon.com/dp/B0CS8GMQ7Q",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": "https://amzn.to/4A4hVej"
   },
   {
     "id": "vtoman-flashspeed-1000",
@@ -1058,7 +761,7 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0H4993LKW",
     "amazon_product_url": "https://www.amazon.com/dp/B0H4993LKW",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": "https://amzn.to/4AfQWN1"
   },
   {
     "id": "ecoflow-delta-2-max",
@@ -1106,7 +809,7 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0C4DW17PD",
     "amazon_product_url": "https://www.amazon.com/dp/B0C4DW17PD",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": "https://amzn.to/4gEbqqL"
   },
   {
     "id": "jackery-explorer-2000-plus",
@@ -1155,7 +858,7 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0C6DHK68Q",
     "amazon_product_url": "https://www.amazon.com/dp/B0C6DHK68Q",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": "https://amzn.to/4qWL7Qd"
   },
   {
     "id": "bluetti-ac200l",
@@ -1203,54 +906,7 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0CLGZB3L6",
     "amazon_product_url": "https://www.amazon.com/dp/B0CLGZB3L6",
-    "amazon_affiliate_url": null
-  },
-  {
-    "id": "anker-solix-f2000",
-    "brand": "Anker SOLIX",
-    "model": "F2000 (PowerHouse 767)",
-    "market": "US",
-    "category": "portable-power-station",
-    "capacity_wh": 2048,
-    "rated_output_w": 2400,
-    "surge_output_w": 3600,
-    "battery_chemistry": "LiFePO4",
-    "cycle_life": null,
-    "weight_kg": 22.7,
-    "dimensions": null,
-    "solar_input_w": null,
-    "ac_charging_w": null,
-    "charging_time": null,
-    "ac_outlets": null,
-    "usb_c": null,
-    "usb_a": null,
-    "dc_output": null,
-    "rv_tt30": null,
-    "voltage_240v": null,
-    "ups_ms": null,
-    "expandable": null,
-    "max_expanded_capacity_wh": null,
-    "wifi": null,
-    "bluetooth": null,
-    "warranty": null,
-    "idle_consumption_w": null,
-    "best_for": [
-      "home backup",
-      "power outages"
-    ],
-    "pros": [
-      "LiFePO4 battery",
-      "Wheeled cart form factor for easier moving"
-    ],
-    "cons": [
-      "Heavy (22.7 kg)",
-      "No native 240V confirmed"
-    ],
-    "official_source": "Anker SOLIX US",
-    "last_verified": "2026-09-04",
-    "amazon_asin": "B09XM7WDZ2",
-    "amazon_product_url": "https://www.amazon.com/dp/B09XM7WDZ2",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": "https://amzn.to/3VdE7Cw"
   },
   {
     "id": "pecron-e2400lfp",
@@ -1299,55 +955,7 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0H1L716SV",
     "amazon_product_url": "https://www.amazon.com/dp/B0H1L716SV",
-    "amazon_affiliate_url": null
-  },
-  {
-    "id": "vtoman-flashspeed-1500",
-    "brand": "VTOMAN",
-    "model": "FlashSpeed 1500",
-    "market": "US",
-    "category": "portable-power-station",
-    "capacity_wh": 1548,
-    "rated_output_w": 1500,
-    "surge_output_w": 3000,
-    "battery_chemistry": "LiFePO4",
-    "cycle_life": null,
-    "weight_kg": 18.8,
-    "dimensions": null,
-    "solar_input_w": null,
-    "ac_charging_w": null,
-    "charging_time": null,
-    "ac_outlets": null,
-    "usb_c": null,
-    "usb_a": null,
-    "dc_output": null,
-    "rv_tt30": null,
-    "voltage_240v": null,
-    "ups_ms": null,
-    "expandable": true,
-    "max_expanded_capacity_wh": null,
-    "wifi": null,
-    "bluetooth": null,
-    "warranty": null,
-    "idle_consumption_w": null,
-    "best_for": [
-      "camping",
-      "RV use",
-      "emergency backup"
-    ],
-    "pros": [
-      "LiFePO4 battery",
-      "Expandable battery option (per manufacturer)"
-    ],
-    "cons": [
-      "New brand to the catalog",
-      "Lower continuous output relative to its capacity class"
-    ],
-    "official_source": "VTOMAN",
-    "last_verified": "2026-09-04",
-    "amazon_asin": "B0C8T2C8DB",
-    "amazon_product_url": "https://www.amazon.com/dp/B0C8T2C8DB",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": "https://amzn.to/3UTsbWr"
   },
   {
     "id": "pecron-e3600lfp",
@@ -1397,7 +1005,7 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0D83QYRDS",
     "amazon_product_url": "https://www.amazon.com/dp/B0D83QYRDS",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": "https://amzn.to/4i8EoQN"
   },
   {
     "id": "bluetti-elite-300",
@@ -1444,7 +1052,7 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0GKRTX336",
     "amazon_product_url": "https://www.amazon.com/dp/B0GKRTX336",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": "https://amzn.to/4yrC0JX"
   },
   {
     "id": "anker-solix-f3000",
@@ -1490,55 +1098,6 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0F8BC2LFS",
     "amazon_product_url": "https://www.amazon.com/dp/B0F8BC2LFS",
-    "amazon_affiliate_url": null
-  },
-  {
-    "id": "zendure-superbase-v4600",
-    "brand": "Zendure",
-    "model": "SuperBase V4600",
-    "market": "US",
-    "category": "portable-power-station",
-    "capacity_wh": 4608,
-    "rated_output_w": 3800,
-    "surge_output_w": 5000,
-    "battery_chemistry": "LiFePO4",
-    "cycle_life": null,
-    "weight_kg": 55,
-    "dimensions": null,
-    "solar_input_w": null,
-    "ac_charging_w": null,
-    "charging_time": null,
-    "ac_outlets": null,
-    "usb_c": null,
-    "usb_a": null,
-    "dc_output": null,
-    "rv_tt30": null,
-    "voltage_240v": null,
-    "ups_ms": null,
-    "expandable": true,
-    "max_expanded_capacity_wh": null,
-    "wifi": null,
-    "bluetooth": null,
-    "warranty": null,
-    "idle_consumption_w": null,
-    "best_for": [
-      "off-grid use",
-      "tiny-house backup",
-      "whole-home-leaning backup"
-    ],
-    "pros": [
-      "Largest capacity in the entire catalog (4608Wh)",
-      "LiFePO4 battery",
-      "Optional satellite-battery expansion (per manufacturer)"
-    ],
-    "cons": [
-      "Very heavy (55 kg)",
-      "New brand to the catalog"
-    ],
-    "official_source": "Zendure US",
-    "last_verified": "2026-09-04",
-    "amazon_asin": "B0BPH98K15",
-    "amazon_product_url": "https://www.amazon.com/dp/B0BPH98K15",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": "https://amzn.to/3VfhBcr"
   }
 ]

@@ -34,25 +34,34 @@ const EXPECTED_AFFILIATE_LINKS: Record<string, string> = {
 const V1_IDS = Object.keys(EXPECTED_AFFILIATE_LINKS);
 
 /**
- * The 25 V2 catalog-expansion product ids. These ship with a verified direct
- * `amazon_product_url` but intentionally NO `amazon_affiliate_url` yet — the
- * site owner has not supplied real Amazon Associates links for them, and the
- * project rule is to never manufacture one. The CTA falls back to the direct
- * link (see `resolveAmazonLink`) until real affiliate links are supplied.
+ * The 12 surviving V2 catalog-expansion product ids, each with a real Amazon
+ * Associates link supplied by the site owner (2026-09-05). The other 13 V2
+ * products from the original 25-product expansion have since been removed —
+ * 9 because their exact Amazon.com listing no longer sells the product or
+ * redirects to a different model, and 4 in an earlier cleanup because their
+ * listing was inactive. Every surviving product now has a real affiliate
+ * link; none are left falling back to a direct product-page link.
  */
-const V2_IDS = [
-  "ecoflow-river-3-plus", "jackery-explorer-300-plus", "bluetti-eb3a", "dji-power-500",
-  "anker-solix-c300", "ecoflow-river-2-pro", "jackery-explorer-1000-plus", "goal-zero-yeti-700",
-  "allpowers-r1500-lite", "segway-cube-1000", "vtoman-flashspeed-1000",
-  "ecoflow-delta-2-max", "jackery-explorer-2000-plus", "bluetti-ac200l", "anker-solix-f2000",
-  "pecron-e2400lfp", "vtoman-flashspeed-1500", "pecron-e3600lfp",
-  "bluetti-elite-300", "anker-solix-f3000",
-  "zendure-superbase-v4600",
-];
+const EXPECTED_V2_AFFILIATE_LINKS: Record<string, string> = {
+  "anker-solix-c300": "https://amzn.to/4zYmJSb",
+  "goal-zero-yeti-700": "https://amzn.to/4qVjKWB",
+  "ecoflow-river-2-pro": "https://amzn.to/4djByFa",
+  "segway-cube-1000": "https://amzn.to/4A4hVej",
+  "vtoman-flashspeed-1000": "https://amzn.to/4AfQWN1",
+  "bluetti-ac200l": "https://amzn.to/3VdE7Cw",
+  "pecron-e2400lfp": "https://amzn.to/3UTsbWr",
+  "ecoflow-delta-2-max": "https://amzn.to/4gEbqqL",
+  "jackery-explorer-2000-plus": "https://amzn.to/4qWL7Qd",
+  "pecron-e3600lfp": "https://amzn.to/4i8EoQN",
+  "anker-solix-f3000": "https://amzn.to/3VfhBcr",
+  "bluetti-elite-300": "https://amzn.to/4yrC0JX",
+};
+
+const V2_IDS = Object.keys(EXPECTED_V2_AFFILIATE_LINKS);
 
 describe("catalog data integrity", () => {
-  it("loads the full V1 + V2 catalog (10 + 21 = 31 records)", () => {
-    expect(products).toHaveLength(31);
+  it("loads the full V1 + V2 catalog (10 + 12 = 22 records)", () => {
+    expect(products).toHaveLength(22);
   });
 
   it("still contains every V1 record", () => {
@@ -69,17 +78,20 @@ describe("catalog data integrity", () => {
     }
   });
 
-  it("leaves V2 products without a fabricated affiliate URL, but with a verified direct link", () => {
+  it("gives every V2 product a verified Amazon Associates affiliate URL", () => {
     for (const id of V2_IDS) {
-      const p = getProductById(id)!;
+      const p = getProductById(id);
       expect(p, `V2 product "${id}" should exist`).toBeDefined();
-      expect(p.amazon_affiliate_url).toBeNull();
-      expect(p.amazon_product_url).toMatch(/^https:\/\/www\.amazon\.com\/dp\/[A-Z0-9]{10}$/);
+      expect(p!.amazon_affiliate_url).not.toBeNull();
+      expect(p!.amazon_affiliate_url).toMatch(/^https:\/\/amzn\.to\/[A-Za-z0-9]+$/);
     }
   });
 
-  it("matches each V1 product to exactly its own affiliate link, with no duplicates", () => {
-    for (const [id, expectedUrl] of Object.entries(EXPECTED_AFFILIATE_LINKS)) {
+  it("matches each V1 and V2 product to exactly its own affiliate link, with no duplicates", () => {
+    for (const [id, expectedUrl] of Object.entries({
+      ...EXPECTED_AFFILIATE_LINKS,
+      ...EXPECTED_V2_AFFILIATE_LINKS,
+    })) {
       const product = getProductById(id);
       expect(product, `product "${id}" should exist`).toBeDefined();
       expect(product!.amazon_affiliate_url).toBe(expectedUrl);
@@ -92,21 +104,19 @@ describe("catalog data integrity", () => {
     expect(new Set(productUrls).size).toBe(productUrls.length);
   });
 
-  it("uses the Amazon Associates affiliate URL for the CTA on V1 products", () => {
-    for (const id of V1_IDS) {
+  it("every catalog product now has an affiliate URL (no direct-link fallback remains)", () => {
+    expect(products).toHaveLength(V1_IDS.length + V2_IDS.length);
+    for (const p of products) {
+      expect(p.amazon_affiliate_url, `"${p.id}" should have an affiliate URL`).not.toBeNull();
+    }
+  });
+
+  it("uses the Amazon Associates affiliate URL for the CTA on every product", () => {
+    for (const id of [...V1_IDS, ...V2_IDS]) {
       const p = getProductById(id)!;
       const link = resolveAmazonLink(p);
       expect(link.isAffiliate).toBe(true);
       expect(link.href).toBe(p.amazon_affiliate_url);
-    }
-  });
-
-  it("falls back to the direct product URL for the CTA on V2 products", () => {
-    for (const id of V2_IDS) {
-      const p = getProductById(id)!;
-      const link = resolveAmazonLink(p);
-      expect(link.isAffiliate).toBe(false);
-      expect(link.href).toBe(p.amazon_product_url);
     }
   });
 
