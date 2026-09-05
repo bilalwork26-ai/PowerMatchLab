@@ -52,6 +52,18 @@ export interface Guide {
   relatedProductIds: string[];
   /** Other guide slugs to cross-link (must exist in GUIDES). Optional. */
   relatedGuideSlugs?: string[];
+  /**
+   * Slug of the single best-for page (see content/best-for.ts) that is this
+   * guide's clearest commercial counterpart, surfaced as a "Next steps" link
+   * on the guide page. Optional — most guides don't have one obvious match.
+   */
+  relatedBestForSlug?: string;
+  /**
+   * When set, shows a "Next steps" link to Power Setup Studio with this
+   * exact label (e.g. naming the closest matching scenario). The link always
+   * points to the flat /power-setup-studio URL — no scenario query param.
+   */
+  studioLinkLabel?: string;
   faq: GuideFaq[];
   sources: GuideSource[];
   lastUpdated: string; // ISO date
@@ -172,7 +184,7 @@ export const GUIDES: Guide[] = [
       "Most 1kWh-class power stations can run a household refrigerator for many hours. How to check surge watts, daily energy, and calculate realistic runtime by capacity.",
     intro: [
       "Short answer: yes, most 1kWh-class and larger power stations can run a household refrigerator, commonly for somewhere around 12-24+ hours per full charge depending on capacity and the fridge's real draw — with two caveats: the station's surge rating must clear the compressor's startup spike, and the exact runtime depends on your specific fridge.",
-      "This guide covers both the feasibility check and the runtime math, so you can answer \"will it work\" and \"for how long\" together.",
+      "This guide covers both the feasibility check and the runtime math, so you can answer \"will it work\" and \"for how long\" together. If you already know a fridge is a safe bet for your setup and just need to work out exactly what capacity to buy, PowerMatchLab's dedicated sizing guide walks through that calculation step by step.",
     ],
     keyTakeaways: [
       "The startup surge (often 2–3× running watts) is the first hurdle — check it against the station's surge/peak rating.",
@@ -230,6 +242,8 @@ export const GUIDES: Guide[] = [
       "how-long-will-a-1000wh-power-station-last",
       "power-station-for-power-outage",
     ],
+    relatedBestForSlug: "best-for-refrigerator-backup",
+    studioLinkLabel: "Try the Home Backup scenario in Power Setup Studio",
     faq: [
       {
         question: "Will a 300Wh power station run a fridge?",
@@ -396,7 +410,7 @@ export const GUIDES: Guide[] = [
       "A step-by-step method for sizing a power station to run a refrigerator: startup surge, daily watt-hours, the 85% usable-energy rule, and a worked example.",
     intro: [
       "A refrigerator is one of the most common reasons people buy a portable power station, and it is also one of the easiest appliances to undersize for if you only look at the number on the door sticker.",
-      "This guide walks through the same watts-vs-watt-hours method used throughout PowerMatchLab, applied specifically to a fridge or freezer, so you can size a station with confidence instead of guessing.",
+      "This guide walks through the same watts-vs-watt-hours method used throughout PowerMatchLab, applied specifically to a fridge or freezer, so you can size a station with confidence instead of guessing. If you're not yet sure a power station can handle a fridge's startup surge at all, see PowerMatchLab's dedicated feasibility guide first.",
     ],
     keyTakeaways: [
       "A full-size fridge commonly uses about 1,000–1,600 Wh/day — check with a plug-in energy meter for your real figure.",
@@ -478,6 +492,13 @@ export const GUIDES: Guide[] = [
       "ecoflow-delta-3-classic",
       "anker-solix-c2000-gen-2",
     ],
+    relatedGuideSlugs: [
+      "can-a-power-station-run-a-refrigerator",
+      "watts-vs-watt-hours",
+      "power-station-for-power-outage",
+    ],
+    relatedBestForSlug: "best-for-refrigerator-backup",
+    studioLinkLabel: "Try the Home Backup scenario in Power Setup Studio",
     faq: [
       {
         question: "Will a small, ~300Wh power station run a refrigerator?",
@@ -705,6 +726,8 @@ export const GUIDES: Guide[] = [
       "power-station-for-rv",
       "how-many-solar-panels-do-i-need",
     ],
+    relatedBestForSlug: "best-for-camping",
+    studioLinkLabel: "Try the Camping scenario in Power Setup Studio",
     faq: [
       {
         question: "Do I need solar panels for camping, or is a bigger battery enough?",
@@ -870,7 +893,7 @@ export const GUIDES: Guide[] = [
     metaDescription:
       "Sizing a power station for an RV: TT-30 shore-power compatibility, air conditioner surge, boondocking days, weight, and a worked capacity example.",
     intro: [
-      "RV power needs range from topping off house batteries and running small electronics to starting a rooftop air conditioner. What you actually need depends heavily on which of those you're solving for.",
+      "RV, camper, and motorhome power needs range from topping off house batteries and running small electronics to starting a rooftop air conditioner. What you actually need depends heavily on which of those you're solving for.",
       "This guide applies PowerMatchLab's standard watts-vs-watt-hours method to RV-specific loads and constraints — shore-cord compatibility, big surge loads, and boondocking days without hookups.",
     ],
     keyTakeaways: [
@@ -948,6 +971,8 @@ export const GUIDES: Guide[] = [
       "watts-vs-watt-hours",
       "power-stations-for-remote-work-and-van-life",
     ],
+    relatedBestForSlug: "best-for-rv",
+    studioLinkLabel: "See a similar mobile setup in Power Setup Studio's Van Life scenario",
     faq: [
       {
         question: "Will a power station run my RV's rooftop air conditioner?",
@@ -1760,7 +1785,7 @@ export const GUIDES: Guide[] = [
       "Sizing a power station for remote work or van life: daily energy for a laptop-and-connectivity workday, van-specific loads, solar for continuous off-grid living, and weight.",
     intro: [
       "Working remotely from a van, a cabin, or anywhere off a fixed outlet has a different load profile from a weekend camping trip: it's daily, predictable, and centered on a laptop and connectivity rather than occasional appliance use — but living in a vehicle full-time also adds loads a weekend trip doesn't have, like a 12V or AC fridge running continuously.",
-      "This guide applies PowerMatchLab's standard watts-vs-watt-hours method to both the remote-work day and the van-life baseline, with a worked example for each.",
+      "This guide applies PowerMatchLab's standard watts-vs-watt-hours method to both the remote-work day and the van-life baseline, with a worked example for each. PowerMatchLab doesn't currently rank products by a dedicated van-life category, so where this guide points to a best-for page, it's pointing to the RV picks — the closest commercial match for a vehicle-based power setup, not a van-life-specific ranking.",
     ],
     keyTakeaways: [
       "A typical remote-work day (laptop, monitor, router, phone) is a modest, predictable daily energy load — usually well under what a single fridge uses in a day.",
@@ -1816,6 +1841,8 @@ export const GUIDES: Guide[] = [
       "power-station-for-rv",
       "solar-generator-vs-portable-power-station",
     ],
+    relatedBestForSlug: "best-for-rv",
+    studioLinkLabel: "Try the Van Life scenario in Power Setup Studio",
     faq: [
       {
         question: "How much power does a remote work day really use?",

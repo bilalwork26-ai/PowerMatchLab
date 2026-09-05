@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { BestForContent } from "@/content/best-for";
 import { selectBestFor } from "@/lib/best-for";
 import { getAllProducts } from "@/data/products";
+import { getGuide } from "@/content/guides";
 import { PageHero } from "@/components/layout/PageHero";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Callout } from "@/components/ui/Callout";
@@ -16,6 +17,9 @@ export function BestForPage({ content }: { content: BestForContent }) {
   const entries = selectBestFor(content.key, catalog);
   const top = entries.filter((e) => e.tagMatch);
   const others = entries.filter((e) => !e.tagMatch);
+  const relatedGuides = (content.relatedGuideSlugs ?? [])
+    .map((s) => getGuide(s))
+    .filter((g): g is NonNullable<typeof g> => g !== undefined);
 
   const crumbs = [
     { name: "Home", path: "/" },
@@ -79,6 +83,33 @@ export function BestForPage({ content }: { content: BestForContent }) {
               for a recommendation tied to your specific load.
             </Callout>
           </section>
+
+          {relatedGuides.length || content.studioLinkLabel ? (
+            <section className="mt-8">
+              <h2 className="text-lg font-bold text-white">
+                Sizing guides and interactive tools
+              </h2>
+              <ul className="mt-3 space-y-1.5 text-sm">
+                {relatedGuides.map((g) => (
+                  <li key={g.slug}>
+                    <Link
+                      href={`/guides/${g.slug}`}
+                      className="text-cyan-300 hover:underline"
+                    >
+                      → {g.title}
+                    </Link>
+                  </li>
+                ))}
+                {content.studioLinkLabel ? (
+                  <li>
+                    <Link href="/power-setup-studio" className="text-cyan-300 hover:underline">
+                      → {content.studioLinkLabel}
+                    </Link>
+                  </li>
+                ) : null}
+              </ul>
+            </section>
+          ) : null}
 
           <section className="mt-8">
             <h2 className="text-lg font-bold text-white">

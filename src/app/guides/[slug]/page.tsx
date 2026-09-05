@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { GUIDES, getGuide } from "@/content/guides";
+import { getBestFor } from "@/content/best-for";
 import { getProductsByIds } from "@/data/products";
 import { scoreCatalog } from "@/lib/score";
 import { getAllProducts } from "@/data/products";
@@ -58,6 +59,9 @@ export default async function GuidePage({
   const relatedGuides = (guide.relatedGuideSlugs ?? [])
     .map((s) => getGuide(s))
     .filter((g): g is NonNullable<typeof g> => g !== undefined);
+  const relatedBestFor = guide.relatedBestForSlug
+    ? getBestFor(guide.relatedBestForSlug)
+    : undefined;
   const anyAffiliateLink = related.some((p) => resolveAmazonLink(p).isAffiliate);
   const allAffiliateLinks =
     related.length > 0 && related.every((p) => resolveAmazonLink(p).isAffiliate);
@@ -273,6 +277,23 @@ export default async function GuidePage({
                   → Calculate your power needs
                 </Link>
               </li>
+              {relatedBestFor ? (
+                <li>
+                  <Link
+                    href={`/${relatedBestFor.slug}`}
+                    className="text-cyan-300 hover:underline"
+                  >
+                    → {relatedBestFor.title}
+                  </Link>
+                </li>
+              ) : null}
+              {guide.studioLinkLabel ? (
+                <li>
+                  <Link href="/power-setup-studio" className="text-cyan-300 hover:underline">
+                    → {guide.studioLinkLabel}
+                  </Link>
+                </li>
+              ) : null}
               <li>
                 <Link href="/compare" className="text-cyan-300 hover:underline">
                   → Compare products side by side
