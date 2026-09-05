@@ -16,6 +16,17 @@ export interface BestForContent {
   commonMistakes: string[];
   compatibilityLogic: string[];
   faq: { question: string; answer: string }[];
+  /**
+   * Guide slugs (see content/guides.ts) to surface as "Sizing guides" links
+   * on this page. Optional — most best-for pages don't need this section.
+   */
+  relatedGuideSlugs?: string[];
+  /**
+   * When set, shows a link to Power Setup Studio with this exact label
+   * (e.g. naming the closest matching scenario). Always points to the flat
+   * /power-setup-studio URL — no scenario query param.
+   */
+  studioLinkLabel?: string;
   lastUpdated: string;
 }
 
@@ -74,6 +85,8 @@ export const BEST_FOR: BestForContent[] = [
           "Yes — a folding solar panel within the unit's input range can top it up during the day. Real solar output is usually 60-80% of the panel's rating.",
       },
     ],
+    relatedGuideSlugs: ["power-station-for-camping"],
+    studioLinkLabel: "Try the Camping scenario in Power Setup Studio",
     lastUpdated: "2026-09-01",
   },
   {
@@ -83,7 +96,7 @@ export const BEST_FOR: BestForContent[] = [
     metaDescription:
       "RV power priorities: a TT-30 outlet or enough output for the rig's loads, expansion capacity for longer trips, and manageable weight for a mobile install.",
     intro: [
-      "RV use spans everything from topping up house batteries to running a rooftop air conditioner. The right unit depends on whether you want plug-in shore-cord compatibility or just enough output for specific appliances.",
+      "RV, camper, and motorhome use spans everything from topping up house batteries to running a rooftop air conditioner. The right unit depends on whether you want plug-in shore-cord compatibility or just enough output for specific appliances.",
     ],
     whatMatters: [
       {
@@ -129,6 +142,8 @@ export const BEST_FOR: BestForContent[] = [
           "Some units accept a 12V/24V DC input that can be fed from the vehicle with the right cable and current limits. Check the unit's DC input spec.",
       },
     ],
+    relatedGuideSlugs: ["power-station-for-rv", "power-stations-for-remote-work-and-van-life"],
+    studioLinkLabel: "Try the Van Life scenario in Power Setup Studio",
     lastUpdated: "2026-09-01",
   },
   {
@@ -184,6 +199,8 @@ export const BEST_FOR: BestForContent[] = [
           "One larger unit is simpler and usually more efficient. Two smaller units add redundancy and flexibility but cost more per Wh and take more space.",
       },
     ],
+    relatedGuideSlugs: ["power-station-for-refrigerator", "can-a-power-station-run-a-refrigerator"],
+    studioLinkLabel: "Try the Home Backup scenario in Power Setup Studio",
     lastUpdated: "2026-09-01",
   },
   {
