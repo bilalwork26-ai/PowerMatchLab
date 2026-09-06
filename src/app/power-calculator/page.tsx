@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getAllProducts } from "@/data/products";
-import { pageMetadata, breadcrumbJsonLd, faqJsonLd } from "@/lib/seo";
+import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 import { PageHero } from "@/components/layout/PageHero";
 import { PowerCalculator } from "@/components/calculator/PowerCalculator";
 import { JsonLd } from "@/components/ui/JsonLd";
@@ -40,7 +40,6 @@ export default function PowerCalculatorPage() {
             { name: "Home", path: "/" },
             { name: "Power Calculator", path: "/power-calculator" },
           ]),
-          faqJsonLd(FAQ),
         ]}
       />
       <PageHero

@@ -9,7 +9,7 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { Callout } from "@/components/ui/Callout";
 import { Badge } from "@/components/ui/Badge";
 import { JsonLd } from "@/components/ui/JsonLd";
-import { breadcrumbJsonLd, faqJsonLd } from "@/lib/seo";
+import { breadcrumbJsonLd } from "@/lib/seo";
 import { scoreCatalog } from "@/lib/score";
 
 export function BestForPage({ content }: { content: BestForContent }) {
@@ -32,9 +32,7 @@ export function BestForPage({ content }: { content: BestForContent }) {
 
   return (
     <>
-      <JsonLd
-        data={[breadcrumbJsonLd(crumbs), faqJsonLd(content.faq)]}
-      />
+      <JsonLd data={[breadcrumbJsonLd(crumbs)]} />
       <PageHero title={content.title} crumbs={crumbs} lead={content.intro[0]} />
 
       <div className="bg-navy-950 py-10 text-white">

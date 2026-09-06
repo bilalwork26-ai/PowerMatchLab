@@ -211,7 +211,11 @@ export const BEST_FOR: BestForContent[] = [
           "One larger unit is simpler and usually more efficient. Two smaller units add redundancy and flexibility but cost more per Wh and take more space.",
       },
     ],
-    relatedGuideSlugs: ["power-station-for-refrigerator", "can-a-power-station-run-a-refrigerator"],
+    relatedGuideSlugs: [
+      "power-station-for-refrigerator",
+      "can-a-power-station-run-a-refrigerator",
+      "best-indoor-generator-for-refrigerator",
+    ],
     studioLinkLabel: "Try the Home Backup scenario in Power Setup Studio",
     relatedComparisonSlugs: ["ecoflow-delta-3-classic-vs-anker-solix-c1000-gen-2"],
     usMarketNotice: true,

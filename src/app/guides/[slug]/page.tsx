@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { GUIDES, getGuide } from "@/content/guides";
 import { getBestFor } from "@/content/best-for";
+import { getComparison } from "@/content/comparisons";
 import { getProductsByIds } from "@/data/products";
 import { scoreCatalog } from "@/lib/score";
 import { getAllProducts } from "@/data/products";
@@ -10,7 +11,6 @@ import {
   pageMetadata,
   breadcrumbJsonLd,
   articleJsonLd,
-  faqJsonLd,
   type Crumb,
 } from "@/lib/seo";
 import { fmtDate } from "@/lib/format";
@@ -19,6 +19,7 @@ import { PageHero } from "@/components/layout/PageHero";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Callout } from "@/components/ui/Callout";
 import { JsonLd } from "@/components/ui/JsonLd";
+import { EstimateFactorsDisclosure } from "@/components/ui/EstimateFactorsDisclosure";
 
 export function generateStaticParams() {
   return GUIDES.map((g) => ({ slug: g.slug }));
@@ -62,6 +63,9 @@ export default async function GuidePage({
   const relatedBestFor = guide.relatedBestForSlug
     ? getBestFor(guide.relatedBestForSlug)
     : undefined;
+  const relatedComparison = guide.relatedComparisonSlug
+    ? getComparison(guide.relatedComparisonSlug)
+    : undefined;
   const anyAffiliateLink = related.some((p) => resolveAmazonLink(p).isAffiliate);
   const allAffiliateLinks =
     related.length > 0 && related.every((p) => resolveAmazonLink(p).isAffiliate);
@@ -83,7 +87,6 @@ export default async function GuidePage({
             path: `/guides/${guide.slug}`,
             datePublished: guide.lastUpdated,
           }),
-          faqJsonLd(guide.faq),
         ]}
       />
       <PageHero title={guide.title} crumbs={crumbs} />
@@ -156,6 +159,12 @@ export default async function GuidePage({
               ) : null}
             </section>
           ))}
+
+          {guide.showEstimateFactorsDisclosure ? (
+            <div className="not-prose my-6">
+              <EstimateFactorsDisclosure />
+            </div>
+          ) : null}
 
           <Callout tone="info" dark title="Put a number on it" className="my-8">
             The{" "}
@@ -299,6 +308,16 @@ export default async function GuidePage({
                 <li>
                   <Link href="/power-setup-studio" className="text-cyan-300 hover:underline">
                     → {guide.studioLinkLabel}
+                  </Link>
+                </li>
+              ) : null}
+              {relatedComparison ? (
+                <li>
+                  <Link
+                    href={`/compare/${relatedComparison.slug}`}
+                    className="text-cyan-300 hover:underline"
+                  >
+                    → Compare: {relatedComparison.h1}
                   </Link>
                 </li>
               ) : null}
