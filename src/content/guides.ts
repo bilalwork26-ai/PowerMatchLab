@@ -71,6 +71,19 @@ export interface Guide {
    * products" section carries real purchase weight.
    */
   usMarketNotice?: boolean;
+  /**
+   * Slug of a single editorial model comparison (see content/comparisons.ts)
+   * to surface as a "Next steps" link, alongside relatedBestForSlug and
+   * studioLinkLabel. Optional — most guides don't have one obvious match.
+   */
+  relatedComparisonSlug?: string;
+  /**
+   * When true, renders the shared EstimateFactorsDisclosure component (the
+   * same "why your real result may differ" disclosure used on the Power
+   * Calculator and Power Setup Studio) after this guide's sections, instead
+   * of the guide re-describing that list of variability factors in prose.
+   */
+  showEstimateFactorsDisclosure?: boolean;
   faq: GuideFaq[];
   sources: GuideSource[];
   lastUpdated: string; // ISO date
@@ -249,6 +262,7 @@ export const GUIDES: Guide[] = [
       "power-station-for-refrigerator",
       "how-long-will-a-1000wh-power-station-last",
       "power-station-for-power-outage",
+      "best-indoor-generator-for-refrigerator",
     ],
     relatedBestForSlug: "best-for-refrigerator-backup",
     studioLinkLabel: "Try the Home Backup scenario in Power Setup Studio",
@@ -518,6 +532,7 @@ export const GUIDES: Guide[] = [
       "can-a-power-station-run-a-refrigerator",
       "watts-vs-watt-hours",
       "power-station-for-power-outage",
+      "best-indoor-generator-for-refrigerator",
     ],
     relatedBestForSlug: "best-for-refrigerator-backup",
     studioLinkLabel: "Try the Home Backup scenario in Power Setup Studio",
@@ -548,6 +563,154 @@ export const GUIDES: Guide[] = [
       "Manufacturer-published specifications, attributed by brand in products.json",
     ],
     lastUpdated: "2026-09-03",
+  },
+  {
+    slug: "best-indoor-generator-for-refrigerator",
+    group: "use-cases",
+    title: "Best Indoor Generator for a Refrigerator: Safe Battery Backup Options",
+    metaDescription:
+      "Searching for an indoor generator for a refrigerator? A battery power station is the safe indoor option; a fuel-burning generator must never run inside. What to check before buying.",
+    intro: [
+      "Short answer: for indoor use, the safe option is a battery-based power station, used according to its manufacturer's instructions — not a fuel-burning generator. A gasoline, propane, or other fuel-burning generator must never be run inside a house, garage, basement, shed, or any other enclosed or partially enclosed space, even with doors or windows open.",
+      "\"Indoor generator\" is a common search term, but no fuel-burning generator is actually safe indoors — what most people searching for one actually need is a way to keep a refrigerator running from inside the house without exhaust, noise, or a fuel supply. This guide covers the safety distinction, what \"generator\" vs. \"power station\" terminology actually means, and how to size a battery station for a fridge.",
+    ],
+    keyTakeaways: [
+      "A battery power station has no exhaust and can be used indoors following its manufacturer's instructions; a fuel-burning generator must never run indoors, in a garage (even with the door open), or near windows and doors.",
+      "\"Generator,\" \"power station,\" and \"solar generator\" are often used interchangeably in marketing for the same battery-and-inverter device — but only the battery-based version is safe indoors.",
+      "Sizing still comes down to the same two checks as any power station: surge output to start the compressor, and watt-hours for how long it needs to run.",
+      "A roughly 1 kWh station does not automatically mean a full day of runtime — inverter losses, temperature, door openings, and the fridge's own age and cycling all change the real number.",
+      "Recommended capacity ≈ (daily energy Wh × days of autonomy) ÷ 0.85 usable-energy × 1.2 reserve — the same formula used throughout PowerMatchLab.",
+    ],
+    sections: [
+      {
+        id: "what-is-an-indoor-generator",
+        heading: "What people usually mean by \"indoor generator\"",
+        body: [
+          "Strictly speaking, there is no such thing as a safe indoor fuel-burning generator — every gasoline, propane, diesel, or dual-fuel generator produces carbon monoxide and must run outdoors, away from the home. When someone searches for an \"indoor generator for a refrigerator,\" they are almost always describing what they actually need: a way to keep a fridge running from inside the house without exhaust, noise, or a fuel supply, which is exactly what a battery-based power station provides.",
+          "This mix-up is common because product listings use overlapping language — \"generator,\" \"power station,\" and \"solar generator\" often describe the same battery-and-inverter device. PowerMatchLab's dedicated guide on that terminology, Solar Generator vs. Portable Power Station, explains the distinction in more depth.",
+        ],
+      },
+      {
+        id: "battery-vs-fuel",
+        heading: "Battery power station vs. fuel-burning generator",
+        body: [
+          "A battery-based power station stores electricity in a rechargeable battery and releases it through a built-in inverter — there is no combustion and no exhaust, which is why it can be used indoors when placed and ventilated according to its manufacturer's instructions.",
+          "A fuel-burning generator creates electricity by burning gasoline, propane, or diesel in a small engine, which produces carbon monoxide (CO), a colorless, odorless gas. That is true of every fuel-burning generator, regardless of size, brand, or how new it is — including units marketed as \"quiet,\" \"inverter,\" or \"portable.\"",
+        ],
+      },
+      {
+        id: "why-fuel-generators-are-dangerous-indoors",
+        heading: "Why a fuel generator must never run indoors",
+        body: [
+          "The U.S. Consumer Product Safety Commission (CPSC) and the Centers for Disease Control and Prevention (CDC) both warn that a fuel-burning generator should never be operated inside a home, basement, garage, shed, or other enclosed or partially enclosed space — even with doors, windows, or vents open. Opening a door or window does not clear carbon monoxide fast enough to prevent it from reaching dangerous levels indoors.",
+          "Both agencies recommend running a portable generator outdoors, well away from doors, windows, and vents, and installing battery-powered carbon monoxide alarms in the home. See the official CPSC and CDC sources linked at the end of this guide for the full guidance.",
+          "A battery power station avoids this risk entirely because it has no engine and no exhaust — this is the core safety reason many households specifically look for an indoor-safe option to keep a refrigerator running.",
+        ],
+      },
+      {
+        id: "running-watts-vs-surge-indoor",
+        heading: "Running watts vs. the compressor's startup surge",
+        body: [
+          "Whichever battery power station you consider, it needs to clear the same two checks as for any refrigerator: continuous output in watts to run the compressor, and a surge or peak rating to handle its startup spike, commonly two to three times the running watts for a brief moment. PowerMatchLab's feasibility guide, Can a Power Station Run a Refrigerator, and For How Long?, covers this surge check step by step.",
+        ],
+      },
+      {
+        id: "wh-and-autonomy-indoor",
+        heading: "Watt-hours and estimated autonomy",
+        body: [
+          "Once output is covered, the remaining question is capacity: how many watt-hours the station holds, and how long that covers your fridge. As a planning estimate, estimated runtime (hours) ≈ usable capacity (about 85% of rated Wh) ÷ the fridge's average running watts — the same formula used on every PowerMatchLab product page. This is a planning calculation, not a lab measurement or a guarantee.",
+          "The Power Calculator applies this same formula to your exact fridge and target runtime, and shows which catalog stations clear both the surge and capacity requirements — it already starts with a refrigerator pre-added as an example device, so you can edit its running watts and hours to match your own model directly.",
+        ],
+      },
+      {
+        id: "why-1kwh-is-not-a-full-day",
+        heading: "Why a roughly 1 kWh battery doesn't automatically mean a full day",
+        body: [
+          "A common assumption is that a ~1,000 Wh-class power station covers a full 24 hours on a refrigerator. In practice it often covers considerably less, because several real-world factors reduce usable runtime below the simple nameplate-capacity number:",
+        ],
+        bullets: [
+          "Inverter and conversion losses — a station never delivers 100% of its rated capacity as usable AC power; PowerMatchLab plans around 85% usable energy for exactly this reason.",
+          "Ambient temperature — a hot kitchen, garage, or porch makes the compressor run more, and battery capacity itself can be reduced in extreme heat or cold.",
+          "Door openings — every time the door opens, warm air enters and the compressor has to work harder to recover, increasing energy use for that cycle.",
+          "The fridge's age and condition — an older unit, a worn door seal, or a less efficient compressor can use meaningfully more daily energy than a new, efficient model.",
+          "Compressor cycling — a fridge does not draw its running watts continuously; it cycles on and off, so its real daily energy use depends on how often and how long it cycles, not just its rated wattage.",
+        ],
+      },
+      {
+        id: "choosing-capacity-class-indoor",
+        heading: "Choosing roughly 1 kWh, 2 kWh, or larger",
+        body: [
+          "As a starting point: a ~1 kWh-class station is often enough for a shorter outage or a smaller fridge; a ~2 kWh-class station gives more comfortable margin for a full-size fridge over a full day; and a larger or expandable platform makes more sense for multi-day outages or when the fridge is one of several priority loads. These are starting points, not fixed rules — your fridge's own measured energy use is what should decide it.",
+          "PowerMatchLab's sizing guide, What Size Power Station Do I Need for a Refrigerator?, works through the exact watt-hour math for 8-hour, 12-hour, and 24-hour outages, using the same formula referenced above.",
+          "For today's ranked catalog picks evaluated specifically for this use case — capacity, surge rating, and other refrigerator-relevant fields — see PowerMatchLab's Best Power Stations for Refrigerator Backup page.",
+        ],
+      },
+      {
+        id: "recharging-indoor-generator-alt",
+        heading: "Recharging: wall power and solar",
+        body: [
+          "A battery power station recharges from a normal wall outlet, and many models also accept solar input. AC charging is the fastest option; solar can extend coverage during a multi-day outage, though real-world solar output is usually well below a panel's rated watts. PowerMatchLab's charging guide, Solar Input and AC Charging Specs, Explained, covers both in more depth.",
+        ],
+      },
+      {
+        id: "limits-and-precautions",
+        heading: "Limits and precautions",
+        body: [
+          "A portable battery power station is generally an essentials device — sized realistically, it is not a replacement for a whole-house standby generator, and it has a finite capacity that must be recharged once used.",
+          "Even though a battery station produces no exhaust, always follow its manufacturer's manual for placement, ventilation, and operating temperature range — treat the manual as the authoritative source for your specific model, not this guide.",
+          "PowerMatchLab has not physically tested any product referenced here. Specifications shown for a given product come from that product's own manufacturer-published data, and any figure PowerMatchLab could not confirm is shown as \"Not verified.\"",
+        ],
+      },
+    ],
+    relatedProductIds: [
+      "ecoflow-delta-3-classic",
+      "anker-solix-c1000-gen-2",
+    ],
+    relatedGuideSlugs: [
+      "power-station-for-refrigerator",
+      "can-a-power-station-run-a-refrigerator",
+      "solar-generator-vs-portable-power-station",
+    ],
+    relatedBestForSlug: "best-for-refrigerator-backup",
+    relatedComparisonSlug: "ecoflow-delta-3-classic-vs-anker-solix-c1000-gen-2",
+    studioLinkLabel: "Try the Home Backup scenario in Power Setup Studio",
+    usMarketNotice: true,
+    showEstimateFactorsDisclosure: true,
+    faq: [
+      {
+        question: "Can I use a battery power station inside my house?",
+        answer:
+          "Yes — a battery-based power station has no engine and no exhaust, so it can be used indoors when placed and ventilated according to its manufacturer's instructions. This is different from a fuel-burning generator, which must never be run indoors.",
+      },
+      {
+        question: "Is it safe to run a fuel generator in the garage with the door open?",
+        answer:
+          "No. The CPSC and CDC both warn that running a fuel-burning generator in a garage, even with the door open, can allow carbon monoxide to reach dangerous levels inside the home. Fuel generators must be run outdoors, away from doors, windows, and vents.",
+      },
+      {
+        question: "Will a 1 kWh power station run my fridge for a full day?",
+        answer:
+          "Not automatically. Inverter losses, ambient temperature, door openings, and your specific fridge's age and cycling behavior all affect real-world runtime. Measure your fridge's actual daily energy use with a plug-in energy meter for an accurate number, or use the Power Calculator as a planning estimate.",
+      },
+      {
+        question: "Do I need a whole-house generator just to keep the fridge running?",
+        answer:
+          "Not necessarily. A refrigerator's continuous and surge requirements are modest compared to a whole home's circuits, so a correctly sized portable battery power station is often enough on its own — see PowerMatchLab's sizing guide for the exact math.",
+      },
+    ],
+    sources: [
+      {
+        label: "U.S. Consumer Product Safety Commission — Carbon Monoxide Fact Sheet",
+        url: "https://www.cpsc.gov/safety-education/safety-guides/carbon-monoxide/carbon-monoxide-fact-sheet",
+      },
+      {
+        label: "Centers for Disease Control and Prevention — Carbon Monoxide Poisoning Basics",
+        url: "https://www.cdc.gov/carbon-monoxide/about/index.html",
+      },
+      { label: "ENERGY STAR — Refrigerators", url: "https://www.energystar.gov/products/refrigerators" },
+      "Manufacturer-published specifications, attributed by brand in products.json",
+    ],
+    lastUpdated: "2026-09-06",
   },
   {
     slug: "power-station-for-cpap",
