@@ -33,6 +33,11 @@ export interface BestForContent {
    * checked before buying. Optional — set per page as needed.
    */
   usMarketNotice?: boolean;
+  /**
+   * Slugs of editorial model comparisons (see content/comparisons.ts) to
+   * surface as "Direct comparison" links on this page. Optional.
+   */
+  relatedComparisonSlugs?: string[];
   lastUpdated: string;
 }
 
@@ -150,6 +155,7 @@ export const BEST_FOR: BestForContent[] = [
     ],
     relatedGuideSlugs: ["power-station-for-rv", "power-stations-for-remote-work-and-van-life"],
     studioLinkLabel: "Try the Van Life scenario in Power Setup Studio",
+    relatedComparisonSlugs: ["ecoflow-delta-3-classic-vs-anker-solix-c1000-gen-2"],
     lastUpdated: "2026-09-01",
   },
   {
@@ -207,6 +213,7 @@ export const BEST_FOR: BestForContent[] = [
     ],
     relatedGuideSlugs: ["power-station-for-refrigerator", "can-a-power-station-run-a-refrigerator"],
     studioLinkLabel: "Try the Home Backup scenario in Power Setup Studio",
+    relatedComparisonSlugs: ["ecoflow-delta-3-classic-vs-anker-solix-c1000-gen-2"],
     usMarketNotice: true,
     lastUpdated: "2026-09-01",
   },

@@ -95,7 +95,16 @@
     @apply text-white;
   }
 
-  .prose-pml a {
+  /*
+   * :not(.amazon-cta-link) excludes the centralized Amazon CTA button
+   * (AmazonCta.tsx) from this generic "links inside prose are cyan" rule.
+   * That button sets its own dark text color (text-amazon-text) via a
+   * plain utility class, which normally outranks this rule's higher
+   * specificity (.prose-pml a = one class + one element) — matching it
+   * here instead of raising the button's own specificity or reaching for
+   * !important.
+   */
+  .prose-pml a:not(.amazon-cta-link) {
     @apply text-cyan-300 underline decoration-cyan-400/40 underline-offset-2 hover:decoration-cyan-300;
   }
 

@@ -13,6 +13,11 @@ const FORBIDDEN = [
   "tied to the official source",
   "tied to an official source",
   "cite to an official source",
+  // Comparison-page overclaiming: unsupported physical/popularity claims and
+  // a category-win tally that overstated how decisive the data actually is.
+  "Both are compact",
+  "frequently shortlisted",
+  "3 clear wins of 6",
 ];
 
 const SRC_DIR = join(process.cwd(), "src");

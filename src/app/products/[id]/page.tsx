@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getAllProducts, getProductById, productDisplayName } from "@/data/products";
+import { getComparisonsForProduct } from "@/content/comparisons";
 import { scoreProduct } from "@/lib/score";
 import {
   breadcrumbJsonLd,
@@ -61,6 +62,7 @@ export default async function ProductPage({
   const score = scoreProduct(product, catalog);
   const name = productDisplayName(product);
   const { isAffiliate } = resolveAmazonLink(product);
+  const comparisons = getComparisonsForProduct(product.id);
 
   const crumbs: Crumb[] = [
     { name: "Home", path: "/" },
@@ -180,6 +182,16 @@ export default async function ProductPage({
                 >
                   Add your devices and check if this model fits →
                 </Link>
+
+                {comparisons.map((c) => (
+                  <Link
+                    key={c.slug}
+                    href={`/compare/${c.slug}`}
+                    className="mt-1.5 block text-xs font-medium text-cyan-300 hover:underline"
+                  >
+                    See the full {c.h1} comparison →
+                  </Link>
+                ))}
 
                 {product.best_for.length ? (
                   <div className="mt-4 border-t border-navy-700 pt-3">

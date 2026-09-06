@@ -85,6 +85,14 @@ export const COMPARE_ROWS: CompareRow[] = [
     priorityFor: ["camping"],
   },
   {
+    key: "dimensions",
+    label: "Dimensions",
+    group: "Portability",
+    numeric: () => null,
+    display: (p) => fmtText(p.dimensions),
+    better: "none",
+  },
+  {
     key: "idle_consumption_w",
     label: "Idle consumption",
     group: "Portability",
@@ -179,6 +187,14 @@ export const COMPARE_ROWS: CompareRow[] = [
     display: (p) => fmtBool(p.expandable),
     better: "higher",
     priorityFor: ["home-backup", "rv"],
+  },
+  {
+    key: "battery_chemistry",
+    label: "Battery chemistry",
+    group: "Battery",
+    numeric: () => null,
+    display: (p) => fmtText(p.battery_chemistry),
+    better: "none",
   },
   {
     key: "cycle_life",
