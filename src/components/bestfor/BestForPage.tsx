@@ -3,6 +3,7 @@ import type { BestForContent } from "@/content/best-for";
 import { selectBestFor } from "@/lib/best-for";
 import { getAllProducts } from "@/data/products";
 import { getGuide } from "@/content/guides";
+import { getComparison } from "@/content/comparisons";
 import { PageHero } from "@/components/layout/PageHero";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Callout } from "@/components/ui/Callout";
@@ -20,6 +21,9 @@ export function BestForPage({ content }: { content: BestForContent }) {
   const relatedGuides = (content.relatedGuideSlugs ?? [])
     .map((s) => getGuide(s))
     .filter((g): g is NonNullable<typeof g> => g !== undefined);
+  const relatedComparisons = (content.relatedComparisonSlugs ?? [])
+    .map((s) => getComparison(s))
+    .filter((c): c is NonNullable<typeof c> => c !== undefined);
 
   const crumbs = [
     { name: "Home", path: "/" },
@@ -84,7 +88,7 @@ export function BestForPage({ content }: { content: BestForContent }) {
             </Callout>
           </section>
 
-          {relatedGuides.length || content.studioLinkLabel ? (
+          {relatedGuides.length || relatedComparisons.length || content.studioLinkLabel ? (
             <section className="mt-8">
               <h2 className="text-lg font-bold text-white">
                 Sizing guides and interactive tools
@@ -97,6 +101,16 @@ export function BestForPage({ content }: { content: BestForContent }) {
                       className="text-cyan-300 hover:underline"
                     >
                       → {g.title}
+                    </Link>
+                  </li>
+                ))}
+                {relatedComparisons.map((c) => (
+                  <li key={c.slug}>
+                    <Link
+                      href={`/compare/${c.slug}`}
+                      className="text-cyan-300 hover:underline"
+                    >
+                      → Direct comparison: {c.h1}
                     </Link>
                   </li>
                 ))}

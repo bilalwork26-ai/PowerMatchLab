@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import Link from "next/link";
 import { getAllProducts } from "@/data/products";
 import { scoreCatalog, type ProductScore } from "@/lib/score";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
+import { COMPARISONS } from "@/content/comparisons";
 import { PageHero } from "@/components/layout/PageHero";
 import { CompareView } from "@/components/compare/CompareView";
+import { Callout } from "@/components/ui/Callout";
 import { JsonLd } from "@/components/ui/JsonLd";
 
 export const metadata: Metadata = pageMetadata({
@@ -36,6 +39,25 @@ export default function ComparePage() {
           { name: "Compare", path: "/compare" },
         ]}
       />
+      {COMPARISONS.length ? (
+        <div className="bg-navy-950 pt-6 text-white">
+          <div className="container-page">
+            <Callout tone="info" dark>
+              Prefer a focused, editorial write-up instead of building your own
+              selection?{" "}
+              {COMPARISONS.map((c, i) => (
+                <span key={c.slug}>
+                  {i > 0 ? ", " : ""}
+                  <Link href={`/compare/${c.slug}`} className="underline">
+                    {c.h1}
+                  </Link>
+                </span>
+              ))}
+              .
+            </Callout>
+          </div>
+        </div>
+      ) : null}
       <Suspense
         fallback={
           <div className="container-page py-12 text-sm text-navy-500">

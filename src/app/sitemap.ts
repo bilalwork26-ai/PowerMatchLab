@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 import { getAllProducts } from "@/data/products";
 import { GUIDES } from "@/content/guides";
 import { BEST_FOR } from "@/content/best-for";
+import { COMPARISONS } from "@/content/comparisons";
+import { getProductsByIds } from "@/data/products";
 import { absoluteUrl } from "@/lib/seo";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -45,6 +47,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(`${g.lastUpdated}T00:00:00Z`),
       changeFrequency: "monthly",
       priority: 0.6,
+    });
+  }
+
+  for (const c of COMPARISONS) {
+    const products = getProductsByIds(c.productIds);
+    const dates = products
+      .map((p) => p.last_verified)
+      .filter((d): d is string => Boolean(d))
+      .sort();
+    entries.push({
+      url: absoluteUrl(`/compare/${c.slug}`),
+      lastModified: dates.length ? new Date(`${dates[0]}T00:00:00Z`) : now,
+      changeFrequency: "monthly",
+      priority: 0.7,
     });
   }
 
