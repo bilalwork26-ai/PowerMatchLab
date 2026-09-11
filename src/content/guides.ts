@@ -92,6 +92,15 @@ export interface Guide {
    */
   embed?: "solar-charge-calculator" | "watt-hour-calculator" | "appliance-consumption-table";
   /**
+   * Slug of a specialized calculator (see content/tools.ts) that is this
+   * guide's clearest calculation counterpart, surfaced as a "Next steps"
+   * link — the guide explains the topic, the tool does the math for the
+   * reader's own numbers. Optional — most guides don't have one obvious
+   * match, and this is never set for the solar-charging guide (its
+   * calculator is embedded directly in the guide, not a separate route).
+   */
+  relatedToolSlug?: string;
+  /**
    * Optional link to a pre-filtered /products view (e.g. "?solar=1"), shown
    * in "Related products" alongside relatedProductIds. Only set this to a
    * real, working filter query the catalog UI actually supports.
@@ -212,6 +221,7 @@ export const GUIDES: Guide[] = [
   },
   {
     slug: "can-a-power-station-run-a-refrigerator",
+    relatedToolSlug: "refrigerator-runtime-calculator",
     group: "runtime",
     title: "Can a Power Station Run a Refrigerator, and For How Long?",
     metaDescription:
@@ -457,6 +467,7 @@ export const GUIDES: Guide[] = [
   },
   {
     slug: "power-station-for-refrigerator",
+    relatedToolSlug: "refrigerator-runtime-calculator",
     group: "runtime",
     title: "What Size Power Station Do I Need for a Refrigerator?",
     metaDescription:
@@ -597,6 +608,7 @@ export const GUIDES: Guide[] = [
   },
   {
     slug: "best-indoor-generator-for-refrigerator",
+    relatedToolSlug: "refrigerator-runtime-calculator",
     group: "use-cases",
     title: "Best Indoor Generator for a Refrigerator: Safe Battery Backup Options",
     metaDescription:
@@ -745,6 +757,7 @@ export const GUIDES: Guide[] = [
   },
   {
     slug: "power-station-for-cpap",
+    relatedToolSlug: "cpap-battery-calculator",
     group: "runtime",
     title: "How Long Can a Power Station Run a CPAP Machine?",
     metaDescription:
@@ -984,6 +997,7 @@ export const GUIDES: Guide[] = [
   },
   {
     slug: "power-station-for-home-backup",
+    relatedToolSlug: "home-backup-calculator",
     group: "use-cases",
     title: "What Size Power Station Do I Need for Home Backup?",
     metaDescription:
@@ -1110,6 +1124,7 @@ export const GUIDES: Guide[] = [
   },
   {
     slug: "power-station-for-rv",
+    relatedToolSlug: "rv-power-calculator",
     group: "use-cases",
     title: "What Size Power Station Do I Need for an RV?",
     metaDescription:
@@ -1233,6 +1248,7 @@ export const GUIDES: Guide[] = [
   },
   {
     slug: "power-station-for-power-outage",
+    relatedToolSlug: "home-backup-calculator",
     group: "use-cases",
     title: "What Size Power Station Do I Need for a Power Outage?",
     metaDescription:
@@ -1361,6 +1377,7 @@ export const GUIDES: Guide[] = [
   },
   {
     slug: "power-station-for-sump-pump",
+    relatedToolSlug: "home-backup-calculator",
     group: "use-cases",
     title: "Can a Power Station Run a Sump Pump During an Outage?",
     metaDescription:
@@ -2285,6 +2302,7 @@ export const GUIDES: Guide[] = [
   },
   {
     slug: "power-stations-for-remote-work-and-van-life",
+    relatedToolSlug: "rv-power-calculator",
     group: "use-cases",
     title: "Power Stations for Remote Work and Van Life",
     metaDescription:

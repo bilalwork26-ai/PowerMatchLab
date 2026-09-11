@@ -3,6 +3,7 @@ import { getAllProducts } from "@/data/products";
 import { GUIDES } from "@/content/guides";
 import { BEST_FOR } from "@/content/best-for";
 import { COMPARISONS } from "@/content/comparisons";
+import { TOOLS } from "@/content/tools";
 import { getProductsByIds } from "@/data/products";
 import { absoluteUrl } from "@/lib/seo";
 
@@ -15,6 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/compare",
     "/power-calculator",
     "/power-setup-studio",
+    "/tools",
     "/guides",
     "/research/portable-power-station-specs-2026",
     "/about-methodology",
@@ -38,6 +40,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(`${b.lastUpdated}T00:00:00Z`),
       changeFrequency: "monthly",
       priority: 0.7,
+    });
+  }
+
+  for (const t of TOOLS) {
+    entries.push({
+      url: absoluteUrl(`/tools/${t.slug}`),
+      lastModified: new Date(`${t.lastUpdated}T00:00:00Z`),
+      changeFrequency: "monthly",
+      priority: 0.75,
     });
   }
 

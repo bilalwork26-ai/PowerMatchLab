@@ -5,6 +5,7 @@ import Link from "next/link";
 import { GUIDES, getGuide, type Guide } from "@/content/guides";
 import { getBestFor } from "@/content/best-for";
 import { getComparison } from "@/content/comparisons";
+import { getTool } from "@/content/tools";
 import { getProductsByIds } from "@/data/products";
 import { scoreCatalog } from "@/lib/score";
 import { getAllProducts } from "@/data/products";
@@ -79,6 +80,7 @@ export default async function GuidePage({
   const relatedComparison = guide.relatedComparisonSlug
     ? getComparison(guide.relatedComparisonSlug)
     : undefined;
+  const relatedTool = guide.relatedToolSlug ? getTool(guide.relatedToolSlug) : undefined;
   const anyAffiliateLink = related.some((p) => resolveAmazonLink(p).isAffiliate);
   const allAffiliateLinks =
     related.length > 0 && related.every((p) => resolveAmazonLink(p).isAffiliate);
@@ -332,6 +334,13 @@ export default async function GuidePage({
                   → Calculate your power needs
                 </Link>
               </li>
+              {relatedTool ? (
+                <li>
+                  <Link href={`/tools/${relatedTool.slug}`} className="text-cyan-300 hover:underline">
+                    → {relatedTool.shortTitle} calculator
+                  </Link>
+                </li>
+              ) : null}
               {relatedBestFor ? (
                 <li>
                   <Link

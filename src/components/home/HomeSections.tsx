@@ -154,6 +154,13 @@ export function Hero() {
 
 export const TOOLS = [
   {
+    href: "/tools",
+    title: "All Calculators",
+    body: "Refrigerator, CPAP, RV, Starlink, home backup and more — every specialized calculator shares one transparent engine and the same real catalog.",
+    cta: "See all tools",
+    Icon: CalculatorIcon,
+  },
+  {
     href: "/power-calculator",
     title: "Power Calculator",
     body: "Enter your devices and usage to calculate the energy and power you need — with transparent assumptions you can adjust.",
@@ -185,7 +192,7 @@ export function ToolsSection() {
             Powerful Tools to Help You Decide
           </h2>
         </Reveal>
-        <div className="mt-6 grid gap-4 md:grid-cols-3">
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {TOOLS.map(({ href, title, body, cta, Icon }, i) => (
             <Reveal key={href} delayMs={i * 80}>
               <Link

@@ -25,6 +25,15 @@ export interface RecommendationPreferences {
   needsTT30?: boolean;
   /** Visitor wants to be able to add expansion batteries later. */
   wantsExpandable?: boolean;
+  /**
+   * Visitor wants a fast automatic transfer switch / UPS-style behavior.
+   * There is no editorially-established "fast enough" threshold in
+   * milliseconds, so this never hard-fails a product — it only surfaces the
+   * unit's own verified `ups_ms` figure as a reason, or flags the
+   * uncertainty when it is not verified, so the visitor can judge it
+   * themselves against their own equipment's tolerance.
+   */
+  needsUpsTransfer?: boolean;
   /** Visitor prioritises low weight / carryability. */
   prioritisePortability?: boolean;
   /** Allow counting expansion capacity toward the capacity requirement. */
@@ -232,6 +241,15 @@ function evaluateProduct(
       limitations.push("TT-30 outlet is not verified for this unit.");
     }
   }
+  if (prefs.needsUpsTransfer) {
+    if (product.ups_ms != null) {
+      reasons.push(`UPS/transfer time is ${formatMs(product.ups_ms)} (manufacturer-published).`);
+    } else {
+      limitations.push(
+        "UPS/transfer time is not verified for this unit — confirm it separately if your equipment needs a fast automatic switchover.",
+      );
+    }
+  }
   if (prefs.wantsExpandable) {
     if (product.expandable === true) {
       reasons.push(
@@ -367,4 +385,7 @@ function formatW(v: number): string {
 }
 function formatKg(v: number): string {
   return `${v.toFixed(1)} kg`;
+}
+function formatMs(v: number): string {
+  return `${Math.round(v).toLocaleString("en-US")} ms`;
 }
