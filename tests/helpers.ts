@@ -44,6 +44,7 @@ export function makeProduct(over: Partial<Product> = {}): Product {
     amazon_asin: "B000TEST",
     amazon_product_url: "https://www.amazon.com/dp/B000TEST",
     amazon_affiliate_url: null,
+    amazon_verification_status: "confirmed",
   };
   return { ...defaults, ...over };
 }

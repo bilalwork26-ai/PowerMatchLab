@@ -9,6 +9,12 @@ import type { Product } from "@/types/product";
  *  - Until/unless it exists for a given product, fall back to the verified
  *    direct `amazon_product_url`.
  *  - Never fabricate a tracking ID or affiliate URL.
+ *
+ * A product whose `amazon_verification_status` isn't "confirmed" never gets
+ * a link here at all, even if `amazon_product_url`/`amazon_asin` are
+ * populated — those fields can hold an unverified research candidate (which
+ * may turn out to be a bundle or the wrong listing), and the UI must not
+ * present an unverified candidate as a real purchase destination.
  */
 export interface AmazonLink {
   href: string | null;
@@ -17,6 +23,9 @@ export interface AmazonLink {
 }
 
 export function resolveAmazonLink(product: Product): AmazonLink {
+  if (product.amazon_verification_status !== "confirmed") {
+    return { href: null, isAffiliate: false };
+  }
   if (product.amazon_affiliate_url) {
     return { href: product.amazon_affiliate_url, isAffiliate: true };
   }

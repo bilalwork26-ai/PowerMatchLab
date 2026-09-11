@@ -63,6 +63,17 @@ const productObjectSchema = z.object({
   amazon_asin: nullableString,
   amazon_product_url: z.string().url().nullable(),
   amazon_affiliate_url: z.string().url().nullable(),
+  /**
+   * Whether the Amazon listing (ASIN + amazon_product_url) itself has been
+   * confirmed to be the exact base unit, as opposed to being a
+   * WebSearch-sourced candidate that might turn out to be a bundle, a wrong
+   * variant, or simply wrong. "confirmed" means a human has verified the
+   * listing matches the linked unit; "pending" means the URL/ASIN are
+   * provisional research candidates only; "rejected" means a listing was
+   * checked and found wrong. The UI must never render a purchase CTA for
+   * anything other than "confirmed" — see resolveAmazonLink.
+   */
+  amazon_verification_status: z.enum(["pending", "confirmed", "rejected"]),
 });
 
 /**
@@ -111,6 +122,13 @@ export const productSchema = productObjectSchema.superRefine((p, ctx) => {
       code: z.ZodIssueCode.custom,
       path: ["amazon_product_url"],
       message: "amazon_product_url must be the plain direct listing — it must not itself be an amzn.to link or carry an affiliate tag.",
+    });
+  }
+  if (p.amazon_verification_status !== "confirmed" && p.amazon_affiliate_url !== null) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["amazon_affiliate_url"],
+      message: "amazon_affiliate_url can only be set once amazon_verification_status is \"confirmed\" — an unverified listing can never carry a real affiliate link.",
     });
   }
 });

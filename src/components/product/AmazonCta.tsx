@@ -86,11 +86,17 @@ export function AmazonCta({
           tone === "dark" ? "text-navy-300" : "text-navy-500",
         )}
       >
-        Price, availability and current rating are shown on Amazon — PowerMatchLab
-        does not display them because we have not independently verified them.
-        {isAffiliate
-          ? " As an Amazon Associate we may earn from qualifying purchases."
-          : " This is a normal Amazon product link; affiliate tracking will be added later."}
+        {href ? (
+          <>
+            Price, availability and current rating are shown on Amazon — PowerMatchLab
+            does not display them because we have not independently verified them.
+            {isAffiliate
+              ? " As an Amazon Associate we may earn from qualifying purchases."
+              : " This is a normal Amazon product link; affiliate tracking will be added later."}
+          </>
+        ) : (
+          "This product's Amazon listing is a research candidate that has not yet been confirmed to match the exact unit, so no purchase link is shown."
+        )}
         {withDisclosure ? (
           <>
             {" "}

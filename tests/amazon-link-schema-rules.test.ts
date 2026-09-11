@@ -43,6 +43,7 @@ const BASE = {
   official_source: "Test Manufacturer",
   last_verified: "2026-01-01",
   amazon_asin: "B0TEST1234",
+  amazon_verification_status: "confirmed" as const,
 };
 
 describe("isAffiliateShapedUrl", () => {
@@ -125,6 +126,48 @@ describe("productSchema: a plain direct link can never pass as an affiliate link
       amazon_product_url: "https://www.amazon.com/dp/B0TEST1234",
       amazon_affiliate_url: "https://www.amazon.com/dp/B0TEST1234?tag=wrong-tag-20",
     });
+    expect(result.success).toBe(false);
+  });
+});
+
+describe("productSchema: amazon_verification_status gates whether an affiliate link can exist at all", () => {
+  it("accepts a pending product with a provisional direct URL and no affiliate link", () => {
+    const result = productSchema.safeParse({
+      ...BASE,
+      amazon_verification_status: "pending",
+      amazon_product_url: "https://www.amazon.com/dp/B0TEST1234",
+      amazon_affiliate_url: null,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects a real affiliate link on a product whose Amazon listing is only \"pending\"", () => {
+    const result = productSchema.safeParse({
+      ...BASE,
+      amazon_verification_status: "pending",
+      amazon_product_url: "https://www.amazon.com/dp/B0TEST1234",
+      amazon_affiliate_url: "https://amzn.to/realShortLink",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a real affiliate link on a \"rejected\" listing", () => {
+    const result = productSchema.safeParse({
+      ...BASE,
+      amazon_verification_status: "rejected",
+      amazon_product_url: "https://www.amazon.com/dp/B0TEST1234",
+      amazon_affiliate_url: "https://amzn.to/realShortLink",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a missing amazon_verification_status entirely (no implicit default)", () => {
+    const { amazon_verification_status: _drop, ...withoutStatus } = {
+      ...BASE,
+      amazon_product_url: "https://www.amazon.com/dp/B0TEST1234",
+      amazon_affiliate_url: null,
+    };
+    const result = productSchema.safeParse(withoutStatus);
     expect(result.success).toBe(false);
   });
 });

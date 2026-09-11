@@ -63,7 +63,7 @@ export default async function ProductPage({
   const catalog = getAllProducts();
   const score = scoreProduct(product, catalog);
   const name = productDisplayName(product);
-  const { isAffiliate } = resolveAmazonLink(product);
+  const { href: amazonHref, isAffiliate } = resolveAmazonLink(product);
   const comparisons = getComparisonsForProduct(product.id);
 
   const crumbs: Crumb[] = [
@@ -305,9 +305,11 @@ export default async function ProductPage({
           will be added when available. The PowerMatch Score is a PowerMatchLab
           editorial assessment. Runtime figures are calculations, not tests.
           “Check Price on Amazon”{" "}
-          {isAffiliate
-            ? "opens our Amazon Associates link for this exact product"
-            : "currently opens the normal Amazon product page (no affiliate link has been supplied for this product yet)"}
+          {amazonHref
+            ? isAffiliate
+              ? "opens our Amazon Associates link for this exact product"
+              : "currently opens the normal Amazon product page (no affiliate link has been supplied for this product yet)"
+            : "is not shown for this product yet — its Amazon listing is still a research candidate pending verification"}
           ; see the{" "}
           <Link href="/affiliate-disclosure" className="underline">
             affiliate disclosure

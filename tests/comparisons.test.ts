@@ -89,8 +89,12 @@ describe("comparisons: both product ids are real, unique catalog entries", () =>
     expect(products.map((p) => p.id).sort()).toEqual([...comparison.productIds].sort());
   });
 
-  it("never resolves the excluded EcoFlow DELTA 3 Plus (not in this catalog)", () => {
-    expect(catalogIds.has("ecoflow-delta-3-plus")).toBe(false);
+  it("this comparison's product ids never include EcoFlow DELTA 3 Plus", () => {
+    // ecoflow-delta-3-plus was added to the catalog in the 40-product
+    // build-out (2026-09-11, amazon_verification_status "pending") but has
+    // no editorial comparison yet -- no comparison should be generated
+    // against unverified data.
+    expect(catalogIds.has("ecoflow-delta-3-plus")).toBe(true);
     const comparison = getComparison(APPROVED_SLUG)!;
     expect(comparison.productIds).not.toContain("ecoflow-delta-3-plus");
   });
@@ -435,6 +439,7 @@ function makeProduct(id: string, overrides: Partial<Product> = {}): Product {
     amazon_asin: null,
     amazon_product_url: null,
     amazon_affiliate_url: null,
+    amazon_verification_status: "confirmed",
     ...overrides,
   };
 }

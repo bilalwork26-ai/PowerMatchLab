@@ -76,9 +76,41 @@ const V3_IDS = [
   "bluetti-ac70",
 ];
 
+/**
+ * The 40-product catalog build-out (2026-09-11). 13 of these 14 are
+ * `amazon_verification_status: "pending"` — their ASIN/amazon_product_url
+ * are WebSearch-sourced research candidates only, not yet confirmed to
+ * match the exact base unit, so the UI shows no purchase CTA for them at
+ * all (see resolveAmazonLink). "bluetti-apex-300" is the sole exception:
+ * its Amazon listing was explicitly confirmed to match the linked base
+ * unit (2764.8Wh, no expansion battery), so it is "confirmed" and uses the
+ * normal honest direct-link fallback like the V3 products above, even
+ * though a real affiliate link still hasn't been generated for it.
+ */
+const V4_PENDING_IDS = [
+  "dji-power-2000",
+  "goal-zero-yeti-1500-6th-gen",
+  "geneverse-homepower-one-pro",
+  "jackery-explorer-3000-v2",
+  "ecoflow-delta-pro-ultra",
+  "growatt-helios-3600",
+  "mango-power-e",
+  "jackery-explorer-500-v2",
+  "jackery-explorer-5000-plus",
+  "bluetti-elite-100-v2",
+  "dji-power-1000-v2",
+  "growatt-vita-550",
+  "ecoflow-delta-3-plus",
+];
+const V4_CONFIRMED_IDS = ["bluetti-apex-300"];
+const V4_IDS = [...V4_CONFIRMED_IDS, ...V4_PENDING_IDS];
+
 describe("catalog data integrity", () => {
-  it("loads the full V1 + V2 + V3 catalog (10 + 12 + 4 = 26 records)", () => {
-    expect(products).toHaveLength(26);
+  it("loads the full 40-product catalog (10 V1 + 12 V2 + 4 V3 + 14 V4)", () => {
+    expect(products).toHaveLength(
+      V1_IDS.length + V2_IDS.length + V3_IDS.length + V4_IDS.length,
+    );
+    expect(products).toHaveLength(40);
   });
 
   it("still contains every V1 record", () => {
@@ -122,11 +154,56 @@ describe("catalog data integrity", () => {
   });
 
   it("every V1 and V2 catalog product still has an affiliate URL", () => {
-    expect(products).toHaveLength(V1_IDS.length + V2_IDS.length + V3_IDS.length);
     for (const id of [...V1_IDS, ...V2_IDS]) {
       const p = getProductById(id)!;
       expect(p.amazon_affiliate_url, `"${p.id}" should have an affiliate URL`).not.toBeNull();
     }
+  });
+
+  it("every V1/V2/V3/V4 product declares amazon_verification_status explicitly", () => {
+    for (const p of products) {
+      expect(
+        ["pending", "confirmed", "rejected"],
+        `"${p.id}" has an unexpected amazon_verification_status`,
+      ).toContain(p.amazon_verification_status);
+    }
+    for (const id of [...V1_IDS, ...V2_IDS, ...V3_IDS, ...V4_CONFIRMED_IDS]) {
+      expect(getProductById(id)!.amazon_verification_status).toBe("confirmed");
+    }
+    for (const id of V4_PENDING_IDS) {
+      expect(getProductById(id)!.amazon_verification_status).toBe("pending");
+    }
+  });
+
+  it("V4 (40-product build-out) products never carry a real affiliate link before SiteStripe verification", () => {
+    for (const id of V4_IDS) {
+      const p = getProductById(id);
+      expect(p, `V4 product "${id}" should exist`).toBeDefined();
+      expect(p!.amazon_affiliate_url, `"${id}" must not have an affiliate link yet`).toBeNull();
+    }
+  });
+
+  it("pending V4 products show no Amazon purchase link at all, even though a candidate URL is stored", () => {
+    for (const id of V4_PENDING_IDS) {
+      const p = getProductById(id)!;
+      // The candidate URL/ASIN are stored as research data...
+      if (p.amazon_product_url !== null) {
+        expect(p.amazon_product_url).toMatch(/^https:\/\//);
+      }
+      // ...but resolveAmazonLink must never surface them as a real CTA.
+      const link = resolveAmazonLink(p);
+      expect(link.href, `"${id}" is pending — no href should resolve`).toBeNull();
+      expect(link.isAffiliate).toBe(false);
+    }
+  });
+
+  it("the confirmed V4 product (bluetti-apex-300) uses the honest direct-link fallback like V3", () => {
+    const p = getProductById("bluetti-apex-300")!;
+    expect(p.amazon_verification_status).toBe("confirmed");
+    expect(p.amazon_asin).toBe("B0F42JY551");
+    const link = resolveAmazonLink(p);
+    expect(link.href).toBe(p.amazon_product_url);
+    expect(link.isAffiliate).toBe(false);
   });
 
   it("Milestone 4 V3 products are real, distinct, and use the direct-link fallback honestly", () => {

@@ -48,7 +48,8 @@
     "last_verified": "2026-09-01",
     "amazon_asin": "B0F42HLLSC",
     "amazon_product_url": "https://www.amazon.com/dp/B0F42HLLSC",
-    "amazon_affiliate_url": "https://amzn.to/4xzHJNL"
+    "amazon_affiliate_url": "https://amzn.to/4xzHJNL",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "jackery-explorer-1000-v2",
@@ -100,7 +101,8 @@
     "last_verified": "2026-09-01",
     "amazon_asin": "B0D7PPG25F",
     "amazon_product_url": "https://www.amazon.com/dp/B0D7PPG25F",
-    "amazon_affiliate_url": "https://amzn.to/4xt2BGe"
+    "amazon_affiliate_url": "https://amzn.to/4xt2BGe",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "ecoflow-delta-3-classic",
@@ -152,7 +154,8 @@
     "last_verified": "2026-09-01",
     "amazon_asin": "B0FQVC4RF5",
     "amazon_product_url": "https://www.amazon.com/dp/B0FQVC4RF5",
-    "amazon_affiliate_url": "https://amzn.to/3V8rkBi"
+    "amazon_affiliate_url": "https://amzn.to/3V8rkBi",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "anker-solix-c1000-gen-2",
@@ -204,7 +207,8 @@
     "last_verified": "2026-09-01",
     "amazon_asin": "B0FN7MSY4L",
     "amazon_product_url": "https://www.amazon.com/dp/B0FN7MSY4L",
-    "amazon_affiliate_url": "https://amzn.to/4zTzRrS"
+    "amazon_affiliate_url": "https://amzn.to/4zTzRrS",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "bluetti-ac180",
@@ -255,7 +259,8 @@
     "last_verified": "2026-09-01",
     "amazon_asin": "B0C1SMJTDT",
     "amazon_product_url": "https://www.amazon.com/dp/B0C1SMJTDT",
-    "amazon_affiliate_url": "https://amzn.to/4gIsMSa"
+    "amazon_affiliate_url": "https://amzn.to/4gIsMSa",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "anker-solix-s2000",
@@ -307,7 +312,8 @@
     "last_verified": "2026-09-01",
     "amazon_asin": "B0GY4TQ2P8",
     "amazon_product_url": "https://www.amazon.com/dp/B0GY4TQ2P8",
-    "amazon_affiliate_url": "https://amzn.to/462BxBM"
+    "amazon_affiliate_url": "https://amzn.to/462BxBM",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "jackery-explorer-2000-v2",
@@ -359,7 +365,8 @@
     "last_verified": "2026-09-01",
     "amazon_asin": "B0DFG2WDQH",
     "amazon_product_url": "https://www.amazon.com/dp/B0DFG2WDQH",
-    "amazon_affiliate_url": "https://amzn.to/4x151e0"
+    "amazon_affiliate_url": "https://amzn.to/4x151e0",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "anker-solix-c2000-gen-2",
@@ -412,7 +419,8 @@
     "last_verified": "2026-09-01",
     "amazon_asin": "B0FVFGL38H",
     "amazon_product_url": "https://www.amazon.com/dp/B0FVFGL38H",
-    "amazon_affiliate_url": "https://amzn.to/3SqjJNP"
+    "amazon_affiliate_url": "https://amzn.to/3SqjJNP",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "ecoflow-delta-pro-3",
@@ -465,7 +473,8 @@
     "last_verified": "2026-09-01",
     "amazon_asin": "B0D14FMFZD",
     "amazon_product_url": "https://www.amazon.com/dp/B0D14FMFZD",
-    "amazon_affiliate_url": "https://amzn.to/4691jEl"
+    "amazon_affiliate_url": "https://amzn.to/4691jEl",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "anker-solix-f3800",
@@ -519,7 +528,8 @@
     "last_verified": "2026-09-01",
     "amazon_asin": "B0C5C9HMQ2",
     "amazon_product_url": "https://www.amazon.com/dp/B0C5C9HMQ2",
-    "amazon_affiliate_url": "https://amzn.to/3UsOl1K"
+    "amazon_affiliate_url": "https://amzn.to/3UsOl1K",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "anker-solix-c300",
@@ -568,7 +578,8 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0D62GMQ3F",
     "amazon_product_url": "https://www.amazon.com/dp/B0D62GMQ3F",
-    "amazon_affiliate_url": "https://amzn.to/4zYmJSb"
+    "amazon_affiliate_url": "https://amzn.to/4zYmJSb",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "ecoflow-river-2-pro",
@@ -617,7 +628,8 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0BVLPGS79",
     "amazon_product_url": "https://www.amazon.com/dp/B0BVLPGS79",
-    "amazon_affiliate_url": "https://amzn.to/4djByFa"
+    "amazon_affiliate_url": "https://amzn.to/4djByFa",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "goal-zero-yeti-700",
@@ -665,7 +677,8 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0CRCVKNHR",
     "amazon_product_url": "https://www.amazon.com/dp/B0CRCVKNHR",
-    "amazon_affiliate_url": "https://amzn.to/4qVjKWB"
+    "amazon_affiliate_url": "https://amzn.to/4qVjKWB",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "segway-cube-1000",
@@ -713,7 +726,8 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0CS8GMQ7Q",
     "amazon_product_url": "https://www.amazon.com/dp/B0CS8GMQ7Q",
-    "amazon_affiliate_url": "https://amzn.to/4A4hVej"
+    "amazon_affiliate_url": "https://amzn.to/4A4hVej",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "vtoman-flashspeed-1000",
@@ -761,7 +775,8 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0H4993LKW",
     "amazon_product_url": "https://www.amazon.com/dp/B0H4993LKW",
-    "amazon_affiliate_url": "https://amzn.to/4AfQWN1"
+    "amazon_affiliate_url": "https://amzn.to/4AfQWN1",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "ecoflow-delta-2-max",
@@ -809,7 +824,8 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0C4DW17PD",
     "amazon_product_url": "https://www.amazon.com/dp/B0C4DW17PD",
-    "amazon_affiliate_url": "https://amzn.to/4gEbqqL"
+    "amazon_affiliate_url": "https://amzn.to/4gEbqqL",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "jackery-explorer-2000-plus",
@@ -858,7 +874,8 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0C6DHK68Q",
     "amazon_product_url": "https://www.amazon.com/dp/B0C6DHK68Q",
-    "amazon_affiliate_url": "https://amzn.to/4qWL7Qd"
+    "amazon_affiliate_url": "https://amzn.to/4qWL7Qd",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "bluetti-ac200l",
@@ -906,7 +923,8 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0CLGZB3L6",
     "amazon_product_url": "https://www.amazon.com/dp/B0CLGZB3L6",
-    "amazon_affiliate_url": "https://amzn.to/3VdE7Cw"
+    "amazon_affiliate_url": "https://amzn.to/3VdE7Cw",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "pecron-e2400lfp",
@@ -955,7 +973,8 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0H1L716SV",
     "amazon_product_url": "https://www.amazon.com/dp/B0H1L716SV",
-    "amazon_affiliate_url": "https://amzn.to/3UTsbWr"
+    "amazon_affiliate_url": "https://amzn.to/3UTsbWr",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "pecron-e3600lfp",
@@ -1005,7 +1024,8 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0D83QYRDS",
     "amazon_product_url": "https://www.amazon.com/dp/B0D83QYRDS",
-    "amazon_affiliate_url": "https://amzn.to/4i8EoQN"
+    "amazon_affiliate_url": "https://amzn.to/4i8EoQN",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "bluetti-elite-300",
@@ -1052,7 +1072,8 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0GKRTX336",
     "amazon_product_url": "https://www.amazon.com/dp/B0GKRTX336",
-    "amazon_affiliate_url": "https://amzn.to/4yrC0JX"
+    "amazon_affiliate_url": "https://amzn.to/4yrC0JX",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "anker-solix-f3000",
@@ -1098,7 +1119,8 @@
     "last_verified": "2026-09-04",
     "amazon_asin": "B0F8BC2LFS",
     "amazon_product_url": "https://www.amazon.com/dp/B0F8BC2LFS",
-    "amazon_affiliate_url": "https://amzn.to/3VfhBcr"
+    "amazon_affiliate_url": "https://amzn.to/3VfhBcr",
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "anker-solix-c800-plus",
@@ -1149,7 +1171,8 @@
     "last_verified": "2026-09-11",
     "amazon_asin": "B0C5CBDX2P",
     "amazon_product_url": "https://www.amazon.com/dp/B0C5CBDX2P",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": null,
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "ecoflow-river-3-plus",
@@ -1199,7 +1222,8 @@
     "last_verified": "2026-09-11",
     "amazon_asin": "B0DCCB657J",
     "amazon_product_url": "https://www.amazon.com/dp/B0DCCB657J",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": null,
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "jackery-explorer-300-plus",
@@ -1249,7 +1273,8 @@
     "last_verified": "2026-09-11",
     "amazon_asin": "B0CFV93GZM",
     "amazon_product_url": "https://www.amazon.com/dp/B0CFV93GZM",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": null,
+    "amazon_verification_status": "confirmed"
   },
   {
     "id": "bluetti-ac70",
@@ -1299,6 +1324,701 @@
     "last_verified": "2026-09-11",
     "amazon_asin": "B0CLG6FYLQ",
     "amazon_product_url": "https://www.amazon.com/dp/B0CLG6FYLQ",
-    "amazon_affiliate_url": null
+    "amazon_affiliate_url": null,
+    "amazon_verification_status": "confirmed"
+  },
+  {
+      "id": "bluetti-apex-300",
+      "brand": "BLUETTI",
+      "model": "Apex 300",
+      "market": "US",
+      "category": "portable-power-station",
+      "capacity_wh": 2764.8,
+      "rated_output_w": 3840,
+      "surge_output_w": 7680,
+      "battery_chemistry": "LiFePO4",
+      "cycle_life": "6000+ cycles to 80% capacity",
+      "weight_kg": null,
+      "dimensions": null,
+      "solar_input_w": null,
+      "ac_charging_w": null,
+      "charging_time": "0-80% in about 40 minutes; 100% in about 80 minutes",
+      "ac_outlets": null,
+      "usb_c": null,
+      "usb_a": null,
+      "dc_output": null,
+      "rv_tt30": null,
+      "voltage_240v": true,
+      "ups_ms": null,
+      "expandable": true,
+      "max_expanded_capacity_wh": 58000,
+      "wifi": null,
+      "bluetooth": null,
+      "warranty": null,
+      "idle_consumption_w": null,
+      "best_for": [
+          "home backup",
+          "RV use",
+          "power outages"
+      ],
+      "pros": [
+          "LiFePO4 battery, 6000+ cycle rated lifespan to 80% capacity",
+          "3840W continuous output with simultaneous 120V/240V operation",
+          "Modular design expandable to a 58kWh system with add-on batteries"
+      ],
+      "cons": [
+          "Base unit weight not independently verified",
+          "Outlet count and port layout not independently verified"
+      ],
+      "official_source": "BLUETTI US (bluettipower.com/products/apex-300-home-battery-backup)",
+      "last_verified": "2026-09-11",
+      "amazon_asin": "B0F42JY551",
+      "amazon_product_url": "https://www.amazon.com/BLUETTI-Apex-300-Simultaneous-Emergencies/dp/B0F42JY551",
+      "amazon_affiliate_url": null,
+      "amazon_verification_status": "confirmed"
+  },
+  {
+      "id": "dji-power-2000",
+      "brand": "DJI",
+      "model": "Power 2000",
+      "market": "US",
+      "category": "portable-power-station",
+      "capacity_wh": 2048,
+      "rated_output_w": 3000,
+      "surge_output_w": null,
+      "battery_chemistry": "LiFePO4",
+      "cycle_life": "4000+ cycles to 80% capacity",
+      "weight_kg": null,
+      "dimensions": null,
+      "solar_input_w": null,
+      "ac_charging_w": null,
+      "charging_time": "0-80% in about 55 minutes via AC",
+      "ac_outlets": 4,
+      "usb_c": 4,
+      "usb_a": 4,
+      "dc_output": null,
+      "rv_tt30": null,
+      "voltage_240v": null,
+      "ups_ms": null,
+      "expandable": true,
+      "max_expanded_capacity_wh": 22528,
+      "wifi": null,
+      "bluetooth": null,
+      "warranty": null,
+      "idle_consumption_w": null,
+      "best_for": [
+          "home backup",
+          "camping",
+          "power outages"
+      ],
+      "pros": [
+          "LiFePO4 battery, 4000+ cycle rated lifespan to 80% capacity",
+          "3000W continuous output on a 2048Wh unit",
+          "Expandable to 22,528Wh with up to ten expansion batteries"
+      ],
+      "cons": [
+          "Amazon.com correspondence for this exact unit not yet confirmed",
+          "Weight and outlet voltage/current not independently verified"
+      ],
+      "official_source": "DJI US (dji.com/power-2000/specs)",
+      "last_verified": "2026-09-11",
+      "amazon_asin": "B0FBRD1B8C",
+      "amazon_product_url": "https://www.amazon.com/DJI-Portable-Recharge-Electric-Generator/dp/B0FBRD1B8C",
+      "amazon_affiliate_url": null,
+      "amazon_verification_status": "pending"
+  },
+  {
+      "id": "goal-zero-yeti-1500-6th-gen",
+      "brand": "Goal Zero",
+      "model": "Yeti 1500 (6th Gen)",
+      "market": "US",
+      "category": "portable-power-station",
+      "capacity_wh": 1505,
+      "rated_output_w": 2000,
+      "surge_output_w": 3600,
+      "battery_chemistry": "LiFePO4",
+      "cycle_life": "4000+ cycles",
+      "weight_kg": null,
+      "dimensions": null,
+      "solar_input_w": null,
+      "ac_charging_w": null,
+      "charging_time": "0-80% recharge in under 1 hour",
+      "ac_outlets": null,
+      "usb_c": null,
+      "usb_a": null,
+      "dc_output": null,
+      "rv_tt30": null,
+      "voltage_240v": null,
+      "ups_ms": null,
+      "expandable": null,
+      "max_expanded_capacity_wh": null,
+      "wifi": null,
+      "bluetooth": null,
+      "warranty": null,
+      "idle_consumption_w": null,
+      "best_for": [
+          "home backup",
+          "camping",
+          "power outages"
+      ],
+      "pros": [
+          "LiFePO4 battery (6th Gen redesign, distinct from the older NMC-based Yeti 1500X)",
+          "2000W continuous / 3600W surge on a 1505Wh unit",
+          "IPX4 weather-resistant aluminum enclosure"
+      ],
+      "cons": [
+          "Amazon.com correspondence for this exact unit not yet confirmed",
+          "Outlet count, weight and charging wattage not independently verified"
+      ],
+      "official_source": "Goal Zero US (goalzero.com/collections/all-new-yeti-1500-lifepo4-solar-generator)",
+      "last_verified": "2026-09-11",
+      "amazon_asin": "B0GMKKGQCY",
+      "amazon_product_url": "https://www.amazon.com/Goal-Zero-Fast-Charging-Resistant-Compatible/dp/B0GMKKGQCY",
+      "amazon_affiliate_url": null,
+      "amazon_verification_status": "pending"
+  },
+  {
+      "id": "geneverse-homepower-one-pro",
+      "brand": "Geneverse",
+      "model": "HomePower ONE PRO",
+      "market": "US",
+      "category": "portable-power-station",
+      "capacity_wh": 1210,
+      "rated_output_w": 1200,
+      "surge_output_w": 2400,
+      "battery_chemistry": "LiFePO4",
+      "cycle_life": null,
+      "weight_kg": null,
+      "dimensions": null,
+      "solar_input_w": null,
+      "ac_charging_w": null,
+      "charging_time": null,
+      "ac_outlets": null,
+      "usb_c": null,
+      "usb_a": null,
+      "dc_output": null,
+      "rv_tt30": null,
+      "voltage_240v": false,
+      "ups_ms": null,
+      "expandable": null,
+      "max_expanded_capacity_wh": null,
+      "wifi": null,
+      "bluetooth": null,
+      "warranty": null,
+      "idle_consumption_w": null,
+      "best_for": [
+          "home office",
+          "CPAP use",
+          "home backup"
+      ],
+      "pros": [
+          "LiFePO4 battery",
+          "1200W continuous total inverter output (2400W surge) at 120V/60Hz"
+      ],
+      "cons": [
+          "Amazon.com correspondence for this exact unit not yet confirmed",
+          "Cycle life, weight, outlet count and charging specs not independently verified"
+      ],
+      "official_source": "Geneverse US (faq.geneverse.com/hc/en-us/articles/30843736603291-Specifications-HomePower-ONE-PRO)",
+      "last_verified": "2026-09-11",
+      "amazon_asin": "B0BBSDPXJL",
+      "amazon_product_url": "https://us.amazon.com/Geneverse-LiFePO4-Portable-Station-HomePower/dp/B0BBSDPXJL",
+      "amazon_affiliate_url": null,
+      "amazon_verification_status": "pending"
+  },
+  {
+      "id": "jackery-explorer-3000-v2",
+      "brand": "Jackery",
+      "model": "Explorer 3000 v2",
+      "market": "US",
+      "category": "portable-power-station",
+      "capacity_wh": 3072,
+      "rated_output_w": null,
+      "surge_output_w": null,
+      "battery_chemistry": "LiFePO4",
+      "cycle_life": "4000+ cycles",
+      "weight_kg": 27,
+      "dimensions": "17.38 x 12.8 x 12.05 in",
+      "solar_input_w": null,
+      "ac_charging_w": null,
+      "charging_time": null,
+      "ac_outlets": null,
+      "usb_c": 2,
+      "usb_a": 2,
+      "dc_output": null,
+      "rv_tt30": null,
+      "voltage_240v": null,
+      "ups_ms": null,
+      "expandable": null,
+      "max_expanded_capacity_wh": null,
+      "wifi": null,
+      "bluetooth": null,
+      "warranty": null,
+      "idle_consumption_w": null,
+      "best_for": [
+          "camping",
+          "RV use",
+          "power outages"
+      ],
+      "pros": [
+          "LiFePO4 battery, 4000+ cycle rated lifespan",
+          "3072Wh capacity, notably lighter/more compact than prior 3kWh-class units"
+      ],
+      "cons": [
+          "Continuous/surge output withheld: EU/UK official sources cite 3600W/7200W while a US Amazon listing cited a different figure (2990W) — unresolved discrepancy",
+          "No US-domain (jackery.com) official page located; AC outlet configuration, voltage and charging specs withheld pending US-specific confirmation"
+      ],
+      "official_source": "Jackery EU/UK (eu.jackery.com, uk.jackery.com) — US-domain page not located; electrical output specs withheld, see cons",
+      "last_verified": "2026-09-11",
+      "amazon_asin": "B0FCFZFN8Z",
+      "amazon_product_url": "https://www.amazon.com/Jackery-Explorer-Portable-Generator-Emergencies/dp/B0FCFZFN8Z",
+      "amazon_affiliate_url": null,
+      "amazon_verification_status": "pending"
+  },
+  {
+      "id": "ecoflow-delta-pro-ultra",
+      "brand": "EcoFlow",
+      "model": "DELTA Pro Ultra",
+      "market": "US",
+      "category": "portable-power-station",
+      "capacity_wh": 6144,
+      "rated_output_w": 7200,
+      "surge_output_w": 10800,
+      "battery_chemistry": "LiFePO4",
+      "cycle_life": null,
+      "weight_kg": null,
+      "dimensions": null,
+      "solar_input_w": 5600,
+      "ac_charging_w": null,
+      "charging_time": null,
+      "ac_outlets": null,
+      "usb_c": null,
+      "usb_a": null,
+      "dc_output": null,
+      "rv_tt30": null,
+      "voltage_240v": null,
+      "ups_ms": null,
+      "expandable": true,
+      "max_expanded_capacity_wh": 90000,
+      "wifi": null,
+      "bluetooth": null,
+      "warranty": null,
+      "idle_consumption_w": null,
+      "best_for": [
+          "home backup",
+          "power outages"
+      ],
+      "pros": [
+          "LiFePO4 battery",
+          "7200W continuous output from a single inverter + battery base configuration (10.8kW peak for up to 10 seconds)",
+          "Expandable to 30kWh with one inverter stack, 90kWh with three"
+      ],
+      "cons": [
+          "The only Amazon.com listing located is explicitly titled as a \"Bundle\" — does not yet match the single-inverter base configuration documented officially",
+          "Weight, outlet count and AC charging wattage not independently verified"
+      ],
+      "official_source": "EcoFlow US (us.ecoflow.com/products/delta-pro-ultra) — base single-inverter + battery configuration; distinct from the bare inverter-only SKU and from multi-inverter stacked systems",
+      "last_verified": "2026-09-11",
+      "amazon_asin": "B0D2WF8QNZ",
+      "amazon_product_url": "https://www.amazon.com/EcoFlow-DELTA-Pro-Ultra-Bundle/dp/B0D2WF8QNZ",
+      "amazon_affiliate_url": null,
+      "amazon_verification_status": "pending"
+  },
+  {
+      "id": "growatt-helios-3600",
+      "brand": "Growatt",
+      "model": "HELIOS 3600",
+      "market": "US",
+      "category": "portable-power-station",
+      "capacity_wh": 3686.4,
+      "rated_output_w": 3600,
+      "surge_output_w": null,
+      "battery_chemistry": "LiFePO4",
+      "cycle_life": null,
+      "weight_kg": null,
+      "dimensions": null,
+      "solar_input_w": null,
+      "ac_charging_w": null,
+      "charging_time": null,
+      "ac_outlets": null,
+      "usb_c": null,
+      "usb_a": null,
+      "dc_output": null,
+      "rv_tt30": null,
+      "voltage_240v": null,
+      "ups_ms": null,
+      "expandable": true,
+      "max_expanded_capacity_wh": 36000,
+      "wifi": null,
+      "bluetooth": null,
+      "warranty": null,
+      "idle_consumption_w": null,
+      "best_for": [
+          "home backup",
+          "power outages",
+          "RV use"
+      ],
+      "pros": [
+          "LiFePO4 battery",
+          "3600W continuous output on the single base unit",
+          "Expandable to a 36kWh system with 240V/7200W split-phase output (multi-unit configuration)"
+      ],
+      "cons": [
+          "Amazon.com correspondence for this exact unit not yet confirmed (candidate ASIN not confirmed free of bundled accessories)",
+          "Surge/peak rating, weight and outlet count not independently verified for the single base unit"
+      ],
+      "official_source": "Growatt (growattportable.com/products/growatt-helios-3600-portable-power-station) — single base unit; the 240V/7200W split-phase output and 36kWh ceiling refer to the expanded multi-unit system, not the base unit",
+      "last_verified": "2026-09-11",
+      "amazon_asin": "B0DF7SZJWY",
+      "amazon_product_url": "https://www.amazon.com/GROWATT-Portable-HELIOS-Generator-Emergency/dp/B0DF7SZJWY",
+      "amazon_affiliate_url": null,
+      "amazon_verification_status": "pending"
+  },
+  {
+      "id": "mango-power-e",
+      "brand": "Mango Power",
+      "model": "E",
+      "market": "US",
+      "category": "portable-power-station",
+      "capacity_wh": 3500,
+      "rated_output_w": 3000,
+      "surge_output_w": null,
+      "battery_chemistry": "LiFePO4",
+      "cycle_life": "6000 cycles",
+      "weight_kg": 45.4,
+      "dimensions": null,
+      "solar_input_w": 2000,
+      "ac_charging_w": 2920,
+      "charging_time": null,
+      "ac_outlets": null,
+      "usb_c": null,
+      "usb_a": null,
+      "dc_output": null,
+      "rv_tt30": null,
+      "voltage_240v": null,
+      "ups_ms": null,
+      "expandable": true,
+      "max_expanded_capacity_wh": 14000,
+      "wifi": null,
+      "bluetooth": null,
+      "warranty": "10 years",
+      "idle_consumption_w": null,
+      "best_for": [
+          "home backup",
+          "power outages"
+      ],
+      "pros": [
+          "LiFePO4 (CATL) battery, 6000-cycle rated lifespan",
+          "Expandable to 14kWh with additional battery modules",
+          "10-year warranty"
+      ],
+      "cons": [
+          "AC outlet voltage/count withheld: only a 230V/16A EU-market spec was found, not confirmed for the US-market unit",
+          "Amazon.com correspondence not yet confirmed (two different ASINs found for this model)"
+      ],
+      "official_source": "Mango Power US (mangopower.com/products/mango-power-e-home-backup-and-portable-power-station) — AC outlet voltage/count withheld, see cons",
+      "last_verified": "2026-09-11",
+      "amazon_asin": "B0C9ZDDMSM",
+      "amazon_product_url": "https://www.amazon.com/Mango-Power-Portable-Ultra-durable-Emergency/dp/B0C9ZDDMSM",
+      "amazon_affiliate_url": null,
+      "amazon_verification_status": "pending"
+  },
+  {
+      "id": "jackery-explorer-500-v2",
+      "brand": "Jackery",
+      "model": "Explorer 500 v2",
+      "market": "US",
+      "category": "portable-power-station",
+      "capacity_wh": 512,
+      "rated_output_w": null,
+      "surge_output_w": null,
+      "battery_chemistry": "LiFePO4",
+      "cycle_life": "6000 cycles to 70% capacity",
+      "weight_kg": 5.7,
+      "dimensions": "31.1 x 20.5 x 15.7 cm",
+      "solar_input_w": null,
+      "ac_charging_w": null,
+      "charging_time": null,
+      "ac_outlets": null,
+      "usb_c": 2,
+      "usb_a": 1,
+      "dc_output": true,
+      "rv_tt30": null,
+      "voltage_240v": null,
+      "ups_ms": null,
+      "expandable": null,
+      "max_expanded_capacity_wh": null,
+      "wifi": null,
+      "bluetooth": null,
+      "warranty": null,
+      "idle_consumption_w": null,
+      "best_for": [
+          "camping",
+          "day trips",
+          "CPAP use"
+      ],
+      "pros": [
+          "LiFePO4 battery, 6000-cycle rated lifespan to 70% capacity",
+          "Lightweight (5.7kg)"
+      ],
+      "cons": [
+          "No US-domain (jackery.com) official page located; AC output wattage and outlet count withheld pending US-specific confirmation",
+          "Amazon.com correspondence not yet confirmed among several bundle variants"
+      ],
+      "official_source": "Jackery EU/UK (eu.jackery.com, uk.jackery.com) — US-domain page not located; AC output specs withheld, see cons",
+      "last_verified": "2026-09-11",
+      "amazon_asin": "B0FRG3YB8C",
+      "amazon_product_url": "https://www.amazon.com/Jackery-Explorer-Generator-LiFePO4-Outdoors/dp/B0FRG3YB8C",
+      "amazon_affiliate_url": null,
+      "amazon_verification_status": "pending"
+  },
+  {
+      "id": "jackery-explorer-5000-plus",
+      "brand": "Jackery",
+      "model": "Explorer 5000 Plus",
+      "market": "US",
+      "category": "portable-power-station",
+      "capacity_wh": 5040,
+      "rated_output_w": null,
+      "surge_output_w": null,
+      "battery_chemistry": "LiFePO4",
+      "cycle_life": "4000 cycles",
+      "weight_kg": 60.8,
+      "dimensions": null,
+      "solar_input_w": 4000,
+      "ac_charging_w": 1800,
+      "charging_time": null,
+      "ac_outlets": null,
+      "usb_c": null,
+      "usb_a": null,
+      "dc_output": null,
+      "rv_tt30": null,
+      "voltage_240v": true,
+      "ups_ms": 0,
+      "expandable": true,
+      "max_expanded_capacity_wh": 60000,
+      "wifi": null,
+      "bluetooth": null,
+      "warranty": null,
+      "idle_consumption_w": null,
+      "best_for": [
+          "home backup",
+          "power outages"
+      ],
+      "pros": [
+          "LiFePO4 battery, 4000-cycle rated lifespan",
+          "Dual 120V/240V output with a claimed 0ms UPS switchover",
+          "Expandable to 60kWh"
+      ],
+      "cons": [
+          "Single-unit continuous output withheld: official page states a 7.2-14.4kW range without an explicit single-unit-only figure, and Amazon listings (not an official source) suggest 7200W but that is not independently confirmed",
+          "No clean single-unit Amazon.com ASIN found — every listing located includes solar panels and/or a transfer switch"
+      ],
+      "official_source": "Jackery US (jackery.com/products/jackery-explorer-5000-plus) — single-unit continuous output withheld, see cons",
+      "last_verified": "2026-09-11",
+      "amazon_asin": "B0DFGLG35L",
+      "amazon_product_url": "https://www.amazon.com/Jackery-Generator-Portable-Whole-Home-Expandable/dp/B0DFGLG35L",
+      "amazon_affiliate_url": null,
+      "amazon_verification_status": "pending"
+  },
+  {
+      "id": "bluetti-elite-100-v2",
+      "brand": "BLUETTI",
+      "model": "Elite 100 V2",
+      "market": "US",
+      "category": "portable-power-station",
+      "capacity_wh": 1024,
+      "rated_output_w": 1800,
+      "surge_output_w": 3600,
+      "battery_chemistry": "LiFePO4",
+      "cycle_life": "4000+ cycles",
+      "weight_kg": 11.5,
+      "dimensions": null,
+      "solar_input_w": null,
+      "ac_charging_w": 1200,
+      "charging_time": "0-80% in about 45 minutes; 100% in about 70 minutes",
+      "ac_outlets": null,
+      "usb_c": null,
+      "usb_a": null,
+      "dc_output": null,
+      "rv_tt30": null,
+      "voltage_240v": null,
+      "ups_ms": 10,
+      "expandable": null,
+      "max_expanded_capacity_wh": null,
+      "wifi": null,
+      "bluetooth": null,
+      "warranty": null,
+      "idle_consumption_w": null,
+      "best_for": [
+          "camping",
+          "CPAP use",
+          "home backup"
+      ],
+      "pros": [
+          "LiFePO4 battery, 4000+ cycle rated lifespan",
+          "10ms UPS switchover",
+          "1800W continuous / 3600W surge on a compact 1024Wh, 11.5kg unit"
+      ],
+      "cons": [
+          "Capacity (1024Wh) matches two products already in the catalog (DELTA 3 Classic, Anker SOLIX C1000 Gen 2) — differentiation is UPS speed and physical size, not capacity",
+          "No clean single-unit Amazon.com ASIN confirmed free of an included cable/accessory"
+      ],
+      "official_source": "BLUETTI US (bluettipower.com/products/elite-100-v2-portable-power-station)",
+      "last_verified": "2026-09-11",
+      "amazon_asin": "B0F42CSQWG",
+      "amazon_product_url": "https://www.amazon.com/BLUETTI-Elite-100-V2-Generator/dp/B0F42CSQWG",
+      "amazon_affiliate_url": null,
+      "amazon_verification_status": "pending"
+  },
+  {
+      "id": "dji-power-1000-v2",
+      "brand": "DJI",
+      "model": "Power 1000 V2",
+      "market": "US",
+      "category": "portable-power-station",
+      "capacity_wh": 1024,
+      "rated_output_w": null,
+      "surge_output_w": null,
+      "battery_chemistry": "LiFePO4",
+      "cycle_life": "4000 cycles to 80% capacity",
+      "weight_kg": 14.2,
+      "dimensions": null,
+      "solar_input_w": null,
+      "ac_charging_w": null,
+      "charging_time": "Full charge in about 56 minutes; 0-80% in about 37 minutes",
+      "ac_outlets": 4,
+      "usb_c": 2,
+      "usb_a": 2,
+      "dc_output": null,
+      "rv_tt30": null,
+      "voltage_240v": false,
+      "ups_ms": null,
+      "expandable": true,
+      "max_expanded_capacity_wh": 11264,
+      "wifi": null,
+      "bluetooth": null,
+      "warranty": null,
+      "idle_consumption_w": null,
+      "best_for": [
+          "camping",
+          "RV use",
+          "power outages"
+      ],
+      "pros": [
+          "LiFePO4 battery, 4000-cycle rated lifespan to 80% capacity",
+          "Confirmed US-market SKU: 100-120V AC output (distinct from the 220-240V international SKU)",
+          "Expandable to 11,264Wh with up to five expansion batteries"
+      ],
+      "cons": [
+          "Continuous output withheld: the marketed \"2600W\" figure could not be confirmed as specific to the US 100-120V SKU versus a blended global figure",
+          "Amazon.com correspondence not yet confirmed among several bundle variants"
+      ],
+      "official_source": "DJI US (dji.com/power-1000-v2 support/spec pages) — continuous output withheld, see cons",
+      "last_verified": "2026-09-11",
+      "amazon_asin": "B0H2MFBDZL",
+      "amazon_product_url": "https://www.amazon.com/DJI-Portable-Recharge-Electric-Generator/dp/B0H2MFBDZL",
+      "amazon_affiliate_url": null,
+      "amazon_verification_status": "pending"
+  },
+  {
+      "id": "growatt-vita-550",
+      "brand": "Growatt",
+      "model": "VITA 550",
+      "market": "US",
+      "category": "portable-power-station",
+      "capacity_wh": 538,
+      "rated_output_w": 600,
+      "surge_output_w": null,
+      "battery_chemistry": "LiFePO4",
+      "cycle_life": "3000+ cycles",
+      "weight_kg": 8.16,
+      "dimensions": "12.2 x 8.4 x 7.8 in",
+      "solar_input_w": null,
+      "ac_charging_w": null,
+      "charging_time": "About 1.6 hours via AC; about 2.5 hours via solar",
+      "ac_outlets": 3,
+      "usb_c": 1,
+      "usb_a": null,
+      "dc_output": true,
+      "rv_tt30": null,
+      "voltage_240v": null,
+      "ups_ms": null,
+      "expandable": null,
+      "max_expanded_capacity_wh": null,
+      "wifi": true,
+      "bluetooth": true,
+      "warranty": null,
+      "idle_consumption_w": null,
+      "best_for": [
+          "camping",
+          "home office",
+          "day trips"
+      ],
+      "pros": [
+          "LiFePO4 battery, 3000+ cycle rated lifespan",
+          "WiFi and Bluetooth app monitoring",
+          "Fast AC recharge (about 1.6 hours)"
+      ],
+      "cons": [
+          "The only Amazon.com listing located explicitly includes a 200W solar panel — not the unit alone",
+          "Surge/peak rating and warranty not independently verified"
+      ],
+      "official_source": "Growatt (growattportable.com/products/growatt-vita-550-portable-power-station-wl)",
+      "last_verified": "2026-09-11",
+      "amazon_asin": "B0BSH4F944",
+      "amazon_product_url": "https://www.amazon.com/GROWATT-Generator-Portable-Station-Charging/dp/B0BSH4F944",
+      "amazon_affiliate_url": null,
+      "amazon_verification_status": "pending"
+  },
+  {
+      "id": "ecoflow-delta-3-plus",
+      "brand": "EcoFlow",
+      "model": "DELTA 3 Plus",
+      "market": "US",
+      "category": "portable-power-station",
+      "capacity_wh": 1024,
+      "rated_output_w": 1800,
+      "surge_output_w": 3600,
+      "battery_chemistry": "LiFePO4",
+      "cycle_life": "4000 cycles to 80% capacity",
+      "weight_kg": null,
+      "dimensions": null,
+      "solar_input_w": 1000,
+      "ac_charging_w": 1500,
+      "charging_time": "0-100% in about 56 minutes via AC (X-Stream, 1500W); full solar charge in about 70 minutes with 1000W solar input",
+      "ac_outlets": null,
+      "usb_c": null,
+      "usb_a": null,
+      "dc_output": null,
+      "rv_tt30": null,
+      "voltage_240v": null,
+      "ups_ms": null,
+      "expandable": true,
+      "max_expanded_capacity_wh": 5000,
+      "wifi": null,
+      "bluetooth": null,
+      "warranty": null,
+      "idle_consumption_w": null,
+      "best_for": [
+          "camping",
+          "home office",
+          "power outages"
+      ],
+      "pros": [
+          "LiFePO4 battery, 4000-cycle rated lifespan to 80% capacity",
+          "Fast AC recharge (0-100% in about 56 minutes)",
+          "Same brand and same capacity tier as DELTA 3 Classic already in the catalog — useful for a direct Classic-vs-Plus editorial comparison"
+      ],
+      "cons": [
+          "Capacity (1024Wh) matches DELTA 3 Classic already in the catalog from the same brand — value here is comparative, not a new capacity tier",
+          "Amazon.com correspondence not yet confirmed among several listings"
+      ],
+      "official_source": "EcoFlow US (us.ecoflow.com/products/delta-3-plus-portable-power-station)",
+      "last_verified": "2026-09-11",
+      "amazon_asin": "B0DCC2BVFW",
+      "amazon_product_url": "https://www.amazon.com/EF-ECOFLOW-Portable-Generator-Optional/dp/B0DCC2BVFW",
+      "amazon_affiliate_url": null,
+      "amazon_verification_status": "pending"
   }
 ]

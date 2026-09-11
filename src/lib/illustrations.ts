@@ -44,6 +44,22 @@ const SIZE_CLASS_BY_ID: Record<string, IllustrationSizeClass> = {
   "ecoflow-river-3-plus": "compact",
   "jackery-explorer-300-plus": "compact",
   "bluetti-ac70": "mid-size",
+
+  // 40-product catalog build-out, pending Amazon/SiteStripe verification (2026-09-11).
+  "growatt-vita-550": "compact",
+  "jackery-explorer-500-v2": "compact",
+  "geneverse-homepower-one-pro": "mid-size",
+  "goal-zero-yeti-1500-6th-gen": "mid-size",
+  "ecoflow-delta-3-plus": "mid-size",
+  "bluetti-elite-100-v2": "mid-size",
+  "dji-power-1000-v2": "mid-size",
+  "dji-power-2000": "large",
+  "jackery-explorer-3000-v2": "large",
+  "growatt-helios-3600": "whole-home backup",
+  "mango-power-e": "whole-home backup",
+  "bluetti-apex-300": "whole-home backup",
+  "jackery-explorer-5000-plus": "whole-home backup",
+  "ecoflow-delta-pro-ultra": "whole-home backup",
 };
 
 /**
@@ -59,6 +75,20 @@ const PLACEHOLDER_RENDER_IDS = new Set<string>([
   "ecoflow-river-3-plus",
   "jackery-explorer-300-plus",
   "bluetti-ac70",
+  "bluetti-apex-300",
+  "dji-power-2000",
+  "goal-zero-yeti-1500-6th-gen",
+  "geneverse-homepower-one-pro",
+  "jackery-explorer-3000-v2",
+  "ecoflow-delta-pro-ultra",
+  "growatt-helios-3600",
+  "mango-power-e",
+  "jackery-explorer-500-v2",
+  "jackery-explorer-5000-plus",
+  "bluetti-elite-100-v2",
+  "dji-power-1000-v2",
+  "growatt-vita-550",
+  "ecoflow-delta-3-plus",
 ]);
 
 export function isPlaceholderIllustration(product: Product): boolean {
