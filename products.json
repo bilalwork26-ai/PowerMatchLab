@@ -1507,21 +1507,21 @@
       "amazon_listing_note": null
   },
   {
-      "id": "geneverse-homepower-one-pro",
-      "brand": "Geneverse",
-      "model": "HomePower ONE PRO",
+      "id": "dji-power-500",
+      "brand": "DJI",
+      "model": "Power 500",
       "market": "US",
       "category": "portable-power-station",
-      "capacity_wh": 1210,
-      "rated_output_w": 1200,
-      "surge_output_w": 2400,
+      "capacity_wh": 512,
+      "rated_output_w": 1000,
+      "surge_output_w": null,
       "battery_chemistry": "LiFePO4",
-      "cycle_life": null,
-      "weight_kg": null,
+      "cycle_life": "3000+ cycles",
+      "weight_kg": 7.3,
       "dimensions": null,
       "solar_input_w": null,
       "ac_charging_w": null,
-      "charging_time": null,
+      "charging_time": "70-minute fast charging",
       "ac_outlets": null,
       "usb_c": null,
       "usb_a": null,
@@ -1533,27 +1533,28 @@
       "max_expanded_capacity_wh": null,
       "wifi": null,
       "bluetooth": null,
-      "warranty": null,
+      "warranty": "5 years",
       "idle_consumption_w": null,
       "best_for": [
-          "home office",
-          "CPAP use",
+          "camping",
+          "RV use",
           "home backup"
       ],
       "pros": [
           "LiFePO4 battery",
-          "1200W continuous total inverter output (2400W surge) at 120V/60Hz"
+          "Confirmed US-market SKU: DYM500L (100-120V AC output), distinct from the 220-240V international DYM500H",
+          "Bare unit — no drone fast-charge cable or solar panel bundled"
       ],
       "cons": [
-          "Amazon.com correspondence for this exact unit not yet confirmed",
-          "Cycle life, weight, outlet count and charging specs not independently verified"
+          "Substitute for the rejected Geneverse HomePower ONE PRO — smaller capacity (512Wh vs. the original's 1210Wh), not an equivalent-capacity replacement",
+          "Surge/peak output, dimensions and outlet counts not independently verified"
       ],
-      "official_source": "Geneverse US (faq.geneverse.com/hc/en-us/articles/30843736603291-Specifications-HomePower-ONE-PRO)",
+      "official_source": "DJI US (dji.com/power-500/specs)",
       "last_verified": "2026-09-11",
-      "amazon_asin": "B0BBSDPXJL",
-      "amazon_product_url": "https://us.amazon.com/Geneverse-LiFePO4-Portable-Station-HomePower/dp/B0BBSDPXJL",
+      "amazon_asin": "B0CZ6F44CL",
+      "amazon_product_url": "https://www.amazon.com/dp/B0CZ6F44CL",
       "amazon_affiliate_url": null,
-      "amazon_verification_status": "pending",
+      "amazon_verification_status": "confirmed",
       "amazon_listing_note": null
   },
   {

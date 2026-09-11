@@ -91,10 +91,15 @@ const V3_WITH_AFFILIATE_LINK_IDS = V3_IDS.filter(
  * On the same day, the site owner ruled on the remaining 5: 4 were approved
  * as correct listings (amazon_verification_status -> "confirmed", but still
  * no affiliate link — that comes later via SiteStripe) and 1
- * (geneverse-homepower-one-pro) was rejected for substitution, staying
- * "pending" until a replacement product is found. Two of the 4 approvals
- * carry an `amazon_listing_note` disclosing that the verified Amazon.com
- * listing bundles something beyond the bare unit:
+ * (geneverse-homepower-one-pro) was rejected outright — the site owner's
+ * direct check showed "Document not found" on Amazon.com. It was replaced
+ * with a different product, dji-power-500 (DJI Power 500, 512Wh/1000W, US
+ * SKU DYM500L, ASIN B0CZ6F44CL), approved with an exact match between DJI's
+ * own spec page and the Amazon.com listing — also "confirmed", also still
+ * unlinked pending SiteStripe. No V4 product remains "pending" now.
+ *
+ * Two of the 4 approvals carry an `amazon_listing_note` disclosing that the
+ * verified Amazon.com listing bundles something beyond the bare unit:
  * jackery-explorer-5000-plus (an Anderson extension cable — no added
  * capacity/power) and growatt-vita-550 (a 200W solar panel, kept out of the
  * unit's own spec fields). ecoflow-delta-pro-ultra's ASIN was corrected
@@ -102,7 +107,7 @@ const V3_WITH_AFFILIATE_LINK_IDS = V3_IDS.filter(
  * (B0CQXMZ5BK). ecoflow-delta-3-plus's already-clean ASIN was simply
  * approved as-is.
  */
-const V4_PENDING_IDS = ["geneverse-homepower-one-pro"];
+const V4_PENDING_IDS: string[] = [];
 const V4_NEWLY_CONFIRMED_IDS = [
   "dji-power-2000",
   "goal-zero-yeti-1500-6th-gen",
@@ -121,6 +126,7 @@ const V4_CONFIRMED_UNLINKED_IDS = [
   "jackery-explorer-5000-plus",
   "growatt-vita-550",
   "ecoflow-delta-3-plus",
+  "dji-power-500",
 ];
 const EXPECTED_LISTING_NOTES: Record<string, string> = {
   "jackery-explorer-5000-plus": "Amazon option includes an Anderson extension cable",
@@ -277,6 +283,26 @@ describe("catalog data integrity", () => {
     const p = getProductById("ecoflow-delta-3-plus")!;
     expect(p.amazon_asin).toBe("B0DCC2BVFW");
     expect(p.amazon_listing_note).toBeNull();
+  });
+
+  it("geneverse-homepower-one-pro was rejected and replaced by dji-power-500", () => {
+    expect(getProductById("geneverse-homepower-one-pro")).toBeUndefined();
+    const p = getProductById("dji-power-500");
+    expect(p, "dji-power-500 should exist").toBeDefined();
+    expect(p!.brand).toBe("DJI");
+    expect(p!.model).toBe("Power 500");
+    expect(p!.capacity_wh).toBe(512);
+    expect(p!.rated_output_w).toBe(1000);
+    expect(p!.battery_chemistry).toBe("LiFePO4");
+    expect(p!.weight_kg).toBe(7.3);
+    expect(p!.amazon_asin).toBe("B0CZ6F44CL");
+    expect(p!.amazon_product_url).toBe("https://www.amazon.com/dp/B0CZ6F44CL");
+    expect(p!.amazon_verification_status).toBe("confirmed");
+    expect(p!.amazon_affiliate_url).toBeNull();
+    expect(p!.amazon_listing_note).toBeNull();
+    const link = resolveAmazonLink(p!);
+    expect(link.href).toBeNull();
+    expect(link.isAffiliate).toBe(false);
   });
 
   it("pending V4 products show no Amazon purchase link at all, even though a candidate URL is stored", () => {
