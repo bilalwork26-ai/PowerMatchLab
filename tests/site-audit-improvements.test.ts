@@ -205,6 +205,42 @@ describe("Consent Mode v2: denied by default, GA4 never loads before acceptance"
   });
 });
 
+describe("GA4 copy: never claims Google Analytics is active when it isn't", () => {
+  it("the consent banner branches its claim on GA_ENABLED (computed from GA_MEASUREMENT_ID), not a fixed string", () => {
+    const src = read("src/components/analytics/AnalyticsConsent.tsx");
+    expect(src).toContain("const GA_ENABLED = Boolean(GA_MEASUREMENT_ID)");
+    expect(src).toMatch(/\{GA_ENABLED\s*\?/);
+    expect(src).toContain("Google Analytics is not currently active on this deployment");
+  });
+
+  it("the privacy policy computes gaEnabled from the same GA_MEASUREMENT_ID and branches the GA4 section on it", () => {
+    const src = read("src/app/privacy-policy/page.tsx");
+    expect(src).toContain("import { GA_MEASUREMENT_ID }");
+    expect(src).toContain("const gaEnabled = Boolean(GA_MEASUREMENT_ID)");
+    expect(src).toContain("{gaEnabled ? (");
+    expect(src).toContain("Google Analytics is not currently active on this");
+  });
+
+  it("the 'not active' branch never claims events are being recorded", () => {
+    const src = read("src/app/privacy-policy/page.tsx");
+    // Isolate just the false-branch JSX of the GA4 section's ternary (") : ("
+    // through the next <h2>), since the true branch elsewhere in the same
+    // file legitimately contains "we track" for when GA4 *is* active.
+    const gaSectionStart = src.indexOf("<h2>Google Analytics (GA4)</h2>");
+    const falseBranchStart = src.indexOf(") : (", gaSectionStart);
+    const falseBranchEnd = src.indexOf("<h2>Server logs</h2>", falseBranchStart);
+    const notActiveParagraph = src.slice(falseBranchStart, falseBranchEnd);
+    expect(notActiveParagraph).toContain("Google Analytics is not currently active on this");
+    expect(notActiveParagraph).not.toMatch(/we track|these events record/i);
+  });
+
+  it("with no NEXT_PUBLIC_GA_MEASUREMENT_ID configured (this test run's actual state), GA_MEASUREMENT_ID is falsy", () => {
+    // Confirms the two source-level flags above are meaningfully wired to a
+    // real, currently-false condition in this environment, not dead code.
+    expect(GA_MEASUREMENT_ID).toBeFalsy();
+  });
+});
+
 describe("GA4 event parameters: no PII, no free text, no affiliate identifiers", () => {
   it("amazon_affiliate_click sends only a catalog product id and a boolean, never the destination URL", () => {
     const src = read("src/components/product/AmazonCta.tsx");

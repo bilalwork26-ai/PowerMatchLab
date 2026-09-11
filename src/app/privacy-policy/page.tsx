@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 import { SITE } from "@/lib/site";
+import { GA_MEASUREMENT_ID } from "@/lib/analytics";
 import { PageHero } from "@/components/layout/PageHero";
 import { JsonLd } from "@/components/ui/JsonLd";
 
@@ -13,6 +14,9 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default function PrivacyPolicyPage() {
+  // Computed once per deployment from the build-time env var — this section
+  // describes what this specific deployment actually does, not a hypothetical.
+  const gaEnabled = Boolean(GA_MEASUREMENT_ID);
   return (
     <>
       <JsonLd
@@ -66,13 +70,18 @@ export default function PrivacyPolicyPage() {
         <h2>Cookie consent</h2>
         <p>
           A banner appears on your first visit asking you to accept or reject
-          analytics and advertising cookies. Until you choose, every
-          consent-related signal (<code>analytics_storage</code>,{" "}
-          <code>ad_storage</code>, <code>ad_user_data</code> and{" "}
-          <code>ad_personalization</code>, using Google&rsquo;s Consent Mode
-          v2) is set to <strong>denied</strong>, and Google Analytics is not
-          loaded at all — not a reduced or anonymized version of it, nothing
-          is requested from Google&rsquo;s analytics servers until you accept.
+          optional cookies —{" "}
+          {gaEnabled
+            ? "currently Google Analytics and Google AdSense's advertising signals; see below for exactly what each does."
+            : "currently only Google AdSense's advertising signals, since Google Analytics is not active on this deployment (see below)."}{" "}
+          Until you choose, every consent-related signal (
+          <code>analytics_storage</code>, <code>ad_storage</code>,{" "}
+          <code>ad_user_data</code> and <code>ad_personalization</code>,
+          using Google&rsquo;s Consent Mode v2) is set to{" "}
+          <strong>denied</strong>
+          {gaEnabled
+            ? ", and Google Analytics is not loaded at all — not a reduced or anonymized version of it, nothing is requested from Google's analytics servers until you accept."
+            : "."}{" "}
           Rejecting keeps it that way. Your choice is stored in your
           browser&rsquo;s local storage so you are not asked again, and you
           can change it at any time using the &ldquo;Cookie
@@ -106,48 +115,62 @@ export default function PrivacyPolicyPage() {
           visitor profiles, and does not use fingerprinting to identify
           returning visitors. Because it is cookie-free and does not process
           personal data the way Google Analytics does, it is not gated by the
-          cookie-consent banner — it also provides a smaller, coarser picture
-          (aggregate traffic and performance only) than Google Analytics,
-          which is why we run GA4 as well.
+          cookie-consent banner. It provides a smaller, coarser picture
+          (aggregate traffic and performance only) than Google Analytics —
+          {gaEnabled
+            ? " see below for what GA4 adds on top of it."
+            : " Google Analytics is not currently active on this deployment (see below), so this aggregate view is the only traffic measurement running right now."}
         </p>
 
         <h2>Google Analytics (GA4)</h2>
-        <p>
-          Only after you accept in the cookie banner does this site load
-          Google Analytics 4, which uses first-party cookies (for example{" "}
-          <code>_ga</code>) to measure traffic and understand how the
-          site&rsquo;s tools are used. Beyond standard page views, we track a
-          fixed set of interactions: starting or completing the Power
-          Calculator, adding a product to or completing a Compare selection,
-          viewing a product page, clicking a &ldquo;Check Price on
-          Amazon&rdquo; link, and clicking a calculator link from a guide.
-          These events record which action happened and, where relevant, a
-          product id or guide slug from our own catalog — never the devices
-          you entered, free-text search input, or anything else you typed.
-          Google Analytics may not always be active even after you accept: it
-          only loads when this site&rsquo;s deployment has a Measurement ID
-          configured. You can opt out of Google Analytics tracking across all
-          sites using{" "}
-          <a
-            href="https://tools.google.com/dlpage/gaoptout"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline"
-          >
-            Google&rsquo;s browser opt-out add-on
-          </a>
-          , or by using your browser&rsquo;s tracking-protection or
-          cookie-blocking settings. See{" "}
-          <a
-            href="https://policies.google.com/privacy"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline"
-          >
-            Google&rsquo;s Privacy Policy
-          </a>{" "}
-          for how Google itself handles this data.
-        </p>
+        {gaEnabled ? (
+          <p>
+            Only after you accept in the cookie banner does this site load
+            Google Analytics 4, which uses first-party cookies (for example{" "}
+            <code>_ga</code>) to measure traffic and understand how the
+            site&rsquo;s tools are used. Beyond standard page views, we track
+            a fixed set of interactions: starting or completing the Power
+            Calculator, adding a product to or completing a Compare
+            selection, viewing a product page, clicking a &ldquo;Check Price
+            on Amazon&rdquo; link, and clicking a calculator link from a
+            guide. These events record which action happened and, where
+            relevant, a product id or guide slug from our own catalog —
+            never the devices you entered, free-text search input, or
+            anything else you typed. You can opt out of Google Analytics
+            tracking across all sites using{" "}
+            <a
+              href="https://tools.google.com/dlpage/gaoptout"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              Google&rsquo;s browser opt-out add-on
+            </a>
+            , or by using your browser&rsquo;s tracking-protection or
+            cookie-blocking settings. See{" "}
+            <a
+              href="https://policies.google.com/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              Google&rsquo;s Privacy Policy
+            </a>{" "}
+            for how Google itself handles this data.
+          </p>
+        ) : (
+          <p>
+            <strong>Google Analytics is not currently active on this
+            site.</strong> No Measurement ID is configured for this
+            deployment, so no Google Analytics script is ever requested and
+            no <code>_ga</code> cookie or similar is ever set — the cookie
+            banner above only affects Google AdSense&rsquo;s advertising
+            signals while this is the case. If Google Analytics is enabled
+            on a future deployment, this section will be updated to describe
+            exactly what it tracks, the same way it already does for AdSense
+            above.
+          </p>
+        )}
 
         <h2>Server logs</h2>
         <p>

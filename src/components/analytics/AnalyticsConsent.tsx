@@ -9,7 +9,15 @@ import {
   REOPEN_CONSENT_EVENT,
   type ConsentChoice,
 } from "@/lib/consent";
+import { GA_MEASUREMENT_ID } from "@/lib/analytics";
 import { GoogleAnalytics } from "./GoogleAnalytics";
+
+/**
+ * NEXT_PUBLIC_ vars are inlined at build time, so this is a fixed constant
+ * per deployment, not something that changes at runtime — safe to branch UI
+ * copy on directly. Never claim Google Analytics is in use when it isn't.
+ */
+const GA_ENABLED = Boolean(GA_MEASUREMENT_ID);
 
 /**
  * Single owner of the visitor's consent choice and the one place that
@@ -44,9 +52,10 @@ export function AnalyticsConsent() {
         >
           <div className="container-page flex flex-wrap items-center justify-between gap-4">
             <p className="max-w-2xl text-sm text-navy-200">
-              We use Google Analytics to understand how visitors use this site
-              and Google AdSense for site-ownership verification. Both stay off
-              until you accept — see our{" "}
+              {GA_ENABLED
+                ? "We use Google Analytics to understand how visitors use this site, and Google AdSense for site-ownership verification. Both stay off until you accept —"
+                : "This site uses Google AdSense for site-ownership verification. Google Analytics is not currently active on this deployment. Your choice below still controls the advertising-related signals Google receives —"}{" "}
+              see our{" "}
               <Link href="/privacy-policy" className="underline hover:text-white">
                 Privacy Policy
               </Link>{" "}
