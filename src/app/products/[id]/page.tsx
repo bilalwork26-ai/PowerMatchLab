@@ -21,6 +21,7 @@ import { ProductIllustration } from "@/components/ui/ProductIllustration";
 import { EnergyLines } from "@/components/ui/EnergyLines";
 import { ILLUSTRATIVE_CAPTION_LONG } from "@/lib/illustrations";
 import { AmazonCta } from "@/components/product/AmazonCta";
+import { MobileBuyBar } from "@/components/product/MobileBuyBar";
 import { CompareToggleButton } from "@/components/product/CompareToggleButton";
 import { ProductTabs } from "@/components/product/ProductTabs";
 import { SpecTable } from "@/components/product/SpecTable";
@@ -173,7 +174,11 @@ export default async function ProductPage({
                   </div>
                 </div>
 
-                <div className="mt-4 space-y-2">
+                <p className="mt-4 text-[11px] text-navy-400">
+                  Specs last checked {fmtDate(product.last_verified)}
+                  {product.official_source ? ` · ${product.official_source}` : ""}
+                </p>
+                <div className="mt-2 space-y-2">
                   <AmazonCta product={product} size="md" tone="dark" />
                   <CompareToggleButton productId={product.id} tone="dark" />
                 </div>
@@ -288,7 +293,9 @@ export default async function ProductPage({
         </div>
       </div>
 
-      <div className="bg-navy-950 pb-12 text-white">
+      <MobileBuyBar product={product} />
+
+      <div className="bg-navy-950 pb-32 text-white md:pb-12">
         <div className="container-page">
         <Callout tone="warn" dark title="How to read this page">
           Specifications are recorded from manufacturer-published information.

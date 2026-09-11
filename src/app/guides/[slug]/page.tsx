@@ -314,7 +314,7 @@ export default async function GuidePage({
           </div>
         </article>
 
-        <aside className="lg:sticky lg:top-20 lg:h-fit">
+        <aside className="order-first lg:order-none lg:sticky lg:top-20 lg:h-fit">
           <div className="glass-panel bg-navy-900/60 p-4">
             <h2 className="text-sm font-semibold text-white">Next steps</h2>
             <ul className="mt-2 space-y-2 text-sm">

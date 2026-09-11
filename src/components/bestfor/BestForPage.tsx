@@ -65,6 +65,113 @@ export function BestForPage({ content }: { content: BestForContent }) {
             </p>
           ))}
 
+          {picks.length ? (
+            <section>
+              <h2 className="text-lg font-bold text-white">
+                Top picks for {content.title.replace("Best Power Stations for ", "")}
+              </h2>
+              {content.usMarketNotice ? (
+                <p className="mt-1 text-xs text-navy-400">
+                  These picks are focused on the U.S. market. Before buying, confirm
+                  plug type, voltage (120V), warranty terms, and regional availability
+                  on the Amazon listing — especially if you are ordering to another
+                  country.
+                </p>
+              ) : null}
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                {picks.map((pick) => {
+                  const fridgeHours =
+                    content.key === "refrigerator-backup"
+                      ? estimateRuntimeHours(pick.entry.product.capacity_wh, 150)
+                      : null;
+                  return (
+                    <div key={pick.key}>
+                      <Badge tone="brand" dark className="mb-2">
+                        {pick.label}
+                      </Badge>
+                      <ProductCard
+                        product={pick.entry.product}
+                        score={scores.get(pick.entry.product.id)}
+                        tone="dark"
+                      />
+                      <p className="mt-2 text-xs text-navy-300">{pick.reason}</p>
+                      {fridgeHours != null ? (
+                        <p className="mt-1 text-xs text-navy-400">
+                          Estimated ~{fridgeHours.toFixed(1)} hours running a
+                          full-size refrigerator (~150 W average draw) — a
+                          planning calculation, not a lab measurement.
+                        </p>
+                      ) : null}
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          ) : (
+            <Callout tone="warn" dark>
+              No catalog product is explicitly positioned for this use by its
+              manufacturer. See the full catalog ranking below.
+            </Callout>
+          )}
+
+          {shortlist.length >= 2 ? (
+            <section className="mt-8">
+              <h2 className="text-lg font-bold text-white">Shortlist comparison</h2>
+              <p className="mt-1 text-sm text-navy-300">
+                The top {shortlist.length} matches for this use, verified specs
+                only. The best value in each row is highlighted.
+              </p>
+              <div className="mt-4 overflow-x-auto">
+                <table className="w-full min-w-[520px] border-collapse text-sm">
+                  <thead>
+                    <tr className="border-b border-navy-700 text-left text-navy-400">
+                      <th scope="col" className="py-2 pr-3 font-medium">
+                        Model
+                      </th>
+                      {shortlistRows.map((r) => (
+                        <th key={r.key} scope="col" className="py-2 pr-3 font-medium">
+                          {r.label}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {shortlist.map((p) => (
+                      <tr key={p.id} className="border-b border-navy-800">
+                        <th scope="row" className="py-2 pr-3 text-left font-medium text-white">
+                          <Link href={`/products/${p.id}`} className="hover:text-cyan-300">
+                            {p.brand} {p.model}
+                          </Link>
+                        </th>
+                        {shortlistRows.map((r) => {
+                          const winner = rowWinner(r, shortlist);
+                          const isWin = !winner.tie && winner.winnerIds.includes(p.id);
+                          return (
+                            <td
+                              key={r.key}
+                              className={cn(
+                                "py-2 pr-3 tabular-nums",
+                                isWin ? "font-semibold text-positive-500" : "text-navy-200",
+                              )}
+                            >
+                              {r.display(p)}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <Link
+                href={`/compare?ids=${shortlist.map((p) => p.id).join(",")}`}
+                className="mt-3 inline-flex text-sm font-semibold text-cyan-300 hover:underline"
+              >
+                Open full comparison →
+              </Link>
+            </section>
+          ) : null}
+
           <section className="mt-4">
             <h2 className="text-lg font-bold text-white">What actually matters</h2>
             <dl className="mt-3 space-y-3">
@@ -141,113 +248,6 @@ export function BestForPage({ content }: { content: BestForContent }) {
                   </li>
                 ) : null}
               </ul>
-            </section>
-          ) : null}
-
-          {picks.length ? (
-            <section className="mt-8">
-              <h2 className="text-lg font-bold text-white">
-                Top picks for {content.title.replace("Best Power Stations for ", "")}
-              </h2>
-              {content.usMarketNotice ? (
-                <p className="mt-1 text-xs text-navy-400">
-                  These picks are focused on the U.S. market. Before buying, confirm
-                  plug type, voltage (120V), warranty terms, and regional availability
-                  on the Amazon listing — especially if you are ordering to another
-                  country.
-                </p>
-              ) : null}
-              <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                {picks.map((pick) => {
-                  const fridgeHours =
-                    content.key === "refrigerator-backup"
-                      ? estimateRuntimeHours(pick.entry.product.capacity_wh, 150)
-                      : null;
-                  return (
-                    <div key={pick.key}>
-                      <Badge tone="brand" dark className="mb-2">
-                        {pick.label}
-                      </Badge>
-                      <ProductCard
-                        product={pick.entry.product}
-                        score={scores.get(pick.entry.product.id)}
-                        tone="dark"
-                      />
-                      <p className="mt-2 text-xs text-navy-300">{pick.reason}</p>
-                      {fridgeHours != null ? (
-                        <p className="mt-1 text-xs text-navy-400">
-                          Estimated ~{fridgeHours.toFixed(1)} hours running a
-                          full-size refrigerator (~150 W average draw) — a
-                          planning calculation, not a lab measurement.
-                        </p>
-                      ) : null}
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-          ) : (
-            <Callout tone="warn" dark className="mt-8">
-              No catalog product is explicitly positioned for this use by its
-              manufacturer. See the full catalog ranking below.
-            </Callout>
-          )}
-
-          {shortlist.length >= 2 ? (
-            <section className="mt-8">
-              <h2 className="text-lg font-bold text-white">Shortlist comparison</h2>
-              <p className="mt-1 text-sm text-navy-300">
-                The top {shortlist.length} matches for this use, verified specs
-                only. The best value in each row is highlighted.
-              </p>
-              <div className="mt-4 overflow-x-auto">
-                <table className="w-full min-w-[520px] border-collapse text-sm">
-                  <thead>
-                    <tr className="border-b border-navy-700 text-left text-navy-400">
-                      <th scope="col" className="py-2 pr-3 font-medium">
-                        Model
-                      </th>
-                      {shortlistRows.map((r) => (
-                        <th key={r.key} scope="col" className="py-2 pr-3 font-medium">
-                          {r.label}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {shortlist.map((p) => (
-                      <tr key={p.id} className="border-b border-navy-800">
-                        <th scope="row" className="py-2 pr-3 text-left font-medium text-white">
-                          <Link href={`/products/${p.id}`} className="hover:text-cyan-300">
-                            {p.brand} {p.model}
-                          </Link>
-                        </th>
-                        {shortlistRows.map((r) => {
-                          const winner = rowWinner(r, shortlist);
-                          const isWin = !winner.tie && winner.winnerIds.includes(p.id);
-                          return (
-                            <td
-                              key={r.key}
-                              className={cn(
-                                "py-2 pr-3 tabular-nums",
-                                isWin ? "font-semibold text-positive-500" : "text-navy-200",
-                              )}
-                            >
-                              {r.display(p)}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <Link
-                href={`/compare?ids=${shortlist.map((p) => p.id).join(",")}`}
-                className="mt-3 inline-flex text-sm font-semibold text-cyan-300 hover:underline"
-              >
-                Open full comparison →
-              </Link>
             </section>
           ) : null}
 
