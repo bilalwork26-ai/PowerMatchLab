@@ -1192,7 +1192,7 @@
     "last_verified": "2026-09-11",
     "amazon_asin": "B0G6ZDP75P",
     "amazon_product_url": "https://www.amazon.com/dp/B0G6ZDP75P",
-    "amazon_affiliate_url": null,
+    "amazon_affiliate_url": "https://amzn.to/4dv2RfO",
     "amazon_verification_status": "confirmed",
     "amazon_listing_note": "Amazon bundle includes a 100W solar panel."
   },
@@ -1552,7 +1552,7 @@
       "last_verified": "2026-09-11",
       "amazon_asin": "B0CZ6F44CL",
       "amazon_product_url": "https://www.amazon.com/dp/B0CZ6F44CL",
-      "amazon_affiliate_url": null,
+      "amazon_affiliate_url": "https://amzn.to/46RHZf0",
       "amazon_verification_status": "confirmed",
       "amazon_listing_note": null
   },
@@ -1651,7 +1651,7 @@
       "last_verified": "2026-09-11",
       "amazon_asin": "B0CQXMZ5BK",
       "amazon_product_url": "https://www.amazon.com/EF-ECOFLOW-Expandable-Generator-Emergency/dp/B0CQXMZ5BK",
-      "amazon_affiliate_url": null,
+      "amazon_affiliate_url": "https://amzn.to/4A5bYhb",
       "amazon_verification_status": "confirmed",
       "amazon_listing_note": null
   },
@@ -1852,7 +1852,7 @@
       "last_verified": "2026-09-11",
       "amazon_asin": "B0FCSHFJ6S",
       "amazon_product_url": "https://www.amazon.com/Jackery-Generator-Extension-Essential-Emergency/dp/B0FCSHFJ6S",
-      "amazon_affiliate_url": null,
+      "amazon_affiliate_url": "https://amzn.to/4A9vN6K",
       "amazon_verification_status": "confirmed",
       "amazon_listing_note": "Amazon option includes an Anderson extension cable"
   },
@@ -1998,16 +1998,16 @@
           "Fast AC recharge (about 1.6 hours)"
       ],
       "cons": [
-          "The only Amazon.com listing located explicitly includes a 200W solar panel — not the unit alone; see amazon_listing_note",
+          "Amazon.com listing (ASIN B0BSH4F944) confirmed dead by the site owner (\"Document not found\") — no active Amazon.com correspondence for this product currently",
           "Surge/peak rating and warranty not independently verified"
       ],
       "official_source": "Growatt (growattportable.com/products/growatt-vita-550-portable-power-station-wl)",
       "last_verified": "2026-09-11",
-      "amazon_asin": "B0BSH4F944",
-      "amazon_product_url": "https://www.amazon.com/GROWATT-Generator-Portable-Station-Charging/dp/B0BSH4F944",
+      "amazon_asin": null,
+      "amazon_product_url": null,
       "amazon_affiliate_url": null,
-      "amazon_verification_status": "confirmed",
-      "amazon_listing_note": "Amazon bundle includes a 200W solar panel"
+      "amazon_verification_status": "pending",
+      "amazon_listing_note": null
   },
   {
       "id": "ecoflow-delta-3-plus",
@@ -2055,7 +2055,7 @@
       "last_verified": "2026-09-11",
       "amazon_asin": "B0DCC2BVFW",
       "amazon_product_url": "https://www.amazon.com/EF-ECOFLOW-Portable-Generator-Optional/dp/B0DCC2BVFW",
-      "amazon_affiliate_url": null,
+      "amazon_affiliate_url": "https://amzn.to/4xoFPhU",
       "amazon_verification_status": "confirmed",
       "amazon_listing_note": null
   }

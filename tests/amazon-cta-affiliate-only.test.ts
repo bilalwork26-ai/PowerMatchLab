@@ -45,9 +45,9 @@ describe("resolveAmazonLink: amazon_product_url is never surfaced as a CTA href"
     }
   });
 
-  it("a confirmed product with no affiliate link yet (e.g. anker-solix-c800x) still gets no purchase link", () => {
-    const p = products.find((x) => x.id === "anker-solix-c800x")!;
-    expect(p.amazon_verification_status).toBe("confirmed");
+  it("a real catalog product with no affiliate link yet (e.g. growatt-vita-550, pending after its ASIN turned out dead) still gets no purchase link", () => {
+    const p = products.find((x) => x.id === "growatt-vita-550")!;
+    expect(p.amazon_verification_status).toBe("pending");
     expect(p.amazon_affiliate_url).toBeNull();
     const link = resolveAmazonLink(p);
     expect(link.href).toBeNull();
