@@ -35,7 +35,9 @@ export async function generateMetadata({
     });
   }
   return pageMetadata({
-    title: `${comparison.h1} — PowerMatchLab`,
+    // No manual "— PowerMatchLab" suffix here: the root layout's title
+    // template (`%s · PowerMatchLab`) already appends the brand name once.
+    title: comparison.h1,
     description: comparison.metaDescription,
     path: `/compare/${comparison.slug}`,
   });

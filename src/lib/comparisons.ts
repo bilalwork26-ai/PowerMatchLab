@@ -9,11 +9,12 @@
  */
 
 import type { Product } from "@/types/product";
-import { productDisplayName } from "@/data/products";
+import { productDisplayName, getProductsByIds } from "@/data/products";
 import { COMPARE_ROWS, rowWinner, type CompareRow } from "./compare-rows";
 import { getApplianceExample } from "./appliances";
 import { estimateRuntimeHours } from "./runtime";
 import { RUNTIME_EFFICIENCY } from "./assumptions";
+import type { Comparison } from "@/content/comparisons";
 
 export interface UseCaseVerdict {
   key: string;
@@ -235,4 +236,66 @@ export function earliestLastChecked(products: [Product, Product]): string | null
   const dates = products.map((p) => p.last_verified).filter((d): d is string => Boolean(d));
   if (dates.length === 0) return null;
   return dates.sort()[0];
+}
+
+/**
+ * Capacity tiers for the comparisons index page. Boundaries are picked to
+ * split the current catalog into roughly even, recognizable buying classes
+ * — not derived from any external source, just a bucketing of on-file
+ * capacity_wh values.
+ */
+const CAPACITY_TIERS: { maxWh: number; label: string }[] = [
+  { maxWh: 800, label: "Compact (under 800 Wh)" },
+  { maxWh: 1300, label: "Mid-size (800–1,300 Wh)" },
+  { maxWh: 2200, label: "~2,000 Wh class" },
+  { maxWh: Infinity, label: "Large / whole-home (2,200+ Wh)" },
+];
+
+export interface ComparisonIndexEntry {
+  comparison: Comparison;
+  capacityTierLabel: string;
+  /** The single most relevant use-case label, from the comparison's own curated relatedBestForSlugs — never inferred or guessed. */
+  useCaseLabel: string | null;
+}
+
+const USE_CASE_LABELS: Record<string, string> = {
+  "best-for-camping": "Camping",
+  "best-for-rv": "RV",
+  "best-for-refrigerator-backup": "Refrigerator backup",
+  "best-for-home-backup": "Home backup",
+};
+
+/**
+ * Groups every entry in COMPARISONS by capacity tier (from the average
+ * registered capacity of its two products) for the /compare index page.
+ * Never invents a tier or use case — a pairing with no on-file capacity for
+ * either product falls into the largest tier's "Not verified" bucket rather
+ * than being silently dropped.
+ */
+export function groupComparisonsForIndex(comparisons: Comparison[]): {
+  tierLabel: string;
+  entries: ComparisonIndexEntry[];
+}[] {
+  const withTier: ComparisonIndexEntry[] = comparisons.map((comparison) => {
+    const products = getProductsByIds(comparison.productIds);
+    const capacities = products.map((p) => p.capacity_wh).filter((v): v is number => v != null);
+    const avg = capacities.length ? capacities.reduce((a, b) => a + b, 0) / capacities.length : null;
+    const tier = avg == null ? CAPACITY_TIERS[CAPACITY_TIERS.length - 1] : CAPACITY_TIERS.find((t) => avg <= t.maxWh)!;
+    const useCaseSlug = comparison.relatedBestForSlugs[0];
+    return {
+      comparison,
+      capacityTierLabel: tier.label,
+      useCaseLabel: useCaseSlug ? (USE_CASE_LABELS[useCaseSlug] ?? null) : null,
+    };
+  });
+
+  const order = CAPACITY_TIERS.map((t) => t.label);
+  const grouped = order
+    .map((tierLabel) => ({
+      tierLabel,
+      entries: withTier.filter((e) => e.capacityTierLabel === tierLabel),
+    }))
+    .filter((g) => g.entries.length > 0);
+
+  return grouped;
 }
