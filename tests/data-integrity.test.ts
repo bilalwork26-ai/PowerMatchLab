@@ -60,14 +60,14 @@ const EXPECTED_V2_AFFILIATE_LINKS: Record<string, string> = {
 const V2_IDS = Object.keys(EXPECTED_V2_AFFILIATE_LINKS);
 
 /**
- * The 4 Milestone 4 catalog-expansion products (added 2026-09-11). These are
- * the first products in the catalog to intentionally have
- * `amazon_affiliate_url: null` — each links to its real, verified
- * Amazon.com listing (amazon_product_url) via the AmazonCta direct-link
- * fallback until the site owner generates a real Associates link for them.
- * Specs cross-corroborated via WebSearch against each brand's own US site
- * plus independent retailer/review sources; any field that could not be
- * confirmed was left null rather than guessed.
+ * The 4 Milestone 4 catalog-expansion products (added 2026-09-11). Three of
+ * them (ecoflow-river-3-plus, jackery-explorer-300-plus, bluetti-ac70) later
+ * received real Amazon Associates SiteStripe links from the site owner
+ * (2026-09-11, see EXPECTED_V3_V4_AFFILIATE_LINKS below).
+ * "anker-solix-c800-plus" remains confirmed-but-unlinked: its ASIN listing
+ * could not be safely resolved on Amazon.com (risk of confusion with the
+ * different "C800X"/"C800" models), so it still uses the honest
+ * no-purchase-link fallback until a verified ASIN is found.
  */
 const V3_IDS = [
   "anker-solix-c800-plus",
@@ -75,35 +75,63 @@ const V3_IDS = [
   "jackery-explorer-300-plus",
   "bluetti-ac70",
 ];
+const V3_WITHOUT_AFFILIATE_LINK_IDS = ["anker-solix-c800-plus"];
+const V3_WITH_AFFILIATE_LINK_IDS = V3_IDS.filter(
+  (id) => !V3_WITHOUT_AFFILIATE_LINK_IDS.includes(id),
+);
 
 /**
- * The 40-product catalog build-out (2026-09-11). 13 of these 14 are
- * `amazon_verification_status: "pending"` — their ASIN/amazon_product_url
- * are WebSearch-sourced research candidates only, not yet confirmed to
- * match the exact base unit, so the UI shows no purchase CTA for them at
- * all (see resolveAmazonLink). "bluetti-apex-300" is the sole exception:
- * its Amazon listing was explicitly confirmed to match the linked base
- * unit (2764.8Wh, no expansion battery), so it is "confirmed" and uses the
- * normal honest direct-link fallback like the V3 products above, even
- * though a real affiliate link still hasn't been generated for it.
+ * The 40-product catalog build-out (2026-09-11). Originally 13 of these 14
+ * were `amazon_verification_status: "pending"` (WebSearch-sourced research
+ * candidates only) and 1 ("bluetti-apex-300") was "confirmed" but still
+ * unlinked. On 2026-09-11 the site owner supplied real Amazon Associates
+ * SiteStripe links for 9 of the 14 — bluetti-apex-300 plus 8 that had been
+ * pending — flipping their amazon_verification_status to "confirmed". The
+ * remaining 5 stay "pending": each corresponds to one of the 6 blockers the
+ * site owner flagged for further research (ASIN unavailable, bundle-only
+ * listing, or unverifiable from this sandbox); anker-solix-c800-plus above
+ * is the 6th blocker.
  */
 const V4_PENDING_IDS = [
-  "dji-power-2000",
-  "goal-zero-yeti-1500-6th-gen",
   "geneverse-homepower-one-pro",
-  "jackery-explorer-3000-v2",
   "ecoflow-delta-pro-ultra",
-  "growatt-helios-3600",
-  "mango-power-e",
-  "jackery-explorer-500-v2",
   "jackery-explorer-5000-plus",
-  "bluetti-elite-100-v2",
-  "dji-power-1000-v2",
   "growatt-vita-550",
   "ecoflow-delta-3-plus",
 ];
-const V4_CONFIRMED_IDS = ["bluetti-apex-300"];
+const V4_NEWLY_CONFIRMED_IDS = [
+  "dji-power-2000",
+  "goal-zero-yeti-1500-6th-gen",
+  "jackery-explorer-3000-v2",
+  "growatt-helios-3600",
+  "mango-power-e",
+  "jackery-explorer-500-v2",
+  "bluetti-elite-100-v2",
+  "dji-power-1000-v2",
+];
+const V4_CONFIRMED_IDS = ["bluetti-apex-300", ...V4_NEWLY_CONFIRMED_IDS];
 const V4_IDS = [...V4_CONFIRMED_IDS, ...V4_PENDING_IDS];
+
+/**
+ * Real Amazon Associates links supplied by the site owner via SiteStripe on
+ * 2026-09-11 (tracking ID `powermatchlab-20`), covering the 3 newly-linked
+ * V3 products and the 9 newly-linked V4 products (bluetti-apex-300 plus the
+ * 8 V4_NEWLY_CONFIRMED_IDS). Saved verbatim, case preserved.
+ */
+const EXPECTED_V3_V4_AFFILIATE_LINKS: Record<string, string> = {
+  "bluetti-apex-300": "https://amzn.to/4hljoVX",
+  "dji-power-2000": "https://amzn.to/4r6hprX",
+  "goal-zero-yeti-1500-6th-gen": "https://amzn.to/4yANPNZ",
+  "jackery-explorer-3000-v2": "https://amzn.to/4gNy543",
+  "growatt-helios-3600": "https://amzn.to/46YFrM9",
+  "mango-power-e": "https://amzn.to/3TuurTL",
+  "jackery-explorer-500-v2": "https://amzn.to/4xovB10",
+  "bluetti-elite-100-v2": "https://amzn.to/3UHjcYx",
+  "dji-power-1000-v2": "https://amzn.to/46fIbET",
+  "bluetti-ac70": "https://amzn.to/4xSqojb",
+  "ecoflow-river-3-plus": "https://amzn.to/4zZJkhg",
+  "jackery-explorer-300-plus": "https://amzn.to/4ys4XoU",
+};
 
 describe("catalog data integrity", () => {
   it("loads the full 40-product catalog (10 V1 + 12 V2 + 4 V3 + 14 V4)", () => {
@@ -175,11 +203,22 @@ describe("catalog data integrity", () => {
     }
   });
 
-  it("V4 (40-product build-out) products never carry a real affiliate link before SiteStripe verification", () => {
-    for (const id of V4_IDS) {
+  it("V4 pending products never carry a real affiliate link before SiteStripe verification", () => {
+    for (const id of V4_PENDING_IDS) {
       const p = getProductById(id);
       expect(p, `V4 product "${id}" should exist`).toBeDefined();
       expect(p!.amazon_affiliate_url, `"${id}" must not have an affiliate link yet`).toBeNull();
+    }
+  });
+
+  it("V4 newly-confirmed products carry exactly their assigned SiteStripe affiliate link", () => {
+    for (const id of V4_CONFIRMED_IDS) {
+      const p = getProductById(id);
+      expect(p, `V4 product "${id}" should exist`).toBeDefined();
+      expect(p!.amazon_affiliate_url).toBe(EXPECTED_V3_V4_AFFILIATE_LINKS[id]);
+      const link = resolveAmazonLink(p!);
+      expect(link.href).toBe(EXPECTED_V3_V4_AFFILIATE_LINKS[id]);
+      expect(link.isAffiliate).toBe(true);
     }
   });
 
@@ -197,32 +236,37 @@ describe("catalog data integrity", () => {
     }
   });
 
-  it("the confirmed V4 product (bluetti-apex-300) still shows no purchase link — confirmed identity is not a monetized link", () => {
+  it("the confirmed V4 product bluetti-apex-300 now shows its real SiteStripe purchase link", () => {
     const p = getProductById("bluetti-apex-300")!;
     expect(p.amazon_verification_status).toBe("confirmed");
     expect(p.amazon_asin).toBe("B0F42JY551");
-    expect(p.amazon_affiliate_url).toBeNull();
+    expect(p.amazon_affiliate_url).toBe("https://amzn.to/4hljoVX");
     const link = resolveAmazonLink(p);
-    expect(link.href).toBeNull();
-    expect(link.isAffiliate).toBe(false);
+    expect(link.href).toBe("https://amzn.to/4hljoVX");
+    expect(link.isAffiliate).toBe(true);
   });
 
-  it("Milestone 4 V3 products are real and distinct, and correctly show no purchase link pending an affiliate URL", () => {
+  it("Milestone 4 V3 products are real and distinct; 3 of 4 now show their real SiteStripe purchase link, 1 still shows none", () => {
     for (const id of V3_IDS) {
       const p = getProductById(id);
       expect(p, `V3 product "${id}" should exist`).toBeDefined();
-      // No affiliate link has been generated for these yet — must stay null,
-      // never fabricated.
-      expect(p!.amazon_affiliate_url).toBeNull();
       expect(p!.amazon_asin).toMatch(/^[A-Z0-9]{10}$/);
       expect(p!.amazon_product_url).toBe(`https://www.amazon.com/dp/${p!.amazon_asin}`);
       expect(p!.official_source).toBeTruthy();
       expect(p!.last_verified).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-      // amazon_product_url is a research/matching field only — the CTA
-      // never uses it, confirmed or not.
       const link = resolveAmazonLink(p!);
-      expect(link.isAffiliate).toBe(false);
-      expect(link.href).toBeNull();
+      if (V3_WITH_AFFILIATE_LINK_IDS.includes(id)) {
+        expect(p!.amazon_affiliate_url).toBe(EXPECTED_V3_V4_AFFILIATE_LINKS[id]);
+        expect(link.isAffiliate).toBe(true);
+        expect(link.href).toBe(EXPECTED_V3_V4_AFFILIATE_LINKS[id]);
+      } else {
+        // anker-solix-c800-plus: no affiliate link has been generated yet —
+        // must stay null, never fabricated. amazon_product_url is a
+        // research/matching field only — the CTA never uses it.
+        expect(p!.amazon_affiliate_url).toBeNull();
+        expect(link.isAffiliate).toBe(false);
+        expect(link.href).toBeNull();
+      }
     }
     // No V3 product duplicates an existing id, ASIN, or product URL.
     const allIds = products.map((p) => p.id);

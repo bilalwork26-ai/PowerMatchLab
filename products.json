@@ -1222,7 +1222,7 @@
     "last_verified": "2026-09-11",
     "amazon_asin": "B0DCCB657J",
     "amazon_product_url": "https://www.amazon.com/dp/B0DCCB657J",
-    "amazon_affiliate_url": null,
+    "amazon_affiliate_url": "https://amzn.to/4zZJkhg",
     "amazon_verification_status": "confirmed"
   },
   {
@@ -1273,7 +1273,7 @@
     "last_verified": "2026-09-11",
     "amazon_asin": "B0CFV93GZM",
     "amazon_product_url": "https://www.amazon.com/dp/B0CFV93GZM",
-    "amazon_affiliate_url": null,
+    "amazon_affiliate_url": "https://amzn.to/4ys4XoU",
     "amazon_verification_status": "confirmed"
   },
   {
@@ -1324,7 +1324,7 @@
     "last_verified": "2026-09-11",
     "amazon_asin": "B0CLG6FYLQ",
     "amazon_product_url": "https://www.amazon.com/dp/B0CLG6FYLQ",
-    "amazon_affiliate_url": null,
+    "amazon_affiliate_url": "https://amzn.to/4xSqojb",
     "amazon_verification_status": "confirmed"
   },
   {
@@ -1374,7 +1374,7 @@
       "last_verified": "2026-09-11",
       "amazon_asin": "B0F42JY551",
       "amazon_product_url": "https://www.amazon.com/BLUETTI-Apex-300-Simultaneous-Emergencies/dp/B0F42JY551",
-      "amazon_affiliate_url": null,
+      "amazon_affiliate_url": "https://amzn.to/4hljoVX",
       "amazon_verification_status": "confirmed"
   },
   {
@@ -1424,8 +1424,8 @@
       "last_verified": "2026-09-11",
       "amazon_asin": "B0FBRD1B8C",
       "amazon_product_url": "https://www.amazon.com/DJI-Portable-Recharge-Electric-Generator/dp/B0FBRD1B8C",
-      "amazon_affiliate_url": null,
-      "amazon_verification_status": "pending"
+      "amazon_affiliate_url": "https://amzn.to/4r6hprX",
+      "amazon_verification_status": "confirmed"
   },
   {
       "id": "goal-zero-yeti-1500-6th-gen",
@@ -1474,8 +1474,8 @@
       "last_verified": "2026-09-11",
       "amazon_asin": "B0GMKKGQCY",
       "amazon_product_url": "https://www.amazon.com/Goal-Zero-Fast-Charging-Resistant-Compatible/dp/B0GMKKGQCY",
-      "amazon_affiliate_url": null,
-      "amazon_verification_status": "pending"
+      "amazon_affiliate_url": "https://amzn.to/4yANPNZ",
+      "amazon_verification_status": "confirmed"
   },
   {
       "id": "geneverse-homepower-one-pro",
@@ -1572,8 +1572,8 @@
       "last_verified": "2026-09-11",
       "amazon_asin": "B0FCFZFN8Z",
       "amazon_product_url": "https://www.amazon.com/Jackery-Explorer-Portable-Generator-Emergencies/dp/B0FCFZFN8Z",
-      "amazon_affiliate_url": null,
-      "amazon_verification_status": "pending"
+      "amazon_affiliate_url": "https://amzn.to/4gNy543",
+      "amazon_verification_status": "confirmed"
   },
   {
       "id": "ecoflow-delta-pro-ultra",
@@ -1671,8 +1671,8 @@
       "last_verified": "2026-09-11",
       "amazon_asin": "B0DF7SZJWY",
       "amazon_product_url": "https://www.amazon.com/GROWATT-Portable-HELIOS-Generator-Emergency/dp/B0DF7SZJWY",
-      "amazon_affiliate_url": null,
-      "amazon_verification_status": "pending"
+      "amazon_affiliate_url": "https://amzn.to/46YFrM9",
+      "amazon_verification_status": "confirmed"
   },
   {
       "id": "mango-power-e",
@@ -1720,8 +1720,8 @@
       "last_verified": "2026-09-11",
       "amazon_asin": "B0C9ZDDMSM",
       "amazon_product_url": "https://www.amazon.com/Mango-Power-Portable-Ultra-durable-Emergency/dp/B0C9ZDDMSM",
-      "amazon_affiliate_url": null,
-      "amazon_verification_status": "pending"
+      "amazon_affiliate_url": "https://amzn.to/3TuurTL",
+      "amazon_verification_status": "confirmed"
   },
   {
       "id": "jackery-explorer-500-v2",
@@ -1769,8 +1769,8 @@
       "last_verified": "2026-09-11",
       "amazon_asin": "B0FRG3YB8C",
       "amazon_product_url": "https://www.amazon.com/Jackery-Explorer-Generator-LiFePO4-Outdoors/dp/B0FRG3YB8C",
-      "amazon_affiliate_url": null,
-      "amazon_verification_status": "pending"
+      "amazon_affiliate_url": "https://amzn.to/4xovB10",
+      "amazon_verification_status": "confirmed"
   },
   {
       "id": "jackery-explorer-5000-plus",
@@ -1868,8 +1868,8 @@
       "last_verified": "2026-09-11",
       "amazon_asin": "B0F42CSQWG",
       "amazon_product_url": "https://www.amazon.com/BLUETTI-Elite-100-V2-Generator/dp/B0F42CSQWG",
-      "amazon_affiliate_url": null,
-      "amazon_verification_status": "pending"
+      "amazon_affiliate_url": "https://amzn.to/3UHjcYx",
+      "amazon_verification_status": "confirmed"
   },
   {
       "id": "dji-power-1000-v2",
@@ -1918,8 +1918,8 @@
       "last_verified": "2026-09-11",
       "amazon_asin": "B0H2MFBDZL",
       "amazon_product_url": "https://www.amazon.com/DJI-Portable-Recharge-Electric-Generator/dp/B0H2MFBDZL",
-      "amazon_affiliate_url": null,
-      "amazon_verification_status": "pending"
+      "amazon_affiliate_url": "https://amzn.to/46fIbET",
+      "amazon_verification_status": "confirmed"
   },
   {
       "id": "growatt-vita-550",
