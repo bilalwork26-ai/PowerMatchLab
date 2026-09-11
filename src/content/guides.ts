@@ -90,7 +90,7 @@ export interface Guide {
    * component in components/guides/ — add a new one there before adding a
    * new value here. Optional — most guides don't need one.
    */
-  embed?: "solar-charge-calculator" | "watt-hour-calculator";
+  embed?: "solar-charge-calculator" | "watt-hour-calculator" | "appliance-consumption-table";
   /**
    * Optional link to a pre-filtered /products view (e.g. "?solar=1"), shown
    * in "Related products" alongside relatedProductIds. Only set this to a
@@ -1786,6 +1786,7 @@ export const GUIDES: Guide[] = [
       "how-to-size-a-portable-power-station",
       "how-long-will-a-1000wh-power-station-last",
       "what-can-a-1000-watt-power-station-run",
+      "appliance-power-consumption-table",
     ],
     faq: [
       {
@@ -1812,6 +1813,77 @@ export const GUIDES: Guide[] = [
       "Manufacturer-published specifications, attributed by brand in products.json",
     ],
     lastUpdated: "2026-09-03",
+  },
+  {
+    slug: "appliance-power-consumption-table",
+    group: "basics",
+    title: "Appliance Power Consumption Table (Running Watts, Surge, Wh)",
+    metaDescription:
+      "A single reference table of running watts, startup surge and example daily hours for common household and outdoor appliances — the same figures used throughout PowerMatchLab's Power Calculator.",
+    intro: [
+      "This is a single reference table pulling together the running watts, typical startup surge, and example hours of use for every appliance already built into PowerMatchLab's Power Calculator — useful for a quick lookup without opening the calculator itself, or for sanity-checking a number you found elsewhere.",
+      "Every figure here is a commonly-cited starting point for that appliance category, not a measurement of any specific product. Real devices vary by model, age and settings — always check your own device's rating label for the number that actually matters for your sizing decision.",
+    ],
+    keyTakeaways: [
+      "Running watts is the steady draw; surge watts (when listed) is the brief startup spike a motor-driven appliance pulls — a station needs to clear both, not just one.",
+      "A blank surge column means that appliance type doesn't typically have a meaningful startup spike (electronics, resistive heating) — not that the figure is unknown.",
+      "\"Example hours/day\" are realistic starting points for the Power Calculator, not a claim about how long you personally use that device.",
+      "Every row in this table is directly editable once added in the Power Calculator — this page is a reference, the calculator is where you size for your own devices.",
+    ],
+    embed: "appliance-consumption-table",
+    sections: [
+      {
+        id: "how-to-use-this-table",
+        heading: "How to use this table",
+        body: [
+          "Find the appliance closest to what you're running, note its running watts (and surge, if listed), then either work the math by hand using PowerMatchLab's standard formula, or open the Power Calculator and add that exact example — it's pre-loaded with the same figures shown here and every field stays editable.",
+          "If your device isn't listed, check its own rating label or manual rather than guessing from a similar-sounding appliance — wattage varies significantly even within one appliance category depending on size, age and features.",
+        ],
+      },
+      {
+        id: "why-surge-separate",
+        heading: "Why surge watts is a separate column from running watts",
+        body: [
+          "Running watts is what a device draws once it's operating steadily. Surge (or startup/peak) watts is a brief spike some motor-driven appliances pull for a fraction of a second when they first switch on — a compressor, a pump, a power tool. A power station needs a surge rating that clears this spike, on top of enough continuous output for everything else running at the same time, or the device can fail to start even though its running watts looked comfortably within range.",
+          "Purely electronic loads — laptops, routers, LED lighting — don't have a meaningful startup spike, which is why the surge column is blank for those rows rather than showing a fabricated number.",
+        ],
+      },
+      {
+        id: "from-watts-to-planning",
+        heading: "Turning a table row into a sizing decision",
+        body: [
+          "Watt-hours per day = running watts × hours of use per day. PowerMatchLab's recommended minimum capacity then applies the site's standard assumptions: (daily Wh × days of autonomy) ÷ 0.85 usable-energy factor × 1.2 reserve headroom — the same formula used throughout every sizing guide on this site.",
+          "For the exact worked math applied to a specific use case — a refrigerator, a CPAP machine, a sump pump, a home office setup — see the dedicated guides linked below, which walk through the full calculation rather than just listing the reference wattage.",
+        ],
+      },
+    ],
+    relatedProductIds: [],
+    relatedGuideSlugs: [
+      "watts-vs-watt-hours",
+      "how-to-size-a-portable-power-station",
+      "power-station-for-power-outage",
+    ],
+    faq: [
+      {
+        question: "Why don't some appliances have a surge watts figure?",
+        answer:
+          "A blank surge column means that appliance type doesn't typically have a meaningful startup spike — true of most electronics (laptops, routers, LED lighting). Motor-driven appliances (fridges, pumps) do have one, and it's listed when the example includes it.",
+      },
+      {
+        question: "Can I add my own appliance if it's not in the table?",
+        answer:
+          "Yes — the Power Calculator has a \"+ Add custom device\" option for any appliance not in the example list. Enter your device's real watts from its own rating label.",
+      },
+      {
+        question: "Are these the exact numbers for my specific device?",
+        answer:
+          "No — they're commonly-cited starting points for that appliance category. Real devices vary by model, age, size and settings. Always check your own device's rating label or manual, or measure it with a plug-in energy meter, for the number that actually matters.",
+      },
+    ],
+    sources: [
+      "PowerMatchLab's own Power Calculator example-appliance data (the same figures shown in this table)",
+    ],
+    lastUpdated: "2026-09-11",
   },
   {
     slug: "how-long-to-charge-power-station-with-solar",
