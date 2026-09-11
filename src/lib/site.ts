@@ -94,6 +94,7 @@ export const PRIMARY_NAV: NavItem[] = [
   { label: "Home", href: "/" },
   { label: "Products", href: "/products" },
   { label: "Compare", href: "/compare" },
+  { label: "Tools", href: "/tools" },
   { label: "Power Calculator", href: "/power-calculator" },
   { label: "Studio", href: "/power-setup-studio" },
   { label: "Guides", href: "/guides" },

@@ -21,6 +21,17 @@ export interface DeviceInput {
   hoursPerDay: number;
   /** Optional real startup/surge watts for a single unit. */
   surgeWatts?: number | null;
+  /**
+   * Whether this device is assumed to run at the same time as the other
+   * devices in the list, for the purposes of continuous/surge power sizing.
+   * Defaults to `true` (every existing caller's behavior, unchanged) — a
+   * device only needs setting to `false` when the visitor has explicitly
+   * said it never overlaps with the rest (e.g. "cargas que pueden
+   * coincidir" in the Home Backup and RV calculators). It still counts
+   * fully toward daily/total energy either way, since energy is consumed
+   * regardless of what else happens to be running at the same instant.
+   */
+  simultaneous?: boolean;
 }
 
 export interface DeviceBreakdown extends DeviceInput {
@@ -124,15 +135,18 @@ export function calculatePower(
   const devices = devicesInput.map((d) => buildDeviceBreakdown(d, assumptions));
 
   const activeDevices = devices.filter((d) => d.quantity > 0 && d.watts > 0);
+  // Only devices assumed to run at the same time as everything else count
+  // toward the simultaneous continuous/surge power requirement.
+  const simultaneousDevices = activeDevices.filter((d) => d.simultaneous !== false);
 
-  const requiredContinuousOutputW = activeDevices.reduce(
+  const requiredContinuousOutputW = simultaneousDevices.reduce(
     (sum, d) => sum + d.continuousWatts,
     0,
   );
 
   const totalRunning = requiredContinuousOutputW;
   // Biggest single "surge delta" above the always-running baseline.
-  const maxSurgeDelta = activeDevices.reduce((max, d) => {
+  const maxSurgeDelta = simultaneousDevices.reduce((max, d) => {
     const delta = d.groupSurgeWatts - d.continuousWatts;
     return delta > max ? delta : max;
   }, 0);

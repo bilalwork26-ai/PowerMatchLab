@@ -26,9 +26,17 @@ const STATUS_STYLES_DARK: Record<MatchStatus, string> = {
 export function RecommendationCard({
   rec,
   tone = "light",
+  extraStat,
 }: {
   rec: Recommendation;
   tone?: "light" | "dark";
+  /**
+   * Optional extra calculated stat specific to the calling tool (e.g.
+   * "Estimated nights" for the CPAP calculator, "Estimated autonomy" for
+   * the Refrigerator/RV/Home Backup calculators) — a real calculation from
+   * this product's own capacity, never a manufacturer claim.
+   */
+  extraStat?: { label: string; value: string };
 }) {
   const { product, status, reasons, limitations, powerMatchScore } = rec;
   const dark = tone === "dark";
@@ -77,6 +85,12 @@ export function RecommendationCard({
           tone={tone}
         />
       </div>
+
+      {extraStat ? (
+        <p className={cn("mt-3 text-sm font-semibold", dark ? "text-cyan-300" : "text-brand-700")}>
+          {extraStat.label}: {extraStat.value}
+        </p>
+      ) : null}
 
       {reasons.length ? (
         <ul className={cn("mt-3 space-y-1 text-sm", dark ? "text-navy-200" : "text-navy-700")}>
