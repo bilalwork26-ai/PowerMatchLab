@@ -44,6 +44,7 @@ const BASE = {
   last_verified: "2026-01-01",
   amazon_asin: "B0TEST1234",
   amazon_verification_status: "confirmed" as const,
+  amazon_listing_note: null,
 };
 
 describe("isAffiliateShapedUrl", () => {

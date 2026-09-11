@@ -74,6 +74,15 @@ const productObjectSchema = z.object({
    * anything other than "confirmed" — see resolveAmazonLink.
    */
   amazon_verification_status: z.enum(["pending", "confirmed", "rejected"]),
+  /**
+   * Optional transparency note shown next to the Amazon CTA when the only
+   * verified Amazon.com listing for this exact product bundles something
+   * beyond the bare unit (e.g. an accessory cable or a solar panel) that
+   * does not itself add capacity or power. Must not be used to hide a
+   * listing that changes capacity/power (a multi-unit or extra-battery
+   * bundle) — those stay unresolved/rejected instead.
+   */
+  amazon_listing_note: nullableString,
 });
 
 /**

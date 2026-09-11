@@ -83,6 +83,13 @@ export interface Product {
    * candidates only — the UI never renders a purchase CTA for them.
    */
   amazon_verification_status: "pending" | "confirmed" | "rejected";
+  /**
+   * Transparency note shown next to the Amazon CTA when the verified
+   * listing bundles something beyond the bare unit (an accessory cable, a
+   * solar panel) that doesn't itself change capacity/power. Null for every
+   * product whose listing is the unit alone.
+   */
+  amazon_listing_note: string | null;
 }
 
 /** Use-case keys recognised by the recommendation + best-for logic. */

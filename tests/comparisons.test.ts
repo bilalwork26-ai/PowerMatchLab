@@ -440,6 +440,7 @@ function makeProduct(id: string, overrides: Partial<Product> = {}): Product {
     amazon_product_url: null,
     amazon_affiliate_url: null,
     amazon_verification_status: "confirmed",
+    amazon_listing_note: null,
     ...overrides,
   };
 }

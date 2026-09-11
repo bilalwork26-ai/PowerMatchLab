@@ -84,6 +84,17 @@ export function AmazonCta({
         </span>
       )}
 
+      {product.amazon_listing_note ? (
+        <p
+          className={cn(
+            "mt-1 text-[11px] font-medium leading-4",
+            tone === "dark" ? "text-cyan-300" : "text-navy-600",
+          )}
+        >
+          {product.amazon_listing_note}
+        </p>
+      ) : null}
+
       <p
         className={cn(
           "mt-1.5 text-[11px] leading-4",
