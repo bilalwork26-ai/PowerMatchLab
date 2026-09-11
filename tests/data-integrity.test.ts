@@ -59,9 +59,26 @@ const EXPECTED_V2_AFFILIATE_LINKS: Record<string, string> = {
 
 const V2_IDS = Object.keys(EXPECTED_V2_AFFILIATE_LINKS);
 
+/**
+ * The 4 Milestone 4 catalog-expansion products (added 2026-09-11). These are
+ * the first products in the catalog to intentionally have
+ * `amazon_affiliate_url: null` — each links to its real, verified
+ * Amazon.com listing (amazon_product_url) via the AmazonCta direct-link
+ * fallback until the site owner generates a real Associates link for them.
+ * Specs cross-corroborated via WebSearch against each brand's own US site
+ * plus independent retailer/review sources; any field that could not be
+ * confirmed was left null rather than guessed.
+ */
+const V3_IDS = [
+  "anker-solix-c800-plus",
+  "ecoflow-river-3-plus",
+  "jackery-explorer-300-plus",
+  "bluetti-ac70",
+];
+
 describe("catalog data integrity", () => {
-  it("loads the full V1 + V2 catalog (10 + 12 = 22 records)", () => {
-    expect(products).toHaveLength(22);
+  it("loads the full V1 + V2 + V3 catalog (10 + 12 + 4 = 26 records)", () => {
+    expect(products).toHaveLength(26);
   });
 
   it("still contains every V1 record", () => {
@@ -104,11 +121,34 @@ describe("catalog data integrity", () => {
     expect(new Set(productUrls).size).toBe(productUrls.length);
   });
 
-  it("every catalog product now has an affiliate URL (no direct-link fallback remains)", () => {
-    expect(products).toHaveLength(V1_IDS.length + V2_IDS.length);
-    for (const p of products) {
+  it("every V1 and V2 catalog product still has an affiliate URL", () => {
+    expect(products).toHaveLength(V1_IDS.length + V2_IDS.length + V3_IDS.length);
+    for (const id of [...V1_IDS, ...V2_IDS]) {
+      const p = getProductById(id)!;
       expect(p.amazon_affiliate_url, `"${p.id}" should have an affiliate URL`).not.toBeNull();
     }
+  });
+
+  it("Milestone 4 V3 products are real, distinct, and use the direct-link fallback honestly", () => {
+    for (const id of V3_IDS) {
+      const p = getProductById(id);
+      expect(p, `V3 product "${id}" should exist`).toBeDefined();
+      // No affiliate link has been generated for these yet — must stay null,
+      // never fabricated.
+      expect(p!.amazon_affiliate_url).toBeNull();
+      expect(p!.amazon_asin).toMatch(/^[A-Z0-9]{10}$/);
+      expect(p!.amazon_product_url).toBe(`https://www.amazon.com/dp/${p!.amazon_asin}`);
+      expect(p!.official_source).toBeTruthy();
+      expect(p!.last_verified).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      const link = resolveAmazonLink(p!);
+      expect(link.isAffiliate).toBe(false);
+      expect(link.href).toBe(p!.amazon_product_url);
+    }
+    // No V3 product duplicates an existing id, ASIN, or product URL.
+    const allIds = products.map((p) => p.id);
+    expect(new Set(allIds).size).toBe(allIds.length);
+    const allAsins = products.map((p) => p.amazon_asin).filter((a) => a !== null);
+    expect(new Set(allAsins).size).toBe(allAsins.length);
   });
 
   it("uses the Amazon Associates affiliate URL for the CTA on every product", () => {

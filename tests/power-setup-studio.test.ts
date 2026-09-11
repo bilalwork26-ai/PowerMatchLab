@@ -237,9 +237,13 @@ describe("Power Setup Studio — recommendation engine integration", () => {
       const product = getProductById(rec.product.id);
       expect(product).toBeDefined();
       const link = resolveAmazonLink(product!);
-      // Every one of the 22 products now carries a real affiliate link.
-      expect(link.isAffiliate).toBe(true);
-      expect(link.href).toBe(product!.amazon_affiliate_url);
+      // Every V1/V2 product recommended here carries a real affiliate link
+      // (the 4 Milestone 4 V3 products use the honest direct-link fallback
+      // and are not expected to satisfy this assertion if ever recommended).
+      if (product!.amazon_affiliate_url !== null) {
+        expect(link.isAffiliate).toBe(true);
+        expect(link.href).toBe(product!.amazon_affiliate_url);
+      }
     }
   });
 });
