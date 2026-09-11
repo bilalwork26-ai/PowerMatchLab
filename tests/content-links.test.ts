@@ -81,6 +81,8 @@ describe("best-for cross-link integrity", () => {
     expect(homeBackup!.relatedGuideSlugs).toEqual([
       "power-station-for-home-backup",
       "power-station-for-power-outage",
+      "power-station-for-sump-pump",
+      "power-station-for-home-office",
     ]);
     expect(homeBackup!.studioLinkLabel).toBeUndefined();
   });

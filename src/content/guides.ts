@@ -806,6 +806,8 @@ export const GUIDES: Guide[] = [
     ],
     relatedProductIds: [
       "vtoman-flashspeed-1000",
+      "pecron-e2400lfp",
+      "pecron-e3600lfp",
     ],
     relatedGuideSlugs: [
       "what-can-a-1000-watt-power-station-run",
@@ -1055,6 +1057,8 @@ export const GUIDES: Guide[] = [
       "power-station-for-power-outage",
       "power-station-for-refrigerator",
       "how-to-choose-the-right-portable-power-station",
+      "power-station-for-sump-pump",
+      "power-station-for-home-office",
     ],
     relatedComparisonSlug: "ecoflow-delta-pro-3-vs-anker-solix-f3800",
     faq: [
@@ -1262,6 +1266,18 @@ export const GUIDES: Guide[] = [
         ],
       },
       {
+        id: "outage-duration-table",
+        heading: "Sizing by outage length: 24, 48 and 72 hours",
+        body: [
+          "Applying the same formula to the 1,400 Wh/day priority-list example above across three common planning lengths — the number scales directly with days, so a longer outage always means proportionally more capacity, not a fixed \"emergency size\":",
+        ],
+        bullets: [
+          "24 hours: 1,400 × 1 ÷ 0.85 × 1.2 ≈ 1,976 Wh minimum recommended capacity",
+          "48 hours: 1,400 × 2 ÷ 0.85 × 1.2 ≈ 3,953 Wh minimum recommended capacity",
+          "72 hours: 1,400 × 3 ÷ 0.85 × 1.2 ≈ 5,929 Wh minimum recommended capacity",
+        ],
+      },
+      {
         id: "outage-surge",
         heading: "Don't forget the surge, especially for the fridge",
         body: [
@@ -1292,6 +1308,8 @@ export const GUIDES: Guide[] = [
       "power-station-for-refrigerator",
       "power-station-for-cpap",
       "power-station-for-home-backup",
+      "power-station-for-sump-pump",
+      "power-station-for-home-office",
     ],
     faq: [
       {
@@ -1324,6 +1342,171 @@ export const GUIDES: Guide[] = [
       "Manufacturer-published specifications, attributed by brand in products.json",
     ],
     lastUpdated: "2026-09-03",
+  },
+  {
+    slug: "power-station-for-sump-pump",
+    group: "use-cases",
+    title: "Can a Power Station Run a Sump Pump During an Outage?",
+    metaDescription:
+      "Sizing a portable power station to run a sump pump during a power outage: why the startup surge — not daily energy — is usually the limiting factor, and how to check yours.",
+    intro: [
+      "Short answer: a sump pump's daily energy use is usually small, but its motor draws a large surge on startup — often two to three times its running watts — and that surge, not stored capacity, is what most often rules a station out. Check your pump's surge rating before assuming a small or mid-size station will work.",
+      "This guide covers the electrical sizing question only. It is not a substitute for checking your specific pump's manual, and it does not address whether a battery backup is an appropriate flood-prevention plan for your home — that's a question for a professional familiar with your specific sump system.",
+    ],
+    keyTakeaways: [
+      "A common 1/3 HP sump pump runs at roughly 800 W but can surge to roughly 2,200 W or more on startup — check your own pump's label or manual for its real figures, never assume.",
+      "Daily energy is usually modest (a sump pump typically only runs for short bursts, not continuously) — the deciding factor is almost always whether the station's surge/peak rating clears the motor's startup spike.",
+      "A station that looks oversized on capacity can still fail to start the pump if its surge rating is too low — capacity (Wh) and surge (W) are separate specs that both have to clear the bar.",
+      "Larger or more frequent pumping (heavy rain, a higher-horsepower pump) increases both the number of startup cycles and total daily energy — size with a margin, not the bare minimum.",
+      "This is electrical sizing information only, not a flood-prevention or plumbing recommendation — consult a professional for your specific sump system.",
+    ],
+    sections: [
+      {
+        id: "why-surge-matters-sump",
+        heading: "Why the startup surge is the real question",
+        body: [
+          "Sump pumps use an electric motor, and like any motor-driven appliance, they draw far more current for a brief moment at startup than while running steadily — commonly two to three times the running watts, sometimes more depending on the pump. A 1/3 HP pump that runs at roughly 800 W can surge to roughly 2,200 W or higher for that first moment.",
+          "A power station's continuous (running) output rating and its surge (peak) rating are two different specs. A unit can have plenty of continuous output for the pump's running watts and still fail to start it if the surge rating doesn't clear that startup spike.",
+        ],
+      },
+      {
+        id: "find-your-pump-numbers",
+        heading: "Step 1: Find your pump's real watts and surge",
+        body: [
+          "Check the motor's nameplate (usually on the pump housing) or the manufacturer's manual for running watts (or amps × voltage) and, where listed, a locked-rotor or startup current figure — that's the number closest to real-world surge. Horsepower rating alone (1/3 HP, 1/2 HP, etc.) is a rough guide, not a precise wattage figure, since efficiency varies by model.",
+          "If only amps are listed, watts ≈ amps × 120 V for a standard household circuit. If no surge or locked-rotor figure is published, treat the running watts figure as a floor, not the full picture, and favor a station with meaningful surge headroom above the running number.",
+        ],
+      },
+      {
+        id: "daily-energy-sump",
+        heading: "Step 2: Daily energy is usually the easy part",
+        body: [
+          "Unlike a refrigerator, a sump pump doesn't run continuously — it cycles on for short bursts when water needs to be moved, so daily watt-hours are typically much lower than watts × 24 hours would suggest. Worked example, using the reference 800 W pump running for a combined 1 hour across several short cycles in a day: 800 W × 1 h = 800 Wh that day.",
+          "Applying PowerMatchLab's standard assumptions: 800 ÷ 0.85 × 1.2 ≈ 1,129 Wh minimum recommended capacity for that day's pumping alone — comfortably within reach of most mid-size and larger stations on capacity terms. The surge check in Step 1 is still the deciding factor for whether the pump starts at all.",
+          "Heavier rain, a higher-horsepower pump, or a failing check valve that causes more frequent cycling can all push real daily energy well above this reference example — if you know your pump cycles often, size with real margin rather than the bare minimum.",
+        ],
+      },
+      {
+        id: "other-loads-sump",
+        heading: "Running the pump alongside other essentials",
+        body: [
+          "If the station is also covering a refrigerator or other essentials during the same outage, add the sump pump's surge on top of whatever else is drawing power at that moment, not just its own running watts — the station needs to clear the combined instantaneous load, and a compressor and a pump motor can both surge close together during a storm-driven outage.",
+        ],
+      },
+    ],
+    relatedProductIds: [
+      "jackery-explorer-2000-v2",
+      "anker-solix-c2000-gen-2",
+    ],
+    relatedGuideSlugs: [
+      "power-station-for-power-outage",
+      "power-station-for-home-backup",
+      "how-to-size-a-portable-power-station",
+    ],
+    relatedBestForSlug: "best-for-home-backup",
+    faq: [
+      {
+        question: "Will any power station start my sump pump?",
+        answer:
+          "Not necessarily — check the station's surge/peak output rating against your pump's startup current, not just its running watts. A station with plenty of capacity can still fail to start a motor if its surge rating is too low.",
+      },
+      {
+        question: "How much capacity do I need just for the sump pump?",
+        answer:
+          "Usually modest, since a sump pump only runs for short bursts rather than continuously — see the worked example above using a reference 800 W pump. Your own pump's real cycling frequency during heavy rain is what determines your actual number.",
+      },
+      {
+        question: "Is a power station a reliable flood-prevention backup?",
+        answer:
+          "That depends on your specific sump system, local flood risk, and how long outages typically last in your area — this is a question for a professional familiar with your home, not something this electrical-sizing guide can answer for you.",
+      },
+    ],
+    sources: [
+      "Manufacturer-published specifications, attributed by brand in products.json",
+      "Individual sump/well pump manufacturer nameplates and manuals (device-specific — verify your own model)",
+    ],
+    lastUpdated: "2026-09-11",
+  },
+  {
+    slug: "power-station-for-home-office",
+    group: "use-cases",
+    title: "Power Station Sizing for a Home Office and Internet Equipment",
+    metaDescription:
+      "Sizing a portable power station to keep a laptop, monitor, router and modem running during an outage — the real watts involved and why the router's always-on draw adds up.",
+    intro: [
+      "Short answer: a laptop, monitor, router and modem together draw relatively little at any given moment, but the router and modem typically need to stay on continuously, not just for a few hours — that always-on daily energy adds up faster than the individual wattages suggest.",
+      "This guide covers keeping remote-work essentials running during an outage, not a full home office buildout or dedicated UPS design for networking equipment — for mission-critical uptime, a proper UPS remains the standard tool.",
+    ],
+    keyTakeaways: [
+      "A laptop draws roughly 60 W while in use; an external monitor roughly 30 W; a Wi-Fi router and modem together roughly 18 W — but check your own equipment's labels, since these vary by model.",
+      "The router/modem is usually the deciding factor for a multi-day outage, not the laptop: it commonly needs to run 24 hours a day to keep connectivity up, while a laptop is only drawing power while you're actually using it.",
+      "None of this equipment has a meaningful startup surge — unlike a fridge or pump, sizing for a home office is almost entirely about daily watt-hours, not surge.",
+      "Worked example below using PowerMatchLab's standard 85% usable-energy and 20% reserve assumptions.",
+    ],
+    sections: [
+      {
+        id: "what-draws-power-home-office",
+        heading: "What's actually drawing power",
+        body: [
+          "A typical remote-work setup during an outage centers on four things: a laptop (commonly around 60 W while in use), an external monitor if you use one (commonly around 30 W), and a Wi-Fi router plus modem (commonly around 18 W combined) that most people want to keep running continuously for connectivity, not just during work hours.",
+          "Check your own equipment's rating labels or power-supply \"brick\" for real watts — a gaming laptop or a larger monitor can draw meaningfully more than these reference figures, and a mesh Wi-Fi system with multiple nodes draws more than a single router/modem.",
+        ],
+      },
+      {
+        id: "why-router-matters-most",
+        heading: "Why the router/modem is the deciding factor",
+        body: [
+          "A laptop and monitor only draw power while you're actively working — commonly a handful of hours a day. A router and modem, by contrast, are usually left on around the clock to keep internet connectivity available, which means their modest wattage accumulates over a full 24 hours rather than a few working hours.",
+          "Worked example: router + modem at 18 W running continuously for 24 hours uses 18 × 24 = 432 Wh in a single day — before the laptop or monitor add anything on top. Over a multi-day outage, that continuous draw is what most often determines total capacity needed, not the laptop.",
+        ],
+      },
+      {
+        id: "full-day-worked-example",
+        heading: "Putting it together: a full day's worked example",
+        body: [
+          "Router/modem: 18 W × 24 h = 432 Wh. Laptop: 60 W × 4 h of active use = 240 Wh. External monitor: 30 W × 4 h alongside the laptop = 120 Wh. Total: 792 Wh for that day.",
+          "Applying PowerMatchLab's standard assumptions: 792 ÷ 0.85 × 1.2 ≈ 1,118 Wh minimum recommended capacity for one day of remote work plus connectivity — well within a compact-to-mid-size station's range. Add phone charging or other small loads on top if relevant, and multiply by the number of days for a multi-day outage.",
+        ],
+      },
+      {
+        id: "no-surge-home-office",
+        heading: "Surge is not a real concern here",
+        body: [
+          "Unlike a refrigerator, sump pump or other motor-driven appliance, laptops, monitors, routers and modems are electronic loads without a meaningful startup spike. Sizing for a home office setup is almost entirely a matter of adding up daily watt-hours correctly — the router's always-on draw is the detail worth getting right, not surge headroom.",
+        ],
+      },
+    ],
+    relatedProductIds: [
+      "bluetti-ac180",
+      "anker-solix-s2000",
+    ],
+    relatedGuideSlugs: [
+      "watts-vs-watt-hours",
+      "power-station-for-power-outage",
+      "how-to-size-a-portable-power-station",
+    ],
+    relatedBestForSlug: "best-for-home-backup",
+    faq: [
+      {
+        question: "How long can a power station keep my internet running during an outage?",
+        answer:
+          "Divide the station's usable capacity (roughly 85% of rated Wh) by your router and modem's combined watts. At a reference 18 W combined, a ~1,150Wh-class station could cover roughly 54 hours (a little over two days) on connectivity alone if nothing else draws from it — check your own equipment's real wattage for an exact figure.",
+      },
+      {
+        question: "Do I need a UPS instead of a power station?",
+        answer:
+          "For instantaneous, zero-interruption switchover on mission-critical equipment, a dedicated UPS is the standard tool. A portable power station is better suited to sustained runtime across a longer outage rather than sub-second transfer time — some larger stations do offer fast UPS-style switchover; check the specific unit's switchover time if that matters for your setup.",
+      },
+      {
+        question: "Will my laptop charger work with any power station's AC output?",
+        answer:
+          "All PowerMatchLab-listed stations output pure sine wave AC, which is compatible with standard laptop power supplies. Confirm your own charger's input rating if it's an unusual or very high-wattage model.",
+      },
+    ],
+    sources: [
+      "Manufacturer-published specifications, attributed by brand in products.json",
+    ],
+    lastUpdated: "2026-09-11",
   },
   {
     slug: "how-long-will-a-1000wh-power-station-last",
