@@ -1959,57 +1959,6 @@
       "amazon_listing_note": null
   },
   {
-      "id": "growatt-vita-550",
-      "brand": "Growatt",
-      "model": "VITA 550",
-      "market": "US",
-      "category": "portable-power-station",
-      "capacity_wh": 538,
-      "rated_output_w": 600,
-      "surge_output_w": null,
-      "battery_chemistry": "LiFePO4",
-      "cycle_life": "3000+ cycles",
-      "weight_kg": 8.16,
-      "dimensions": "12.2 x 8.4 x 7.8 in",
-      "solar_input_w": null,
-      "ac_charging_w": null,
-      "charging_time": "About 1.6 hours via AC; about 2.5 hours via solar",
-      "ac_outlets": 3,
-      "usb_c": 1,
-      "usb_a": null,
-      "dc_output": true,
-      "rv_tt30": null,
-      "voltage_240v": null,
-      "ups_ms": null,
-      "expandable": null,
-      "max_expanded_capacity_wh": null,
-      "wifi": true,
-      "bluetooth": true,
-      "warranty": null,
-      "idle_consumption_w": null,
-      "best_for": [
-          "camping",
-          "home office",
-          "day trips"
-      ],
-      "pros": [
-          "LiFePO4 battery, 3000+ cycle rated lifespan",
-          "WiFi and Bluetooth app monitoring",
-          "Fast AC recharge (about 1.6 hours)"
-      ],
-      "cons": [
-          "Amazon.com listing (ASIN B0BSH4F944) confirmed dead by the site owner (\"Document not found\") — no active Amazon.com correspondence for this product currently",
-          "Surge/peak rating and warranty not independently verified"
-      ],
-      "official_source": "Growatt (growattportable.com/products/growatt-vita-550-portable-power-station-wl)",
-      "last_verified": "2026-09-11",
-      "amazon_asin": null,
-      "amazon_product_url": null,
-      "amazon_affiliate_url": null,
-      "amazon_verification_status": "pending",
-      "amazon_listing_note": null
-  },
-  {
       "id": "ecoflow-delta-3-plus",
       "brand": "EcoFlow",
       "model": "DELTA 3 Plus",

@@ -46,7 +46,6 @@ const SIZE_CLASS_BY_ID: Record<string, IllustrationSizeClass> = {
   "bluetti-ac70": "mid-size",
 
   // 40-product catalog build-out, pending Amazon/SiteStripe verification (2026-09-11).
-  "growatt-vita-550": "compact",
   "jackery-explorer-500-v2": "compact",
   "dji-power-500": "compact",
   "goal-zero-yeti-1500-6th-gen": "mid-size",
@@ -87,7 +86,6 @@ const PLACEHOLDER_RENDER_IDS = new Set<string>([
   "jackery-explorer-5000-plus",
   "bluetti-elite-100-v2",
   "dji-power-1000-v2",
-  "growatt-vita-550",
   "ecoflow-delta-3-plus",
 ]);
 

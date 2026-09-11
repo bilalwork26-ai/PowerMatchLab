@@ -103,11 +103,15 @@ const V3_WITH_AFFILIATE_LINK_IDS = V3_IDS.filter(
  * Later the same day, a second SiteStripe round supplied real affiliate
  * links for 4 of these 5 approved-but-unlinked products: dji-power-500,
  * ecoflow-delta-pro-ultra, jackery-explorer-5000-plus, ecoflow-delta-3-plus.
- * The 5th, growatt-vita-550, could NOT be linked: the site owner's own
- * direct check showed its ASIN (B0BSH4F944) now resolves to "Document not
- * found" too. It was reverted to "pending" (amazon_asin/amazon_product_url
- * cleared to null — a dead listing is not kept as research data) while a
- * replacement is investigated. It is the only V4 product still "pending".
+ * The 5th, growatt-vita-550, could NOT be linked: the site owner's direct
+ * check showed its ASIN (B0BSH4F944) resolved to "Document not found". It
+ * was reverted to "pending" and a second, alternate ASIN (B0C2J6L2BV) found
+ * via research was proposed -- but the site owner then checked that one
+ * too and it was ALSO dead. Per explicit instruction, growatt-vita-550 was
+ * removed from the catalog entirely (not merely left pending) rather than
+ * searched for a third time: no product data, illustration, or reference
+ * survives anywhere in the codebase. The catalog is 39 products from here
+ * on, and V4 now has 13 members, none of them "pending".
  *
  * jackery-explorer-5000-plus's `amazon_listing_note` (an Anderson extension
  * cable bundled in its Amazon listing) is preserved even after linking —
@@ -116,7 +120,7 @@ const V3_WITH_AFFILIATE_LINK_IDS = V3_IDS.filter(
  * base-unit match (B0CQXMZ5BK) before being linked. ecoflow-delta-3-plus's
  * already-clean ASIN was simply approved and then linked as-is.
  */
-const V4_PENDING_IDS: string[] = ["growatt-vita-550"];
+const V4_PENDING_IDS: string[] = [];
 const V4_NEWLY_CONFIRMED_IDS = [
   "dji-power-2000",
   "goal-zero-yeti-1500-6th-gen",
@@ -176,11 +180,21 @@ const EXPECTED_V3_V4_AFFILIATE_LINKS: Record<string, string> = {
 };
 
 describe("catalog data integrity", () => {
-  it("loads the full 40-product catalog (10 V1 + 12 V2 + 4 V3 + 14 V4)", () => {
+  it("loads the full 39-product catalog (10 V1 + 12 V2 + 4 V3 + 13 V4, after growatt-vita-550's removal)", () => {
     expect(products).toHaveLength(
       V1_IDS.length + V2_IDS.length + V3_IDS.length + V4_IDS.length,
     );
-    expect(products).toHaveLength(40);
+    expect(products).toHaveLength(39);
+    expect(V4_IDS).toHaveLength(13);
+  });
+
+  it("growatt-vita-550 no longer exists anywhere in the catalog", () => {
+    expect(getProductById("growatt-vita-550")).toBeUndefined();
+    expect(products.find((p) => p.id === "growatt-vita-550")).toBeUndefined();
+    // Neither of its two dead ASINs should appear on any surviving product.
+    const allAsins = products.map((p) => p.amazon_asin).filter((a): a is string => a !== null);
+    expect(allAsins).not.toContain("B0BSH4F944");
+    expect(allAsins).not.toContain("B0C2J6L2BV");
   });
 
   it("still contains every V1 record", () => {
@@ -295,18 +309,6 @@ describe("catalog data integrity", () => {
     const link = resolveAmazonLink(p);
     expect(link.href).toBe("https://amzn.to/4A9vN6K");
     expect(link.isAffiliate).toBe(true);
-  });
-
-  it("growatt-vita-550's ASIN turned out to be dead too — reverted to pending, no CTA, no stale ASIN kept as research data", () => {
-    const p = getProductById("growatt-vita-550")!;
-    expect(p.amazon_verification_status).toBe("pending");
-    expect(p.amazon_asin).toBeNull();
-    expect(p.amazon_product_url).toBeNull();
-    expect(p.amazon_affiliate_url).toBeNull();
-    expect(p.amazon_listing_note).toBeNull();
-    const link = resolveAmazonLink(p);
-    expect(link.href).toBeNull();
-    expect(link.isAffiliate).toBe(false);
   });
 
   it("ecoflow-delta-3-plus keeps its already-clean ASIN, simply approved as-is, then linked", () => {

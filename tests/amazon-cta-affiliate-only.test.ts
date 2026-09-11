@@ -21,7 +21,7 @@ function read(rel: string): string {
 describe("resolveAmazonLink: amazon_product_url is never surfaced as a CTA href", () => {
   const products = getAllProducts();
 
-  it("never returns amazon_product_url as href, for any of the 40 catalog products", () => {
+  it("never returns amazon_product_url as href, for any of the 39 catalog products", () => {
     for (const p of products) {
       const link = resolveAmazonLink(p);
       if (p.amazon_product_url !== null) {
@@ -45,12 +45,12 @@ describe("resolveAmazonLink: amazon_product_url is never surfaced as a CTA href"
     }
   });
 
-  it("a real catalog product with no affiliate link yet (e.g. growatt-vita-550, pending after its ASIN turned out dead) still gets no purchase link", () => {
-    const p = products.find((x) => x.id === "growatt-vita-550")!;
-    expect(p.amazon_verification_status).toBe("pending");
-    expect(p.amazon_affiliate_url).toBeNull();
-    const link = resolveAmazonLink(p);
-    expect(link.href).toBeNull();
+  it("every real catalog product is confirmed and linked -- growatt-vita-550 was removed entirely rather than left pending", () => {
+    for (const p of products) {
+      expect(p.amazon_verification_status, `${p.id} should be confirmed`).toBe("confirmed");
+      expect(p.amazon_affiliate_url, `${p.id} should have a real affiliate link`).not.toBeNull();
+    }
+    expect(products.find((x) => x.id === "growatt-vita-550")).toBeUndefined();
   });
 
   it("a synthetic product proves the rule structurally: confirmed status + populated product_url still yields no href", () => {
