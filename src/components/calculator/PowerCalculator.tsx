@@ -476,7 +476,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
           </div>
 
           {invalidRows.length ? (
-            <Callout tone="warn" dark className="mt-4">
+            <Callout tone="warn" dark live className="mt-4">
               {invalidRows.length} row{invalidRows.length > 1 ? "s have" : " has"} a
               name but a zero (or missing) power or quantity, so{" "}
               {invalidRows.length > 1 ? "they are" : "it is"} ignored in the
@@ -631,7 +631,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
           </h2>
 
           {!ready ? (
-            <Callout tone="warn" dark className="mt-4">
+            <Callout tone="warn" dark live className="mt-4">
               Add at least one device with a running-watts value in Step 1 to get
               a result.
             </Callout>
@@ -715,7 +715,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
                     ))}
                   </div>
                 ) : (
-                  <Callout tone="warn" dark className="mt-4">
+                  <Callout tone="warn" dark live className="mt-4">
                     No product in the current catalog comfortably meets this
                     requirement. The closest options are listed under “Possible
                     match” below — check their limitations carefully.

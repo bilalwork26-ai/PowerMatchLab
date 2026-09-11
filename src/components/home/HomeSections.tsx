@@ -350,6 +350,13 @@ export function UseCaseCards() {
             Find the Best Power Station for Your Use
           </h2>
         </Reveal>
+        <p className="mt-3 text-center text-sm text-navy-300">
+          Also looking for{" "}
+          <Link href="/best-for-refrigerator-backup" className="text-cyan-300 hover:underline">
+            refrigerator &amp; freezer backup
+          </Link>
+          ? See the dedicated picks.
+        </p>
         <div className="mt-6 grid grid-cols-2 gap-5 lg:grid-cols-5">
           {USE_CASES.map(({ id, href, title, body, image, alt, cta }, i) => (
             <Reveal key={id} delayMs={i * 90}>

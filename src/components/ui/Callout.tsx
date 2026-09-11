@@ -21,6 +21,7 @@ export function Callout({
   title,
   tone = "info",
   dark = false,
+  live = false,
   children,
   className,
 }: {
@@ -28,11 +29,20 @@ export function Callout({
   tone?: Tone;
   /** Render the dark-surface variant for a callout on a dark page. */
   dark?: boolean;
+  /**
+   * Set when this callout can appear/change in response to user input
+   * (e.g. a validation message) rather than being present on page load, so
+   * screen readers announce it. Static, always-present callouts should
+   * leave this false — announcing every one of those on mount is noise.
+   */
+  live?: boolean;
   children: ReactNode;
   className?: string;
 }) {
   return (
     <div
+      role={live ? "status" : undefined}
+      aria-live={live ? "polite" : undefined}
       className={cn(
         "rounded-lg border p-4 text-sm leading-6",
         dark ? darkTones[tone] : tones[tone],

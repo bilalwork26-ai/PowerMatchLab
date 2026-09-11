@@ -148,7 +148,7 @@ export function CompareView({ catalog, scores }: Props) {
     <div className="bg-navy-950 py-8 text-white">
       <div className="container-page">
       {unknownIdCount > 0 ? (
-        <Callout tone="warn" dark className="mb-4">
+        <Callout tone="warn" dark live className="mb-4">
           {unknownIdCount === 1
             ? "One product in this link was not recognized and could not be added."
             : `${unknownIdCount} products in this link were not recognized and could not be added.`}
