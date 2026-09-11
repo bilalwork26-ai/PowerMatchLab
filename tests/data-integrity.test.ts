@@ -60,25 +60,141 @@ const EXPECTED_V2_AFFILIATE_LINKS: Record<string, string> = {
 const V2_IDS = Object.keys(EXPECTED_V2_AFFILIATE_LINKS);
 
 /**
- * The 4 Milestone 4 catalog-expansion products (added 2026-09-11). These are
- * the first products in the catalog to intentionally have
- * `amazon_affiliate_url: null` — each links to its real, verified
- * Amazon.com listing (amazon_product_url) via the AmazonCta direct-link
- * fallback until the site owner generates a real Associates link for them.
- * Specs cross-corroborated via WebSearch against each brand's own US site
- * plus independent retailer/review sources; any field that could not be
- * confirmed was left null rather than guessed.
+ * The 4 Milestone 4 catalog-expansion products (added 2026-09-11). Three of
+ * them (ecoflow-river-3-plus, jackery-explorer-300-plus, bluetti-ac70)
+ * received real Amazon Associates SiteStripe links from the site owner on
+ * 2026-09-11 (see EXPECTED_V3_V4_AFFILIATE_LINKS below).
+ *
+ * The 4th, "anker-solix-c800-plus", was rejected outright (its listing
+ * showed unavailable on Amazon.com) and replaced with a different product,
+ * "anker-solix-c800x" (Anker SOLIX C800X, model A1755, ASIN B0G6ZDP75P,
+ * 768Wh/1200W/1600W surge) — approved with the explicit, documented caveat
+ * that the only Amazon.com listing found for it bundles a 100W solar panel
+ * (see EXPECTED_LISTING_NOTES below). It later received its own SiteStripe
+ * link too, on the same 2026-09-11 round as the other 4 below — so all 4 V3
+ * products now carry a real affiliate link.
  */
 const V3_IDS = [
-  "anker-solix-c800-plus",
+  "anker-solix-c800x",
   "ecoflow-river-3-plus",
   "jackery-explorer-300-plus",
   "bluetti-ac70",
 ];
+const V3_WITHOUT_AFFILIATE_LINK_IDS: string[] = [];
+const V3_WITH_AFFILIATE_LINK_IDS = V3_IDS.filter(
+  (id) => !V3_WITHOUT_AFFILIATE_LINK_IDS.includes(id),
+);
+
+/**
+ * The 40-product catalog build-out (2026-09-11). Originally 13 of these 14
+ * were `amazon_verification_status: "pending"` (WebSearch-sourced research
+ * candidates only) and 1 ("bluetti-apex-300") was "confirmed" but still
+ * unlinked. On 2026-09-11 the site owner supplied real Amazon Associates
+ * SiteStripe links for 9 of the 14 — bluetti-apex-300 plus 8 that had been
+ * pending — flipping their amazon_verification_status to "confirmed".
+ *
+ * On the same day, the site owner ruled on the remaining 5: 4 were approved
+ * as correct listings and 1 (geneverse-homepower-one-pro) was rejected
+ * outright — direct check showed "Document not found" on Amazon.com. It was
+ * replaced with dji-power-500 (DJI Power 500, 512Wh/1000W, US SKU DYM500L,
+ * ASIN B0CZ6F44CL), approved with an exact match between DJI's own spec
+ * page and the Amazon.com listing.
+ *
+ * Later the same day, a second SiteStripe round supplied real affiliate
+ * links for 4 of these 5 approved-but-unlinked products: dji-power-500,
+ * ecoflow-delta-pro-ultra, jackery-explorer-5000-plus, ecoflow-delta-3-plus.
+ * The 5th, growatt-vita-550, could NOT be linked: the site owner's direct
+ * check showed its ASIN (B0BSH4F944) resolved to "Document not found". It
+ * was reverted to "pending" and a second, alternate ASIN (B0C2J6L2BV) found
+ * via research was proposed -- but the site owner then checked that one
+ * too and it was ALSO dead. Per explicit instruction, growatt-vita-550 was
+ * removed from the catalog entirely (not merely left pending) rather than
+ * searched for a third time: no product data, illustration, or reference
+ * survives anywhere in the codebase. The catalog is 39 products from here
+ * on, and V4 now has 13 members, none of them "pending".
+ *
+ * jackery-explorer-5000-plus's `amazon_listing_note` (an Anderson extension
+ * cable bundled in its Amazon listing) is preserved even after linking —
+ * the disclosure still applies to the same listing. ecoflow-delta-pro-ultra's
+ * ASIN was corrected from the old bundle listing (B0D2WF8QNZ) to a clean
+ * base-unit match (B0CQXMZ5BK) before being linked. ecoflow-delta-3-plus's
+ * already-clean ASIN was simply approved and then linked as-is.
+ */
+const V4_PENDING_IDS: string[] = [];
+const V4_NEWLY_CONFIRMED_IDS = [
+  "dji-power-2000",
+  "goal-zero-yeti-1500-6th-gen",
+  "jackery-explorer-3000-v2",
+  "growatt-helios-3600",
+  "mango-power-e",
+  "jackery-explorer-500-v2",
+  "bluetti-elite-100-v2",
+  "dji-power-1000-v2",
+];
+/** The 4 approved-and-then-linked in the second 2026-09-11 SiteStripe round. */
+const V4_SECOND_ROUND_LINKED_IDS = [
+  "dji-power-500",
+  "ecoflow-delta-pro-ultra",
+  "jackery-explorer-5000-plus",
+  "ecoflow-delta-3-plus",
+];
+/** Confirmed and carrying a real SiteStripe affiliate link. */
+const V4_LINKED_CONFIRMED_IDS = [
+  "bluetti-apex-300",
+  ...V4_NEWLY_CONFIRMED_IDS,
+  ...V4_SECOND_ROUND_LINKED_IDS,
+];
+/** Confirmed (site owner approved the ASIN/listing) but no affiliate link yet. */
+const V4_CONFIRMED_UNLINKED_IDS: string[] = [];
+const EXPECTED_LISTING_NOTES: Record<string, string> = {
+  "jackery-explorer-5000-plus": "Amazon option includes an Anderson extension cable",
+  "anker-solix-c800x": "Amazon bundle includes a 100W solar panel.",
+};
+const V4_CONFIRMED_IDS = [...V4_LINKED_CONFIRMED_IDS, ...V4_CONFIRMED_UNLINKED_IDS];
+const V4_IDS = [...V4_CONFIRMED_IDS, ...V4_PENDING_IDS];
+
+/**
+ * Real Amazon Associates links supplied by the site owner via SiteStripe on
+ * 2026-09-11 (tracking ID `powermatchlab-20`), covering the 3 newly-linked
+ * V3 products and the 9 newly-linked V4 products (bluetti-apex-300 plus the
+ * 8 V4_NEWLY_CONFIRMED_IDS). Saved verbatim, case preserved.
+ */
+const EXPECTED_V3_V4_AFFILIATE_LINKS: Record<string, string> = {
+  "bluetti-apex-300": "https://amzn.to/4hljoVX",
+  "dji-power-2000": "https://amzn.to/4r6hprX",
+  "goal-zero-yeti-1500-6th-gen": "https://amzn.to/4yANPNZ",
+  "jackery-explorer-3000-v2": "https://amzn.to/4gNy543",
+  "growatt-helios-3600": "https://amzn.to/46YFrM9",
+  "mango-power-e": "https://amzn.to/3TuurTL",
+  "jackery-explorer-500-v2": "https://amzn.to/4xovB10",
+  "bluetti-elite-100-v2": "https://amzn.to/3UHjcYx",
+  "dji-power-1000-v2": "https://amzn.to/46fIbET",
+  "bluetti-ac70": "https://amzn.to/4xSqojb",
+  "ecoflow-river-3-plus": "https://amzn.to/4zZJkhg",
+  "jackery-explorer-300-plus": "https://amzn.to/4ys4XoU",
+  "anker-solix-c800x": "https://amzn.to/4dv2RfO",
+  "dji-power-500": "https://amzn.to/46RHZf0",
+  "ecoflow-delta-pro-ultra": "https://amzn.to/4A5bYhb",
+  "jackery-explorer-5000-plus": "https://amzn.to/4A9vN6K",
+  "ecoflow-delta-3-plus": "https://amzn.to/4xoFPhU",
+};
 
 describe("catalog data integrity", () => {
-  it("loads the full V1 + V2 + V3 catalog (10 + 12 + 4 = 26 records)", () => {
-    expect(products).toHaveLength(26);
+  it("loads the full 39-product catalog (10 V1 + 12 V2 + 4 V3 + 13 V4, after growatt-vita-550's removal)", () => {
+    expect(products).toHaveLength(
+      V1_IDS.length + V2_IDS.length + V3_IDS.length + V4_IDS.length,
+    );
+    expect(products).toHaveLength(39);
+    expect(V4_IDS).toHaveLength(13);
+  });
+
+  it("growatt-vita-550 no longer exists anywhere in the catalog", () => {
+    expect(getProductById("growatt-vita-550")).toBeUndefined();
+    expect(products.find((p) => p.id === "growatt-vita-550")).toBeUndefined();
+    // Neither of its two dead ASINs should appear on any surviving product.
+    const allAsins = products.map((p) => p.amazon_asin).filter((a): a is string => a !== null);
+    expect(allAsins).not.toContain("B0BSH4F944");
+    expect(allAsins).not.toContain("B0C2J6L2BV");
   });
 
   it("still contains every V1 record", () => {
@@ -122,27 +238,164 @@ describe("catalog data integrity", () => {
   });
 
   it("every V1 and V2 catalog product still has an affiliate URL", () => {
-    expect(products).toHaveLength(V1_IDS.length + V2_IDS.length + V3_IDS.length);
     for (const id of [...V1_IDS, ...V2_IDS]) {
       const p = getProductById(id)!;
       expect(p.amazon_affiliate_url, `"${p.id}" should have an affiliate URL`).not.toBeNull();
     }
   });
 
-  it("Milestone 4 V3 products are real, distinct, and use the direct-link fallback honestly", () => {
+  it("every V1/V2/V3/V4 product declares amazon_verification_status explicitly", () => {
+    for (const p of products) {
+      expect(
+        ["pending", "confirmed", "rejected"],
+        `"${p.id}" has an unexpected amazon_verification_status`,
+      ).toContain(p.amazon_verification_status);
+    }
+    for (const id of [...V1_IDS, ...V2_IDS, ...V3_IDS, ...V4_CONFIRMED_IDS]) {
+      expect(getProductById(id)!.amazon_verification_status).toBe("confirmed");
+    }
+    for (const id of V4_PENDING_IDS) {
+      expect(getProductById(id)!.amazon_verification_status).toBe("pending");
+    }
+  });
+
+  it("V4 pending products never carry a real affiliate link before SiteStripe verification", () => {
+    for (const id of V4_PENDING_IDS) {
+      const p = getProductById(id);
+      expect(p, `V4 product "${id}" should exist`).toBeDefined();
+      expect(p!.amazon_affiliate_url, `"${id}" must not have an affiliate link yet`).toBeNull();
+    }
+  });
+
+  it("V4 newly-confirmed products carry exactly their assigned SiteStripe affiliate link", () => {
+    for (const id of V4_LINKED_CONFIRMED_IDS) {
+      const p = getProductById(id);
+      expect(p, `V4 product "${id}" should exist`).toBeDefined();
+      expect(p!.amazon_affiliate_url).toBe(EXPECTED_V3_V4_AFFILIATE_LINKS[id]);
+      const link = resolveAmazonLink(p!);
+      expect(link.href).toBe(EXPECTED_V3_V4_AFFILIATE_LINKS[id]);
+      expect(link.isAffiliate).toBe(true);
+    }
+  });
+
+  it("V4 confirmed-but-unlinked products (site owner approved the ASIN, no affiliate link yet) show no CTA and carry the right listing note", () => {
+    for (const id of V4_CONFIRMED_UNLINKED_IDS) {
+      const p = getProductById(id);
+      expect(p, `V4 product "${id}" should exist`).toBeDefined();
+      expect(p!.amazon_verification_status).toBe("confirmed");
+      expect(p!.amazon_affiliate_url, `"${id}" must not have an affiliate link yet`).toBeNull();
+      const link = resolveAmazonLink(p!);
+      expect(link.href).toBeNull();
+      expect(link.isAffiliate).toBe(false);
+      expect(p!.amazon_listing_note).toBe(EXPECTED_LISTING_NOTES[id] ?? null);
+    }
+  });
+
+  it("ecoflow-delta-pro-ultra's ASIN was corrected off the old bundle listing to the approved base-unit match, then linked", () => {
+    const p = getProductById("ecoflow-delta-pro-ultra")!;
+    expect(p.amazon_asin).toBe("B0CQXMZ5BK");
+    expect(p.amazon_product_url).toBe(
+      "https://www.amazon.com/EF-ECOFLOW-Expandable-Generator-Emergency/dp/B0CQXMZ5BK",
+    );
+    expect(p.amazon_asin).not.toBe("B0D2WF8QNZ");
+    expect(p.amazon_affiliate_url).toBe("https://amzn.to/4A5bYhb");
+  });
+
+  it("jackery-explorer-5000-plus was approved provisionally on the Anderson-cable listing, ASIN B0FCSHFJ6S, then linked with the note preserved", () => {
+    const p = getProductById("jackery-explorer-5000-plus")!;
+    expect(p.amazon_asin).toBe("B0FCSHFJ6S");
+    expect(p.amazon_listing_note).toBe("Amazon option includes an Anderson extension cable");
+    expect(p.amazon_affiliate_url).toBe("https://amzn.to/4A9vN6K");
+    const link = resolveAmazonLink(p);
+    expect(link.href).toBe("https://amzn.to/4A9vN6K");
+    expect(link.isAffiliate).toBe(true);
+  });
+
+  it("ecoflow-delta-3-plus keeps its already-clean ASIN, simply approved as-is, then linked", () => {
+    const p = getProductById("ecoflow-delta-3-plus")!;
+    expect(p.amazon_asin).toBe("B0DCC2BVFW");
+    expect(p.amazon_listing_note).toBeNull();
+    expect(p.amazon_affiliate_url).toBe("https://amzn.to/4xoFPhU");
+  });
+
+  it("geneverse-homepower-one-pro was rejected and replaced by dji-power-500, which is now linked", () => {
+    expect(getProductById("geneverse-homepower-one-pro")).toBeUndefined();
+    const p = getProductById("dji-power-500");
+    expect(p, "dji-power-500 should exist").toBeDefined();
+    expect(p!.brand).toBe("DJI");
+    expect(p!.model).toBe("Power 500");
+    expect(p!.capacity_wh).toBe(512);
+    expect(p!.rated_output_w).toBe(1000);
+    expect(p!.battery_chemistry).toBe("LiFePO4");
+    expect(p!.weight_kg).toBe(7.3);
+    expect(p!.amazon_asin).toBe("B0CZ6F44CL");
+    expect(p!.amazon_product_url).toBe("https://www.amazon.com/dp/B0CZ6F44CL");
+    expect(p!.amazon_verification_status).toBe("confirmed");
+    expect(p!.amazon_affiliate_url).toBe("https://amzn.to/46RHZf0");
+    expect(p!.amazon_listing_note).toBeNull();
+    const link = resolveAmazonLink(p!);
+    expect(link.href).toBe("https://amzn.to/46RHZf0");
+    expect(link.isAffiliate).toBe(true);
+  });
+
+  it("anker-solix-c800-plus was rejected and replaced by anker-solix-c800x, which is now linked with its bundle still disclosed", () => {
+    expect(getProductById("anker-solix-c800-plus")).toBeUndefined();
+    const p = getProductById("anker-solix-c800x");
+    expect(p, "anker-solix-c800x should exist").toBeDefined();
+    expect(p!.brand).toBe("Anker SOLIX");
+    expect(p!.model).toBe("C800X");
+    expect(p!.capacity_wh).toBe(768);
+    expect(p!.rated_output_w).toBe(1200);
+    expect(p!.surge_output_w).toBe(1600);
+    expect(p!.battery_chemistry).toBe("LiFePO4");
+    expect(p!.amazon_asin).toBe("B0G6ZDP75P");
+    expect(p!.amazon_product_url).toBe("https://www.amazon.com/dp/B0G6ZDP75P");
+    expect(p!.amazon_verification_status).toBe("confirmed");
+    expect(p!.amazon_affiliate_url).toBe("https://amzn.to/4dv2RfO");
+    expect(p!.amazon_listing_note).toBe("Amazon bundle includes a 100W solar panel.");
+    const link = resolveAmazonLink(p!);
+    expect(link.href).toBe("https://amzn.to/4dv2RfO");
+    expect(link.isAffiliate).toBe(true);
+  });
+
+  it("pending V4 products show no Amazon purchase link at all, even though a candidate URL is stored", () => {
+    for (const id of V4_PENDING_IDS) {
+      const p = getProductById(id)!;
+      // The candidate URL/ASIN are stored as research data...
+      if (p.amazon_product_url !== null) {
+        expect(p.amazon_product_url).toMatch(/^https:\/\//);
+      }
+      // ...but resolveAmazonLink must never surface them as a real CTA.
+      const link = resolveAmazonLink(p);
+      expect(link.href, `"${id}" is pending — no href should resolve`).toBeNull();
+      expect(link.isAffiliate).toBe(false);
+    }
+  });
+
+  it("the confirmed V4 product bluetti-apex-300 now shows its real SiteStripe purchase link", () => {
+    const p = getProductById("bluetti-apex-300")!;
+    expect(p.amazon_verification_status).toBe("confirmed");
+    expect(p.amazon_asin).toBe("B0F42JY551");
+    expect(p.amazon_affiliate_url).toBe("https://amzn.to/4hljoVX");
+    const link = resolveAmazonLink(p);
+    expect(link.href).toBe("https://amzn.to/4hljoVX");
+    expect(link.isAffiliate).toBe(true);
+  });
+
+  it("Milestone 4 V3 products are real and distinct; all 4 now show their real SiteStripe purchase link", () => {
     for (const id of V3_IDS) {
       const p = getProductById(id);
       expect(p, `V3 product "${id}" should exist`).toBeDefined();
-      // No affiliate link has been generated for these yet — must stay null,
-      // never fabricated.
-      expect(p!.amazon_affiliate_url).toBeNull();
       expect(p!.amazon_asin).toMatch(/^[A-Z0-9]{10}$/);
       expect(p!.amazon_product_url).toBe(`https://www.amazon.com/dp/${p!.amazon_asin}`);
       expect(p!.official_source).toBeTruthy();
       expect(p!.last_verified).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       const link = resolveAmazonLink(p!);
-      expect(link.isAffiliate).toBe(false);
-      expect(link.href).toBe(p!.amazon_product_url);
+      expect(V3_WITH_AFFILIATE_LINK_IDS.includes(id)).toBe(true);
+      expect(p!.amazon_affiliate_url).toBe(EXPECTED_V3_V4_AFFILIATE_LINKS[id]);
+      expect(link.isAffiliate).toBe(true);
+      expect(link.href).toBe(EXPECTED_V3_V4_AFFILIATE_LINKS[id]);
+      expect(p!.amazon_listing_note).toBe(EXPECTED_LISTING_NOTES[id] ?? null);
     }
     // No V3 product duplicates an existing id, ASIN, or product URL.
     const allIds = products.map((p) => p.id);
@@ -160,12 +413,11 @@ describe("catalog data integrity", () => {
     }
   });
 
-  it("still falls back to the direct product URL when a product has no affiliate link", () => {
+  it("shows no purchase link at all when a product has no affiliate link, even if amazon_product_url is populated", () => {
     const withoutAffiliate = { ...products[0], amazon_affiliate_url: null };
     const link = resolveAmazonLink(withoutAffiliate);
     expect(link.isAffiliate).toBe(false);
-    expect(link.href).toBe(withoutAffiliate.amazon_product_url);
-    expect(link.href).toMatch(/^https:\/\/www\.amazon\.com\/dp\//);
+    expect(link.href).toBeNull();
   });
 
   it("keeps the EcoFlow DELTA Pro 3 ASIN and product URL on the manually-verified listing", () => {

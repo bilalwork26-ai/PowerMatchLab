@@ -38,12 +38,97 @@ const SIZE_CLASS_BY_ID: Record<string, IllustrationSizeClass> = {
   "pecron-e3600lfp": "whole-home backup",
   "bluetti-elite-300": "whole-home backup",
   "anker-solix-f3000": "whole-home backup",
+
+  // Milestone 4 catalog expansion (2026-09-11).
+  "anker-solix-c800x": "mid-size",
+  "ecoflow-river-3-plus": "compact",
+  "jackery-explorer-300-plus": "compact",
+  "bluetti-ac70": "mid-size",
+
+  // 40-product catalog build-out, pending Amazon/SiteStripe verification (2026-09-11).
+  "jackery-explorer-500-v2": "compact",
+  "dji-power-500": "compact",
+  "goal-zero-yeti-1500-6th-gen": "mid-size",
+  "ecoflow-delta-3-plus": "mid-size",
+  "bluetti-elite-100-v2": "mid-size",
+  "dji-power-1000-v2": "mid-size",
+  "dji-power-2000": "large",
+  "jackery-explorer-3000-v2": "large",
+  "growatt-helios-3600": "whole-home backup",
+  "mango-power-e": "whole-home backup",
+  "bluetti-apex-300": "whole-home backup",
+  "jackery-explorer-5000-plus": "whole-home backup",
+  "ecoflow-delta-pro-ultra": "whole-home backup",
 };
 
 /**
- * Canonical local path for a product's image. Every catalog product id maps
- * to exactly one original render in public/illustrations/ — this is the
- * single source of truth for the path, so no component hardcodes it.
+ * Product ids whose render is a generated placeholder (brand/model text on a
+ * neutral card, with "ILLUSTRATIVE PLACEHOLDER" baked into the image) rather
+ * than a real render. Purely a UI-labeling flag — both kinds of file are
+ * equally real, unique-per-product, and never claim to be a photograph;
+ * this just lets the interface say "placeholder" explicitly for the ones
+ * that are. Empty since 2026-09-11: the 17 products that used to be here
+ * (the "40-product catalog build-out" cohort) each received an
+ * independently-produced editorial illustration (see
+ * EDITORIAL_ILLUSTRATION_IDS below) supplied by the site owner, replacing
+ * their generated placeholder file. No catalog product is a placeholder
+ * anymore — kept as a live Set (not deleted) so the labeling mechanism is
+ * still there if a future product ever needs it again.
+ */
+const PLACEHOLDER_RENDER_IDS = new Set<string>([]);
+
+export function isPlaceholderIllustration(product: Product): boolean {
+  return PLACEHOLDER_RENDER_IDS.has(product.id);
+}
+
+/**
+ * Product ids whose /illustrations/<id>.png is an independently-produced
+ * editorial illustration supplied directly by the site owner (2026-09-11,
+ * package "powermatchlab-illustrations", 17 files) — distinct both from the
+ * V1/V2 cohort's original PowerMatchLab renders and from a generated
+ * placeholder. Per the site owner's own integration instructions: these are
+ * explicitly NOT official manufacturer photographs and must never be
+ * captioned as one, but each one is a real, brand/model-specific artwork
+ * (not a generic size-class stand-in) unique to its product id.
+ */
+const EDITORIAL_ILLUSTRATION_IDS = new Set<string>([
+  "anker-solix-c800x",
+  "bluetti-ac70",
+  "bluetti-apex-300",
+  "bluetti-elite-100-v2",
+  "dji-power-1000-v2",
+  "dji-power-2000",
+  "dji-power-500",
+  "ecoflow-delta-3-plus",
+  "ecoflow-delta-pro-ultra",
+  "ecoflow-river-3-plus",
+  "goal-zero-yeti-1500-6th-gen",
+  "growatt-helios-3600",
+  "jackery-explorer-300-plus",
+  "jackery-explorer-3000-v2",
+  "jackery-explorer-500-v2",
+  "jackery-explorer-5000-plus",
+  "mango-power-e",
+]);
+
+export function isEditorialIllustration(product: Product): boolean {
+  return EDITORIAL_ILLUSTRATION_IDS.has(product.id);
+}
+
+/**
+ * Every catalog product has its own dedicated file in public/illustrations/
+ * — one product, one file, never shared. Products v1/v2 (2026-09-05 and
+ * earlier) each got an original 3D-style render representing their size
+ * class; the 17-product "40-product catalog build-out" cohort each got a
+ * brand/model-specific editorial illustration supplied by the site owner
+ * (see EDITORIAL_ILLUSTRATION_IDS above), after briefly using a generated
+ * "illustrative placeholder" (an on-brand card with brand/model text and an
+ * explicit "ILLUSTRATIVE PLACEHOLDER" label baked in — see
+ * scripts/gen-illustration-placeholder.py — no product currently uses one).
+ * Whichever kind, the file is unique to that product id; two different
+ * products never point at the same specific illustration.
+ * tests/illustration-integrity.test.ts enforces both the existence and the
+ * uniqueness of every path this function returns.
  */
 export function getIllustrationPath(product: Product): string {
   return `/illustrations/${product.id}.png`;
@@ -59,7 +144,23 @@ export function getIllustrationSizeClass(product: Product): IllustrationSizeClas
  */
 export function getIllustrationAlt(product: Product): string {
   const sizeClass = getIllustrationSizeClass(product);
+  if (isPlaceholderIllustration(product)) {
+    return `Illustrative placeholder for the ${product.brand} ${product.model} (${sizeClass} class) — brand and model name only, not a photograph or a rendering of the actual product design.`;
+  }
+  if (isEditorialIllustration(product)) {
+    return `Independent editorial illustration of the ${product.brand} ${product.model} — not an official manufacturer photograph.`;
+  }
   return `Original illustrative render representing a ${sizeClass} portable power station — not an exact photograph of the ${product.brand} ${product.model}.`;
+}
+
+export function getIllustrationCaption(product: Product): string {
+  if (isPlaceholderIllustration(product)) {
+    return "Illustrative placeholder — not a photograph of this product.";
+  }
+  if (isEditorialIllustration(product)) {
+    return "Independent editorial illustration — not an official product photo.";
+  }
+  return ILLUSTRATIVE_CAPTION_SHORT;
 }
 
 export const ILLUSTRATIVE_CAPTION_SHORT = "Illustrative image — not an exact product photograph.";

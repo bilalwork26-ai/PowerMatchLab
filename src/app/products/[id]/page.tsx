@@ -19,7 +19,7 @@ import { Callout } from "@/components/ui/Callout";
 import { ScoreCircle } from "@/components/ui/ScoreCircle";
 import { ProductIllustration } from "@/components/ui/ProductIllustration";
 import { EnergyLines } from "@/components/ui/EnergyLines";
-import { ILLUSTRATIVE_CAPTION_LONG } from "@/lib/illustrations";
+import { getIllustrationCaption } from "@/lib/illustrations";
 import { AmazonCta } from "@/components/product/AmazonCta";
 import { MobileBuyBar } from "@/components/product/MobileBuyBar";
 import { CompareToggleButton } from "@/components/product/CompareToggleButton";
@@ -63,7 +63,7 @@ export default async function ProductPage({
   const catalog = getAllProducts();
   const score = scoreProduct(product, catalog);
   const name = productDisplayName(product);
-  const { isAffiliate } = resolveAmazonLink(product);
+  const { href: amazonHref } = resolveAmazonLink(product);
   const comparisons = getComparisonsForProduct(product.id);
 
   const crumbs: Crumb[] = [
@@ -102,7 +102,7 @@ export default async function ProductPage({
               <div className="mx-auto flex flex-col items-center gap-2 sm:mx-0 sm:items-start">
                 <ProductIllustration product={product} size={200} showCaption={false} tone="dark" />
                 <p className="max-w-[220px] text-center text-[10px] leading-snug text-navy-400 sm:text-left">
-                  {ILLUSTRATIVE_CAPTION_LONG}
+                  {getIllustrationCaption(product)}
                 </p>
               </div>
               <div className="min-w-0">
@@ -305,9 +305,11 @@ export default async function ProductPage({
           will be added when available. The PowerMatch Score is a PowerMatchLab
           editorial assessment. Runtime figures are calculations, not tests.
           “Check Price on Amazon”{" "}
-          {isAffiliate
+          {amazonHref
             ? "opens our Amazon Associates link for this exact product"
-            : "currently opens the normal Amazon product page (no affiliate link has been supplied for this product yet)"}
+            : product.amazon_verification_status === "confirmed"
+              ? "is not shown for this product yet — its listing is confirmed, but no Amazon Associates link has been generated for it yet"
+              : "is not shown for this product yet — its Amazon listing is still a research candidate pending verification"}
           ; see the{" "}
           <Link href="/affiliate-disclosure" className="underline">
             affiliate disclosure

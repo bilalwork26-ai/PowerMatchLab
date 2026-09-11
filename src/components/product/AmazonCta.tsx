@@ -9,9 +9,11 @@ import { trackEvent } from "@/lib/analytics";
 /**
  * "Check Price on Amazon" CTA.
  *
- * - Uses `amazon_affiliate_url` when it exists (an Amazon Associates link).
- * - Otherwise falls back to the verified direct `amazon_product_url`.
- * - If neither exists, shows a disabled state — never a fabricated link.
+ * - Uses `amazon_affiliate_url` ONLY — that is the single field a purchase
+ *   CTA may ever link to (see resolveAmazonLink for why).
+ * - If it's null, shows a disabled state with an honest explanation of
+ *   why — never `amazon_product_url` as a stand-in, and never a
+ *   fabricated link.
  */
 export function AmazonCta({
   product,
@@ -76,9 +78,22 @@ export function AmazonCta({
             sizeCls,
           )}
         >
-          Amazon link not verified
+          {product.amazon_verification_status === "confirmed"
+            ? "Affiliate link pending"
+            : "Amazon link not verified"}
         </span>
       )}
+
+      {product.amazon_listing_note ? (
+        <p
+          className={cn(
+            "mt-1 text-[11px] font-medium leading-4",
+            tone === "dark" ? "text-cyan-300" : "text-navy-600",
+          )}
+        >
+          {product.amazon_listing_note}
+        </p>
+      ) : null}
 
       <p
         className={cn(
@@ -86,11 +101,17 @@ export function AmazonCta({
           tone === "dark" ? "text-navy-300" : "text-navy-500",
         )}
       >
-        Price, availability and current rating are shown on Amazon — PowerMatchLab
-        does not display them because we have not independently verified them.
-        {isAffiliate
-          ? " As an Amazon Associate we may earn from qualifying purchases."
-          : " This is a normal Amazon product link; affiliate tracking will be added later."}
+        {href ? (
+          <>
+            Price, availability and current rating are shown on Amazon — PowerMatchLab
+            does not display them because we have not independently verified them. As
+            an Amazon Associate we may earn from qualifying purchases.
+          </>
+        ) : product.amazon_verification_status === "confirmed" ? (
+          "This product's Amazon listing has been confirmed, but no Amazon Associates link has been generated for it yet, so no purchase link is shown."
+        ) : (
+          "This product's Amazon listing is a research candidate that has not yet been confirmed to match the exact unit, so no purchase link is shown."
+        )}
         {withDisclosure ? (
           <>
             {" "}

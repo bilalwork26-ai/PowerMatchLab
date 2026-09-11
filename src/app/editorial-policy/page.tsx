@@ -128,10 +128,12 @@ export default function EditorialPolicyPage() {
 
           <h2>Illustrative images</h2>
           <p>
-            {ILLUSTRATIVE_CAPTION_LONG} These are original PowerMatchLab
-            renders grouped by rough size class (compact, mid-size, large,
-            whole-home backup) for visual variety — never a manufacturer
-            photograph, certification logo, or trust seal.
+            {ILLUSTRATIVE_CAPTION_LONG} Most products use an original
+            PowerMatchLab render grouped by rough size class (compact,
+            mid-size, large, whole-home backup) for visual variety. A subset
+            of products instead use an independent editorial illustration
+            commissioned specifically for that model. Either way: never a
+            manufacturer photograph, certification logo, or trust seal.
           </p>
         </div>
       </div>
