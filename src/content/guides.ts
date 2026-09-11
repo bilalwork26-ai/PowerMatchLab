@@ -279,6 +279,7 @@ export const GUIDES: Guide[] = [
       "best-indoor-generator-for-refrigerator",
     ],
     relatedBestForSlug: "best-for-refrigerator-backup",
+    relatedComparisonSlug: "jackery-explorer-2000-v2-vs-bluetti-ac200l",
     studioLinkLabel: "Try the Home Backup scenario in Power Setup Studio",
     usMarketNotice: true,
     faq: [
@@ -1055,6 +1056,7 @@ export const GUIDES: Guide[] = [
       "power-station-for-refrigerator",
       "how-to-choose-the-right-portable-power-station",
     ],
+    relatedComparisonSlug: "ecoflow-delta-pro-3-vs-anker-solix-f3800",
     faq: [
       {
         question: "Can a power station really back up my whole house?",
@@ -1172,6 +1174,7 @@ export const GUIDES: Guide[] = [
       "power-stations-for-remote-work-and-van-life",
     ],
     relatedBestForSlug: "best-for-rv",
+    relatedComparisonSlug: "anker-solix-c2000-gen-2-vs-jackery-explorer-2000-v2",
     studioLinkLabel: "See a similar mobile setup in Power Setup Studio's Van Life scenario",
     faq: [
       {

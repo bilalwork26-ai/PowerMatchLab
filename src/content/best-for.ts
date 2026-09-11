@@ -161,7 +161,11 @@ export const BEST_FOR: BestForContent[] = [
     ],
     relatedGuideSlugs: ["power-station-for-rv", "power-stations-for-remote-work-and-van-life"],
     studioLinkLabel: "Try the Van Life scenario in Power Setup Studio",
-    relatedComparisonSlugs: ["ecoflow-delta-3-classic-vs-anker-solix-c1000-gen-2"],
+    relatedComparisonSlugs: [
+      "ecoflow-delta-3-classic-vs-anker-solix-c1000-gen-2",
+      "bluetti-ac180-vs-jackery-explorer-1000-v2",
+      "jackery-explorer-2000-v2-vs-bluetti-ac200l",
+    ],
     lastUpdated: "2026-09-01",
   },
   {
@@ -225,7 +229,11 @@ export const BEST_FOR: BestForContent[] = [
       "best-indoor-generator-for-refrigerator",
     ],
     studioLinkLabel: "Try the Home Backup scenario in Power Setup Studio",
-    relatedComparisonSlugs: ["ecoflow-delta-3-classic-vs-anker-solix-c1000-gen-2"],
+    relatedComparisonSlugs: [
+      "ecoflow-delta-3-classic-vs-anker-solix-c1000-gen-2",
+      "jackery-explorer-1000-v2-vs-ecoflow-delta-3-classic",
+      "bluetti-ac180-vs-ecoflow-delta-3-classic",
+    ],
     usMarketNotice: true,
     lastUpdated: "2026-09-01",
   },
@@ -281,6 +289,12 @@ export const BEST_FOR: BestForContent[] = [
         answer:
           "Add up the daily energy of the loads you want to keep on. Essentials (fridge, internet, phones, some lights) often land around 2,000-4,000 Wh per day; add reserve and divide by ~0.85 for usable capacity.",
       },
+    ],
+    relatedGuideSlugs: ["power-station-for-home-backup", "power-station-for-power-outage"],
+    relatedComparisonSlugs: [
+      "ecoflow-delta-2-max-vs-anker-solix-c2000-gen-2",
+      "anker-solix-c2000-gen-2-vs-jackery-explorer-2000-v2",
+      "ecoflow-delta-pro-3-vs-anker-solix-f3800",
     ],
     lastUpdated: "2026-09-01",
   },

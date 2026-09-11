@@ -11,6 +11,7 @@ import {
   headlineDifferences,
   earliestLastChecked,
   capacityParity,
+  groupComparisonsForIndex,
 } from "@/lib/comparisons";
 import { articleJsonLd, breadcrumbJsonLd, absoluteUrl } from "@/lib/seo";
 import { SITE } from "@/lib/site";
@@ -20,13 +21,40 @@ const APPROVED_SLUG = "ecoflow-delta-3-classic-vs-anker-solix-c1000-gen-2";
 const catalog = getAllProducts();
 const catalogIds = new Set(catalog.map((p) => p.id));
 
-describe("comparisons: exactly one approved slug is published", () => {
-  it("COMPARISONS contains only the one approved slug", () => {
-    expect(COMPARISONS.map((c) => c.slug)).toEqual([APPROVED_SLUG]);
+/**
+ * The full, hand-curated list of approved comparison slugs. Locking this in
+ * as an exact array (rather than just "COMPARISONS.length > 0") keeps this a
+ * real regression guard against silent, unreviewed additions — the same
+ * intent as the original single-slug version, extended for the editorial-
+ * comparisons expansion round.
+ */
+const APPROVED_SLUGS = [
+  APPROVED_SLUG,
+  "jackery-explorer-1000-v2-vs-ecoflow-delta-3-classic",
+  "bluetti-ac180-vs-jackery-explorer-1000-v2",
+  "bluetti-ac180-vs-ecoflow-delta-3-classic",
+  "ecoflow-delta-2-max-vs-anker-solix-c2000-gen-2",
+  "anker-solix-c2000-gen-2-vs-jackery-explorer-2000-v2",
+  "anker-solix-c1000-gen-2-vs-segway-cube-1000",
+  "jackery-explorer-2000-v2-vs-bluetti-ac200l",
+  "ecoflow-delta-pro-3-vs-anker-solix-f3800",
+  "anker-solix-f3000-vs-pecron-e3600lfp",
+];
+
+describe("comparisons: the curated list of approved slugs", () => {
+  it("COMPARISONS contains exactly the approved slugs, in order (no silent additions)", () => {
+    expect(COMPARISONS.map((c) => c.slug)).toEqual(APPROVED_SLUGS);
   });
 
-  it("getComparison resolves the approved slug and nothing else", () => {
-    expect(getComparison(APPROVED_SLUG)).toBeDefined();
+  it("every productIds pair is unique — no duplicate comparison for the same two models", () => {
+    const pairKeys = COMPARISONS.map((c) => [...c.productIds].sort().join("|"));
+    expect(new Set(pairKeys).size).toBe(pairKeys.length);
+  });
+
+  it("getComparison resolves every approved slug and nothing else", () => {
+    for (const slug of APPROVED_SLUGS) {
+      expect(getComparison(slug), `"${slug}" should resolve`).toBeDefined();
+    }
     expect(getComparison("some-other-slug")).toBeUndefined();
     expect(getComparison("ecoflow-delta-3-plus-vs-anker-solix-c1000-gen-2")).toBeUndefined();
   });
@@ -75,7 +103,15 @@ describe("comparisons: both product ids are real, unique catalog entries", () =>
     expect(getComparisonsForProduct(comparison.productIds[1]).map((c) => c.slug)).toContain(
       APPROVED_SLUG,
     );
-    expect(getComparisonsForProduct("jackery-explorer-1000-v2")).toEqual([]);
+    // jackery-explorer-1000-v2 now appears in two later comparisons.
+    expect(getComparisonsForProduct("jackery-explorer-1000-v2").map((c) => c.slug).sort()).toEqual(
+      [
+        "bluetti-ac180-vs-jackery-explorer-1000-v2",
+        "jackery-explorer-1000-v2-vs-ecoflow-delta-3-classic",
+      ].sort(),
+    );
+    // A real catalog product with no editorial comparison at all still resolves to an empty list.
+    expect(getComparisonsForProduct("goal-zero-yeti-700")).toEqual([]);
   });
 });
 
@@ -156,6 +192,18 @@ describe("comparisons: no fabricated prices, ratings or reviews", () => {
   });
 });
 
+describe("comparisons: metadata title has no duplicated brand suffix", () => {
+  it("generateMetadata passes the bare h1 as title — the root layout's `%s · PowerMatchLab` template appends the brand name exactly once", () => {
+    const src = readFileSync(
+      join(process.cwd(), "src/app/compare/[slug]/page.tsx"),
+      "utf8",
+    );
+    expect(src).toContain("title: comparison.h1,");
+    // The old bug: a template literal appending the brand name a second time.
+    expect(src).not.toContain("${comparison.h1} — PowerMatchLab");
+  });
+});
+
 describe("comparisons: canonical, sitemap and breadcrumb", () => {
   it("canonical URL is derived from the approved slug", () => {
     expect(absoluteUrl(`/compare/${APPROVED_SLUG}`)).toBe(
@@ -205,13 +253,126 @@ describe("comparisons: internal links point to real content", () => {
     expect(rv.relatedComparisonSlugs).toContain(comparison.slug);
   });
 
-  it("no other best-for page links to this comparison (link is scoped, not spammed everywhere)", () => {
+  it("no other best-for page links to THIS specific comparison (link is scoped, not spammed everywhere)", () => {
     const others = BEST_FOR.filter(
       (b) => b.slug !== "best-for-refrigerator-backup" && b.slug !== "best-for-rv",
     );
     for (const b of others) {
-      expect(b.relatedComparisonSlugs ?? []).toEqual([]);
+      expect(b.relatedComparisonSlugs ?? []).not.toContain(comparison.slug);
     }
+  });
+
+  it("every relatedComparisonSlugs entry on every best-for page resolves to a real, approved comparison", () => {
+    const approvedSlugs = new Set(COMPARISONS.map((c) => c.slug));
+    for (const b of BEST_FOR) {
+      for (const slug of b.relatedComparisonSlugs ?? []) {
+        expect(approvedSlugs.has(slug), `"${b.slug}" links to nonexistent comparison "${slug}"`).toBe(
+          true,
+        );
+      }
+    }
+  });
+
+  it("every guide's relatedComparisonSlug (when set) resolves to a real, approved comparison", () => {
+    const approvedSlugs = new Set(COMPARISONS.map((c) => c.slug));
+    for (const g of GUIDES) {
+      if (g.relatedComparisonSlug === undefined) continue;
+      expect(
+        approvedSlugs.has(g.relatedComparisonSlug),
+        `"${g.slug}" links to nonexistent comparison "${g.relatedComparisonSlug}"`,
+      ).toBe(true);
+    }
+  });
+});
+
+describe("comparisons: every approved entry (not just the original) is well-formed", () => {
+  const guideSlugs = new Set(GUIDES.map((g) => g.slug));
+  const bestForSlugs = new Set(BEST_FOR.map((b) => b.slug));
+
+  it("every comparison's two product ids are real, distinct catalog entries", () => {
+    for (const c of COMPARISONS) {
+      expect(c.productIds).toHaveLength(2);
+      expect(c.productIds[0]).not.toBe(c.productIds[1]);
+      for (const id of c.productIds) {
+        expect(catalogIds.has(id), `"${c.slug}": product id "${id}" not in catalog`).toBe(true);
+      }
+    }
+  });
+
+  it("every comparison's relatedGuideSlug references a real guide", () => {
+    for (const c of COMPARISONS) {
+      expect(
+        guideSlugs.has(c.relatedGuideSlug),
+        `"${c.slug}": relatedGuideSlug "${c.relatedGuideSlug}" does not exist`,
+      ).toBe(true);
+    }
+  });
+
+  it("every comparison's relatedBestForSlugs reference real pages, at most two", () => {
+    for (const c of COMPARISONS) {
+      expect(c.relatedBestForSlugs.length).toBeLessThanOrEqual(2);
+      for (const slug of c.relatedBestForSlugs) {
+        expect(bestForSlugs.has(slug), `"${c.slug}": best-for slug "${slug}" does not exist`).toBe(
+          true,
+        );
+      }
+    }
+  });
+
+  it("every comparison has a non-empty, distinct h1, metaDescription and intro", () => {
+    const h1s = COMPARISONS.map((c) => c.h1);
+    const descriptions = COMPARISONS.map((c) => c.metaDescription);
+    expect(new Set(h1s).size).toBe(h1s.length);
+    expect(new Set(descriptions).size).toBe(descriptions.length);
+    for (const c of COMPARISONS) {
+      expect(c.h1.length).toBeGreaterThan(5);
+      expect(c.metaDescription.length).toBeGreaterThan(20);
+      expect(c.intro.length).toBeGreaterThan(40);
+    }
+  });
+
+  it("every comparison's h1 names both of its actual products (no copy/paste mismatch)", () => {
+    for (const c of COMPARISONS) {
+      const [p1, p2] = getProductsByIds(c.productIds);
+      expect(c.h1, `"${c.slug}"`).toContain(p1.model);
+      expect(c.h1, `"${c.slug}"`).toContain(p2.model);
+    }
+  });
+
+  it("every comparison's slug is URL-safe and matches its product ids", () => {
+    for (const c of COMPARISONS) {
+      expect(c.slug).toMatch(/^[a-z0-9-]+$/);
+    }
+  });
+
+  it("no two comparisons declare the exact same h1", () => {
+    const h1s = COMPARISONS.map((c) => c.h1.toLowerCase());
+    expect(new Set(h1s).size).toBe(h1s.length);
+  });
+});
+
+describe("comparisons: index page groups every entry by capacity tier", () => {
+  it("groupComparisonsForIndex places every comparison in exactly one tier", () => {
+    const groups = groupComparisonsForIndex(COMPARISONS);
+    const totalGrouped = groups.reduce((sum, g) => sum + g.entries.length, 0);
+    expect(totalGrouped).toBe(COMPARISONS.length);
+    const allSlugs = groups.flatMap((g) => g.entries.map((e) => e.comparison.slug));
+    expect(new Set(allSlugs).size).toBe(COMPARISONS.length);
+  });
+
+  it("the two exact-capacity-tie pairs land in the same tier as each other", () => {
+    const groups = groupComparisonsForIndex(COMPARISONS);
+    const tierOf = (slug: string) =>
+      groups.find((g) => g.entries.some((e) => e.comparison.slug === slug))?.tierLabel;
+    expect(tierOf("ecoflow-delta-2-max-vs-anker-solix-c2000-gen-2")).toBe(
+      tierOf("anker-solix-c2000-gen-2-vs-jackery-explorer-2000-v2"),
+    );
+  });
+
+  it("the /compare index page renders the grouped comparisons, not the old flat comma list", () => {
+    const src = readFileSync(join(process.cwd(), "src/app/compare/page.tsx"), "utf8");
+    expect(src).toContain("groupComparisonsForIndex");
+    expect(src).toContain("comparisonGroups.map");
   });
 });
 

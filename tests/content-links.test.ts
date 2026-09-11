@@ -75,10 +75,13 @@ describe("best-for cross-link integrity", () => {
     }
   });
 
-  it("the new optional fields are absent on pages that were not part of this round (e.g. home-backup), and the page still resolves cleanly", () => {
+  it("best-for-home-backup now has relatedGuideSlugs (added for the editorial-comparisons round) but still no studioLinkLabel", () => {
     const homeBackup = getBestFor("best-for-home-backup");
     expect(homeBackup).toBeDefined();
-    expect(homeBackup!.relatedGuideSlugs).toBeUndefined();
+    expect(homeBackup!.relatedGuideSlugs).toEqual([
+      "power-station-for-home-backup",
+      "power-station-for-power-outage",
+    ]);
     expect(homeBackup!.studioLinkLabel).toBeUndefined();
   });
 

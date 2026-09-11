@@ -5,6 +5,7 @@ import { getAllProducts } from "@/data/products";
 import { scoreCatalog, type ProductScore } from "@/lib/score";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 import { COMPARISONS } from "@/content/comparisons";
+import { groupComparisonsForIndex } from "@/lib/comparisons";
 import { PageHero } from "@/components/layout/PageHero";
 import { CompareView } from "@/components/compare/CompareView";
 import { CompareSkeleton } from "@/components/compare/CompareSkeleton";
@@ -23,6 +24,7 @@ export default function ComparePage() {
   const scores: Record<string, ProductScore> = Object.fromEntries(
     scoreCatalog(catalog),
   );
+  const comparisonGroups = groupComparisonsForIndex(COMPARISONS);
 
   return (
     <>
@@ -45,17 +47,35 @@ export default function ComparePage() {
           <div className="container-page">
             <Callout tone="info" dark>
               Prefer a focused, editorial write-up instead of building your own
-              selection?{" "}
-              {COMPARISONS.map((c, i) => (
-                <span key={c.slug}>
-                  {i > 0 ? ", " : ""}
-                  <Link href={`/compare/${c.slug}`} className="underline">
-                    {c.h1}
-                  </Link>
-                </span>
-              ))}
-              .
+              selection? Browse the direct comparisons below, grouped by
+              capacity class.
             </Callout>
+            <div className="mt-6 space-y-8">
+              {comparisonGroups.map((g) => (
+                <section key={g.tierLabel}>
+                  <h2 className="text-base font-bold text-white">{g.tierLabel}</h2>
+                  <ul className="mt-3 grid gap-3 sm:grid-cols-2">
+                    {g.entries.map((e) => (
+                      <li key={e.comparison.slug}>
+                        <Link
+                          href={`/compare/${e.comparison.slug}`}
+                          className="block h-full rounded-xl border border-navy-700 bg-gradient-to-b from-navy-800 to-navy-900 p-4 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-glow-cyan"
+                        >
+                          <p className="text-sm font-semibold text-cyan-300">
+                            {e.comparison.h1}
+                          </p>
+                          {e.useCaseLabel ? (
+                            <p className="mt-1 text-xs text-navy-400">
+                              {e.useCaseLabel}
+                            </p>
+                          ) : null}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ))}
+            </div>
           </div>
         </div>
       ) : null}
