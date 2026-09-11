@@ -105,6 +105,12 @@ export const POWER_SETUP_STUDIO_NAV: NavItem = {
   href: "/power-setup-studio",
 };
 
+/** Footer-only link to the catalog dataset report — not in the primary nav, to keep it uncluttered. */
+export const RESEARCH_NAV: NavItem = {
+  label: "Catalog Dataset Report",
+  href: "/research/portable-power-station-specs-2026",
+};
+
 /** Compact bottom navigation for small screens (see mobile reference). */
 export const MOBILE_NAV: NavItem[] = [
   { label: "Home", href: "/" },

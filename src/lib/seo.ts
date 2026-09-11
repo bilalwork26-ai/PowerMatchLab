@@ -121,6 +121,44 @@ export function itemListJsonLd(items: { name: string; path: string }[]) {
   };
 }
 
+/**
+ * schema.org Dataset markup for the catalog research report. No
+ * `citation`/`creator` claims beyond the site itself, no license invented
+ * (none is on file), and the only `distribution` is the real CSV route —
+ * never a fabricated download count or external mirror.
+ */
+export function datasetJsonLd(input: {
+  name: string;
+  description: string;
+  path: string;
+  csvPath: string;
+  dateModified: string | null;
+  productCount: number;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name: input.name,
+    description: input.description,
+    url: absoluteUrl(input.path),
+    ...(input.dateModified ? { dateModified: input.dateModified } : {}),
+    creator: { "@type": "Organization", name: SITE.name, url: SITE.url },
+    variableMeasured: [
+      "Battery capacity (Wh)",
+      "Continuous output (W)",
+      "Surge output (W)",
+      "Weight (kg)",
+      "Battery chemistry",
+      "Solar input (W)",
+    ],
+    distribution: {
+      "@type": "DataDownload",
+      encodingFormat: "text/csv",
+      contentUrl: absoluteUrl(input.csvPath),
+    },
+  };
+}
+
 export function articleJsonLd(input: {
   headline: string;
   description: string;

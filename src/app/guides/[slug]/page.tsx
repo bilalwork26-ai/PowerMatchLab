@@ -12,6 +12,7 @@ import {
   pageMetadata,
   breadcrumbJsonLd,
   articleJsonLd,
+  absoluteUrl,
   type Crumb,
 } from "@/lib/seo";
 import { fmtDate } from "@/lib/format";
@@ -25,6 +26,7 @@ import { TrackedLink } from "@/components/analytics/TrackedLink";
 import { SolarChargeCalculator } from "@/components/guides/SolarChargeCalculator";
 import { WattHourCalculator } from "@/components/guides/WattHourCalculator";
 import { ApplianceConsumptionTable } from "@/components/guides/ApplianceConsumptionTable";
+import { ShareBar } from "@/components/ui/ShareBar";
 
 const GUIDE_EMBEDS: Record<NonNullable<Guide["embed"]>, ComponentType> = {
   "solar-charge-calculator": SolarChargeCalculator,
@@ -113,6 +115,13 @@ export default async function GuidePage({
             </Link>{" "}
             · Last updated {fmtDate(guide.lastUpdated)}
           </p>
+
+          <ShareBar
+            url={absoluteUrl(`/guides/${guide.slug}`)}
+            title={guide.title}
+            contentKey="guide"
+            className="not-prose mb-5"
+          />
 
           {guide.intro.map((p) => (
             <p key={p} className="text-base">

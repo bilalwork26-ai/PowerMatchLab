@@ -5,6 +5,7 @@ import {
   LEGAL_NAV,
   POWER_SETUP_STUDIO_NAV,
   PRIMARY_NAV,
+  RESEARCH_NAV,
   SITE,
 } from "@/lib/site";
 import { Logo } from "./Logo";
@@ -43,6 +44,16 @@ export function Footer() {
               >
                 {POWER_SETUP_STUDIO_NAV.label}
               </Link>
+            </li>
+            <li>
+              <Link href={RESEARCH_NAV.href} className="text-navy-200 hover:text-cyan-300">
+                {RESEARCH_NAV.label}
+              </Link>
+            </li>
+            <li>
+              <a href="/feed.xml" className="text-navy-200 hover:text-cyan-300">
+                RSS Feed
+              </a>
             </li>
           </ul>
         </nav>
