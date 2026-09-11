@@ -24,10 +24,12 @@ import { EstimateFactorsDisclosure } from "@/components/ui/EstimateFactorsDisclo
 import { TrackedLink } from "@/components/analytics/TrackedLink";
 import { SolarChargeCalculator } from "@/components/guides/SolarChargeCalculator";
 import { WattHourCalculator } from "@/components/guides/WattHourCalculator";
+import { ApplianceConsumptionTable } from "@/components/guides/ApplianceConsumptionTable";
 
 const GUIDE_EMBEDS: Record<NonNullable<Guide["embed"]>, ComponentType> = {
   "solar-charge-calculator": SolarChargeCalculator,
   "watt-hour-calculator": WattHourCalculator,
+  "appliance-consumption-table": ApplianceConsumptionTable,
 };
 
 export function generateStaticParams() {
