@@ -1787,6 +1787,7 @@ export const GUIDES: Guide[] = [
       "how-long-will-a-1000wh-power-station-last",
       "what-can-a-1000-watt-power-station-run",
       "appliance-power-consumption-table",
+      "how-long-to-charge-power-station-with-solar",
     ],
     faq: [
       {
@@ -1909,9 +1910,11 @@ export const GUIDES: Guide[] = [
         id: "worked-examples-solar",
         heading: "Worked examples",
         body: [
+          "A smaller 100 W-rated panel at the same 65% realistic derate produces about 65 W: 1,000 ÷ 65 ≈ 15.4 hours of good sun to charge a 1,000Wh station from empty — realistically spread across several days for most locations.",
           "A 200 W-rated solar panel realistically delivering 65% of its rating produces about 130 W in good midday sun. Charging a 1,000Wh station from empty: 1,000 ÷ 130 ≈ 7.7 hours of good sun — which in practice usually spans more than one calendar day, since few locations get 7-8 hours of consistently strong sun.",
           "The same 200 W panel charging a 2,000Wh station from empty: 2,000 ÷ 130 ≈ 15.4 hours of good sun, realistically two to three days depending on conditions and how much of each day is strong, direct sun.",
           "A larger 400 W-rated setup at the same 65% realistic derate produces about 260 W: 1,000 ÷ 260 ≈ 3.8 hours of good sun for the same 1,000Wh station — roughly half the time, since panel wattage and charging time scale inversely.",
+          "An 800 W-rated setup (often two or more panels combined) at the same derate produces about 520 W: 1,000 ÷ 520 ≈ 1.9 hours of good sun for a 1,000Wh station, or 2,000 ÷ 520 ≈ 3.8 hours for a 2,000Wh station.",
         ],
       },
       {
@@ -1948,6 +1951,7 @@ export const GUIDES: Guide[] = [
       "solar-input-and-charging-times-explained",
       "how-many-solar-panels-do-i-need",
       "solar-generator-vs-portable-power-station",
+      "watts-vs-watt-hours",
     ],
     faq: [
       {

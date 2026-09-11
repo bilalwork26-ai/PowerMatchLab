@@ -1,6 +1,16 @@
 import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
+
+// Tailwind's fontFamily.sans (tailwind.config.ts) reads var(--font-inter);
+// next/font sets that variable and self-hosts the font (no render-blocking
+// Google Fonts <link>, swap avoids invisible text while it loads).
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 import { SITE } from "@/lib/site";
 import { absoluteUrl, organizationJsonLd, webSiteJsonLd } from "@/lib/seo";
 import { CompareProvider } from "@/context/CompareContext";
@@ -61,7 +71,11 @@ export default function RootLayout({
   // overflow-x-auto containers (e.g. the Power Calculator device table),
   // which keep scrolling independently.
   return (
-    <html lang="en" data-scroll-behavior="smooth" className="overflow-x-hidden">
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={`overflow-x-hidden ${inter.variable}`}
+    >
       <body className="min-h-screen overflow-x-hidden">
         {/*
           Consent Mode v2 defaults (all signals denied) — must run before any

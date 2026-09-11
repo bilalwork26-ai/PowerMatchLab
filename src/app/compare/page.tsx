@@ -15,7 +15,7 @@ import { JsonLd } from "@/components/ui/JsonLd";
 export const metadata: Metadata = pageMetadata({
   title: "Compare Power Stations Side by Side (Free Tool)",
   description:
-    "Compare up to 4 portable power stations side by side: capacity, output, surge, charging speed and weight, with the best verified value in each row highlighted. No invented specs or prices.",
+    "Compare portable power stations side by side: capacity, output, surge, charging speed and weight, with the best verified value highlighted in each row.",
   path: "/compare",
 });
 

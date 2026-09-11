@@ -27,7 +27,7 @@ export function MatchingStations({
 
   if (bestAndGood.length === 0) {
     return (
-      <Callout tone="warn" dark className="mt-4">
+      <Callout tone="warn" dark live className="mt-4">
         No product in the current catalog comfortably meets this requirement.
         Try turning off a device or lowering the backup duration.
       </Callout>
