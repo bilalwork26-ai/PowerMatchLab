@@ -339,6 +339,16 @@ export const GUIDES: Guide[] = [
           "For stationary backup and RV use, LFP's longevity and stability usually outweigh the small weight penalty. If absolute minimum weight for a given capacity is your priority, NMC still has an edge.",
         ],
       },
+      {
+        id: "cold-weather-performance",
+        heading: "Cold-weather performance: LiFePO4 vs. NMC",
+        body: [
+          "Both chemistries lose usable capacity and rate performance as temperature drops — that's lithium-ion chemistry in general, not specific to either one. The practical difference buyers actually run into is charging, not discharging.",
+          "LiFePO4's ion mobility drops more sharply in the cold, and charging an LFP cell below roughly freezing risks lithium plating that permanently damages capacity — so most LFP power stations' battery management system (BMS) automatically blocks or heavily throttles charging below a set temperature, regardless of ambient conditions outside. NMC cells are generally more tolerant of charging in cold conditions, though still at reduced rate and capacity versus room temperature.",
+          "Discharging (actually running a device) is less restrictive for both chemistries — a cold station can still typically supply power, just at reduced peak capacity — but always check a specific unit's published operating temperature range rather than assuming either chemistry's general behavior applies exactly to it.",
+          "For most buyers this only matters if the station is charged or stored somewhere genuinely cold (an unheated garage, a vehicle overnight in winter, outdoor use below freezing). If your station lives and charges indoors at normal room temperature, this difference rarely comes up in practice.",
+        ],
+      },
     ],
     relatedProductIds: [
       "bluetti-elite-30-v2",
@@ -354,6 +364,11 @@ export const GUIDES: Guide[] = [
         question: "Does cold weather affect LiFePO4?",
         answer:
           "Charging LFP below freezing can damage the cells, so many stations block or limit charging in the cold. Discharging in the cold is less of a problem but capacity drops temporarily.",
+      },
+      {
+        question: "Is NMC better than LiFePO4 in cold temperatures?",
+        answer:
+          "NMC generally tolerates cold-weather charging a bit better than LFP, which is why some cold-climate-focused products still use it despite LFP's other advantages. Both lose some capacity in the cold either way — check the specific unit's published operating temperature range rather than assuming a chemistry-wide number applies exactly to it.",
       },
       {
         question: "Is LiFePO4 worth paying more for?",
@@ -447,7 +462,8 @@ export const GUIDES: Guide[] = [
     metaDescription:
       "A step-by-step method for sizing a power station to run a refrigerator: startup surge, daily watt-hours, the 85% usable-energy rule, and a worked example.",
     intro: [
-      "A refrigerator is one of the most common reasons people buy a portable power station, and it is also one of the easiest appliances to undersize for if you only look at the number on the door sticker.",
+      "Short answer: a full-size household refrigerator commonly uses about 1,000-1,600 watt-hours (Wh) per day, based on typical figures published by ENERGY STAR and the U.S. Department of Energy — that daily figure, not the running-watts number on the door sticker, is what determines the power station capacity you need.",
+      "A refrigerator is one of the most common reasons people buy a portable power station, and it is also one of the easiest appliances to undersize for if you only look at that door-sticker number.",
       "This guide walks through the same watts-vs-watt-hours method used throughout PowerMatchLab, applied specifically to a fridge or freezer, so you can size a station with confidence instead of guessing. If you're not yet sure a power station can handle a fridge's startup surge at all, see PowerMatchLab's dedicated feasibility guide first.",
     ],
     keyTakeaways: [
@@ -1777,18 +1793,39 @@ export const GUIDES: Guide[] = [
           "A power station's surge rating needs to clear a device's startup spike, not just its running watts, or the device may fail to start even though the continuous rating looked sufficient.",
         ],
       },
+      {
+        id: "watts-and-watt-hours-by-use-case",
+        heading: "Applying watts and watt-hours to four common scenarios",
+        body: [
+          "The same two questions — can it start and run this (watts), and for how long (watt-hours) — apply differently depending on what you're powering. These four scenarios cover most of what people search for when sizing a station.",
+        ],
+        bullets: [
+          "Refrigerator backup: a full-size fridge averages roughly 100-200 running watts but cycles on and off, so its real daily energy use is closer to 1,000-2,000 Wh/day than a simple watts × 24 calculation — and its compressor's startup surge (several times the running watts) is what most stations actually fail to clear. See the refrigerator backup guide and shortlist linked below for the fridge-specific numbers.",
+          "CPAP overnight: most CPAP machines without a heated humidifier draw roughly 30-60 continuous watts, so an 8-hour night is commonly only 240-480 Wh — watts matters less here than confirming a pure sine wave inverter, which most CPAP manufacturers require.",
+          "RV and camping: total watt-hours needed depends entirely on your device list and trip length, not the RV itself — add up every device's watts × hours/day for the trip, then check the single largest surge (often a compressor fridge or an A/C unit) against the station's surge rating.",
+          "Whole-home backup: this is a watts question first — you're choosing which circuits to run (not everything at once), checking each one's running and surge watts against the station or inverter's output, then sizing watt-hours for how many hours of outage you want covered.",
+        ],
+      },
     ],
     relatedProductIds: [
       "anker-solix-c300",
       "ecoflow-delta-2-max",
+      "bluetti-ac180",
     ],
+    catalogFilterLabel: "Browse the full catalog by capacity and output",
+    catalogFilterHref: "/products",
     relatedGuideSlugs: [
       "how-to-size-a-portable-power-station",
       "how-long-will-a-1000wh-power-station-last",
       "what-can-a-1000-watt-power-station-run",
       "appliance-power-consumption-table",
       "how-long-to-charge-power-station-with-solar",
+      "power-station-for-refrigerator",
+      "power-station-for-cpap",
+      "power-station-for-rv",
+      "power-station-for-home-backup",
     ],
+    relatedBestForSlug: "best-for-refrigerator-backup",
     faq: [
       {
         question: "If a power station is rated 1000Wh, does that mean it outputs 1000 watts?",
@@ -1943,7 +1980,9 @@ export const GUIDES: Guide[] = [
       },
     ],
     relatedProductIds: [
+      "bluetti-ac180",
       "jackery-explorer-2000-v2",
+      "ecoflow-delta-pro-ultra",
     ],
     catalogFilterHref: "/products?solar=1",
     catalogFilterLabel: "Browse every power station with verified solar input",
@@ -1953,6 +1992,7 @@ export const GUIDES: Guide[] = [
       "solar-generator-vs-portable-power-station",
       "watts-vs-watt-hours",
     ],
+    relatedBestForSlug: "best-for-home-backup",
     faq: [
       {
         question: "How many watts of solar panel do I need to fully recharge my station in a day?",

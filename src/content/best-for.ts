@@ -178,6 +178,7 @@ export const BEST_FOR: BestForContent[] = [
       "For a fridge or freezer, prioritize a verified surge rating well above the compressor's startup spike and roughly 1,000-1,600 Wh of usable capacity per day of outage — the shortlist and comparison table below rank the catalog on exactly those fields.",
     intro: [
       "Keeping food cold through an outage is a focused job: handle the compressor's startup surge, then supply roughly 1,000-1,600 Wh per day for as long as the power is out.",
+      "This page covers battery-based portable power stations, not fuel-burning generators. A power station runs silently, indoors, with no exhaust, no fuel to store, and no fumes — it stores a fixed amount of energy (its Wh capacity) and needs recharging (wall, car, or solar) once that runs out. A fuel generator can run indefinitely on stored gasoline or propane but must run outdoors, away from windows and doors, because of carbon monoxide risk, and needs fuel stored and rotated. For a single fridge or freezer during a typical outage, a correctly-sized power station is usually enough and avoids the fuel and ventilation logistics entirely; a fuel generator becomes the more practical choice mainly for loads or outage durations well beyond what a station's battery capacity can cover.",
     ],
     whatMatters: [
       {
@@ -188,7 +189,7 @@ export const BEST_FOR: BestForContent[] = [
       {
         heading: "Usable daily capacity",
         detail:
-          "Plan around 1,000-1,600 Wh per fridge per day. A 1kWh station covers roughly a day; 2kWh gets you toward two.",
+          "Plan around 1,000-1,600 Wh per fridge per day — this figure already accounts for the compressor cycling on and off rather than running continuously, which is why it's higher than a naive running-watts × 24 calculation. A 1kWh station covers roughly a day; 2kWh gets you toward two.",
       },
       {
         heading: "Low idle consumption",

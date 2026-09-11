@@ -7,6 +7,8 @@ const darkInput =
   "w-full rounded-md border border-navy-700 bg-navy-900/60 px-3 py-2 text-white outline-none transition-shadow duration-200 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20";
 
 const REFERENCE_PANELS_W = [100, 200, 400, 800];
+const MATRIX_CAPACITIES_WH = [500, 1000, 1500, 2000, 3000, 5000];
+const MATRIX_EFFICIENCY_PCT = 65;
 
 function fmtHours(h: number): string {
   if (!Number.isFinite(h) || h <= 0) return "—";
@@ -165,6 +167,50 @@ export function SolarChargeCalculator() {
                   <td className="py-1.5 font-medium text-white">
                     {r.hours != null ? fmtHours(r.hours) : "—"}
                   </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="mt-6 border-t border-navy-700 pt-5">
+        <p className="text-xs font-semibold uppercase tracking-wide text-navy-400">
+          Full charge time by battery capacity and panel rating (
+          {MATRIX_EFFICIENCY_PCT}% realistic efficiency)
+        </p>
+        <p className="mt-1 text-xs text-navy-400">
+          A fixed reference table, independent of the inputs above — useful for
+          comparing capacity/panel combinations at a glance before typing in your
+          own numbers.
+        </p>
+        <div className="mt-2 overflow-x-auto">
+          <table className="w-full min-w-[520px] border-collapse text-sm">
+            <thead>
+              <tr className="border-b border-navy-700 text-left text-navy-400">
+                <th className="py-1.5 pr-3 font-medium">Capacity</th>
+                {REFERENCE_PANELS_W.map((w) => (
+                  <th key={w} className="py-1.5 pr-3 font-medium">
+                    {w} W panel
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {MATRIX_CAPACITIES_WH.map((cap) => (
+                <tr key={cap} className="border-b border-navy-800">
+                  <td className="py-1.5 pr-3 font-medium text-white">
+                    {cap.toLocaleString("en-US")} Wh
+                  </td>
+                  {REFERENCE_PANELS_W.map((w) => {
+                    const realisticW = w * (MATRIX_EFFICIENCY_PCT / 100);
+                    const hours = realisticW > 0 ? cap / realisticW : null;
+                    return (
+                      <td key={w} className="py-1.5 pr-3 text-navy-200">
+                        {hours != null ? fmtHours(hours) : "—"}
+                      </td>
+                    );
+                  })}
                 </tr>
               ))}
             </tbody>
