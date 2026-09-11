@@ -40,7 +40,7 @@ const SIZE_CLASS_BY_ID: Record<string, IllustrationSizeClass> = {
   "anker-solix-f3000": "whole-home backup",
 
   // Milestone 4 catalog expansion (2026-09-11).
-  "anker-solix-c800-plus": "mid-size",
+  "anker-solix-c800x": "mid-size",
   "ecoflow-river-3-plus": "compact",
   "jackery-explorer-300-plus": "compact",
   "bluetti-ac70": "mid-size",
@@ -71,7 +71,7 @@ const SIZE_CLASS_BY_ID: Record<string, IllustrationSizeClass> = {
  * the ones that are.
  */
 const PLACEHOLDER_RENDER_IDS = new Set<string>([
-  "anker-solix-c800-plus",
+  "anker-solix-c800x",
   "ecoflow-river-3-plus",
   "jackery-explorer-300-plus",
   "bluetti-ac70",

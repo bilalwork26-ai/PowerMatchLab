@@ -64,18 +64,22 @@ const V2_IDS = Object.keys(EXPECTED_V2_AFFILIATE_LINKS);
  * them (ecoflow-river-3-plus, jackery-explorer-300-plus, bluetti-ac70) later
  * received real Amazon Associates SiteStripe links from the site owner
  * (2026-09-11, see EXPECTED_V3_V4_AFFILIATE_LINKS below).
- * "anker-solix-c800-plus" remains confirmed-but-unlinked: its ASIN listing
- * could not be safely resolved on Amazon.com (risk of confusion with the
- * different "C800X"/"C800" models), so it still uses the honest
- * no-purchase-link fallback until a verified ASIN is found.
+ *
+ * The 4th, "anker-solix-c800-plus", was rejected outright (its listing
+ * showed unavailable on Amazon.com) and replaced with a different product,
+ * "anker-solix-c800x" (Anker SOLIX C800X, model A1755, ASIN B0G6ZDP75P,
+ * 768Wh/1200W/1600W surge) — approved with the explicit, documented caveat
+ * that the only Amazon.com listing found for it bundles a 100W solar panel
+ * (see EXPECTED_LISTING_NOTES below). Confirmed, still no affiliate link
+ * (awaiting SiteStripe).
  */
 const V3_IDS = [
-  "anker-solix-c800-plus",
+  "anker-solix-c800x",
   "ecoflow-river-3-plus",
   "jackery-explorer-300-plus",
   "bluetti-ac70",
 ];
-const V3_WITHOUT_AFFILIATE_LINK_IDS = ["anker-solix-c800-plus"];
+const V3_WITHOUT_AFFILIATE_LINK_IDS = ["anker-solix-c800x"];
 const V3_WITH_AFFILIATE_LINK_IDS = V3_IDS.filter(
   (id) => !V3_WITHOUT_AFFILIATE_LINK_IDS.includes(id),
 );
@@ -131,6 +135,7 @@ const V4_CONFIRMED_UNLINKED_IDS = [
 const EXPECTED_LISTING_NOTES: Record<string, string> = {
   "jackery-explorer-5000-plus": "Amazon option includes an Anderson extension cable",
   "growatt-vita-550": "Amazon bundle includes a 200W solar panel",
+  "anker-solix-c800x": "Amazon bundle includes a 100W solar panel.",
 };
 const V4_CONFIRMED_IDS = [...V4_LINKED_CONFIRMED_IDS, ...V4_CONFIRMED_UNLINKED_IDS];
 const V4_IDS = [...V4_CONFIRMED_IDS, ...V4_PENDING_IDS];
@@ -305,6 +310,26 @@ describe("catalog data integrity", () => {
     expect(link.isAffiliate).toBe(false);
   });
 
+  it("anker-solix-c800-plus was rejected and replaced by anker-solix-c800x, with its bundle disclosed", () => {
+    expect(getProductById("anker-solix-c800-plus")).toBeUndefined();
+    const p = getProductById("anker-solix-c800x");
+    expect(p, "anker-solix-c800x should exist").toBeDefined();
+    expect(p!.brand).toBe("Anker SOLIX");
+    expect(p!.model).toBe("C800X");
+    expect(p!.capacity_wh).toBe(768);
+    expect(p!.rated_output_w).toBe(1200);
+    expect(p!.surge_output_w).toBe(1600);
+    expect(p!.battery_chemistry).toBe("LiFePO4");
+    expect(p!.amazon_asin).toBe("B0G6ZDP75P");
+    expect(p!.amazon_product_url).toBe("https://www.amazon.com/dp/B0G6ZDP75P");
+    expect(p!.amazon_verification_status).toBe("confirmed");
+    expect(p!.amazon_affiliate_url).toBeNull();
+    expect(p!.amazon_listing_note).toBe("Amazon bundle includes a 100W solar panel.");
+    const link = resolveAmazonLink(p!);
+    expect(link.href).toBeNull();
+    expect(link.isAffiliate).toBe(false);
+  });
+
   it("pending V4 products show no Amazon purchase link at all, even though a candidate URL is stored", () => {
     for (const id of V4_PENDING_IDS) {
       const p = getProductById(id)!;
@@ -343,12 +368,13 @@ describe("catalog data integrity", () => {
         expect(link.isAffiliate).toBe(true);
         expect(link.href).toBe(EXPECTED_V3_V4_AFFILIATE_LINKS[id]);
       } else {
-        // anker-solix-c800-plus: no affiliate link has been generated yet —
+        // anker-solix-c800x: no affiliate link has been generated yet —
         // must stay null, never fabricated. amazon_product_url is a
         // research/matching field only — the CTA never uses it.
         expect(p!.amazon_affiliate_url).toBeNull();
         expect(link.isAffiliate).toBe(false);
         expect(link.href).toBeNull();
+        expect(p!.amazon_listing_note).toBe(EXPECTED_LISTING_NOTES[id] ?? null);
       }
     }
     // No V3 product duplicates an existing id, ASIN, or product URL.
