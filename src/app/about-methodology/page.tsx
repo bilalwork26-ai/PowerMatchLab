@@ -227,15 +227,19 @@ export default function MethodologyPage() {
 
         <h2>Amazon links</h2>
         <p>
-          Each product stores both a direct Amazon product URL and an Amazon
-          Associates affiliate URL. “Check Price on Amazon” uses the affiliate
-          URL when one is stored for that product, and falls back to the direct
-          product URL otherwise — never a fabricated tracking ID or an invented
-          link. Amazon Associates commissions fund the site, but they do not
-          affect which products are listed, the PowerMatch Score, or any
-          recommendation — every product is scored and classified from the
-          same dataset whether or not it currently carries an affiliate link.
-          See the{" "}
+          Each product record can store a direct Amazon product URL and,
+          separately, an Amazon Associates affiliate URL. Only the affiliate
+          URL is ever used as a clickable “Check Price on Amazon” destination.
+          The direct product URL exists purely for our own research — confirming
+          which real Amazon listing a catalog entry corresponds to — and is
+          never rendered as a purchase link, no matter how confident that
+          match is. When a product has no affiliate URL yet, no “Check Price
+          on Amazon” link is shown at all; the page says so plainly instead of
+          substituting the research URL or any other link. Amazon Associates
+          commissions fund the site, but they do not affect which products are
+          listed, the PowerMatch Score, or any recommendation — every product
+          is scored and classified from the same dataset whether or not it
+          currently carries an affiliate link. See the{" "}
           <Link href="/affiliate-disclosure">Affiliate Disclosure</Link>.
         </p>
 

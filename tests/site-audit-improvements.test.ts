@@ -76,15 +76,16 @@ describe("GA4: env-var gated, no hardcoded Measurement ID", () => {
     expect(src).toContain("if (!GA_MEASUREMENT_ID) return null;");
   });
 
-  it("all seven required events are declared in the fixed vocabulary", () => {
+  it("all eight required events are declared in the fixed vocabulary", () => {
     const src = read("src/lib/analytics.ts");
     for (const evt of [
       "calculator_start",
-      "calculator_complete",
+      "calculator_completed",
       "compare_add_product",
-      "compare_complete",
-      "amazon_affiliate_click",
-      "product_view",
+      "comparison_started",
+      "comparison_completed",
+      "affiliate_click",
+      "view_product",
       "guide_cta_click",
     ]) {
       expect(src).toContain(`"${evt}"`);
@@ -93,23 +94,45 @@ describe("GA4: env-var gated, no hardcoded Measurement ID", () => {
 
   it("each event is actually fired from its real call site", () => {
     expect(read("src/context/CompareContext.tsx")).toContain('trackEvent("compare_add_product"');
+    expect(read("src/context/CompareContext.tsx")).toContain('trackEvent("comparison_started")');
     expect(read("src/components/compare/CompareView.tsx")).toContain(
-      'trackEvent("compare_complete"',
+      'trackEvent("comparison_completed"',
     );
     expect(read("src/components/product/AmazonCta.tsx")).toContain(
-      'trackEvent("amazon_affiliate_click"',
+      'trackEvent("affiliate_click"',
     );
     expect(read("src/components/analytics/TrackProductView.tsx")).toContain(
-      'trackEvent("product_view"',
+      'trackEvent("view_product"',
     );
     expect(read("src/components/calculator/PowerCalculator.tsx")).toContain(
       'trackEvent("calculator_start")',
     );
     expect(read("src/components/calculator/PowerCalculator.tsx")).toContain(
-      'trackEvent("calculator_complete"',
+      'trackEvent("calculator_completed"',
     );
     expect(read("src/components/analytics/TrackedLink.tsx")).toContain("trackEvent(event");
     expect(read("src/app/guides/[slug]/page.tsx")).toContain('event="guide_cta_click"');
+  });
+
+  it("every AmazonCta render site passes a placement so affiliate_click always records where the click happened", () => {
+    const placementCallers = [
+      "src/app/products/[id]/page.tsx",
+      "src/components/product/ProductCard.tsx",
+      "src/components/compare/CompareView.tsx",
+      "src/components/compare/ModelComparisonPage.tsx",
+      "src/components/calculator/RecommendationCard.tsx",
+      "src/app/deals/page.tsx",
+    ];
+    for (const file of placementCallers) {
+      const src = read(file);
+      const ctaBlocks = src.match(/<AmazonCta[\s\S]*?\/>/g) ?? [];
+      expect(ctaBlocks.length, `${file} has no <AmazonCta /> usage to check`).toBeGreaterThan(0);
+      for (const block of ctaBlocks) {
+        expect(block, `${file}: <AmazonCta> missing placement=\n${block}`).toMatch(
+          /placement="[a-z_]+"/,
+        );
+      }
+    }
   });
 });
 
@@ -242,14 +265,22 @@ describe("GA4 copy: never claims Google Analytics is active when it isn't", () =
 });
 
 describe("GA4 event parameters: no PII, no free text, no affiliate identifiers", () => {
-  it("amazon_affiliate_click sends only a catalog product id and a boolean, never the destination URL", () => {
+  it("affiliate_click sends only a catalog product id, a boolean and an enum placement — never the destination URL", () => {
     const src = read("src/components/product/AmazonCta.tsx");
-    const match = src.match(/trackEvent\("amazon_affiliate_click",\s*\{([\s\S]*?)\}\)/);
+    const match = src.match(/trackEvent\("affiliate_click",\s*\{([\s\S]*?)\}\)/);
     expect(match).not.toBeNull();
     const params = match![1];
     expect(params).toContain("product_id: product.id");
+    expect(params).toContain("placement");
     expect(params).not.toContain("href");
     expect(params).not.toMatch(/amazon_affiliate_url|amazon_asin|resolveAmazonLink/);
+  });
+
+  it("AffiliateClickPlacement is a closed enum of internal placement strings, never accepts arbitrary text", () => {
+    const src = read("src/lib/analytics.ts");
+    const match = src.match(/export type AffiliateClickPlacement =([\s\S]*?);/);
+    expect(match).not.toBeNull();
+    expect(match![1]).not.toMatch(/:\s*string/);
   });
 
   it("no trackEvent call reads a free-text search/query filter", () => {

@@ -100,7 +100,13 @@ export default async function ProductPage({
           <div className="mt-5 grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
             <div className="flex flex-col gap-6 sm:flex-row">
               <div className="mx-auto flex flex-col items-center gap-2 sm:mx-0 sm:items-start">
-                <ProductIllustration product={product} size={200} showCaption={false} tone="dark" />
+                <ProductIllustration
+                  product={product}
+                  size={200}
+                  showCaption={false}
+                  tone="dark"
+                  priority
+                />
                 <p className="max-w-[220px] text-center text-[10px] leading-snug text-navy-400 sm:text-left">
                   {getIllustrationCaption(product)}
                 </p>
@@ -179,7 +185,7 @@ export default async function ProductPage({
                   {product.official_source ? ` · ${product.official_source}` : ""}
                 </p>
                 <div className="mt-2 space-y-2">
-                  <AmazonCta product={product} size="md" tone="dark" />
+                  <AmazonCta product={product} size="md" tone="dark" placement="product_page_hero" />
                   <CompareToggleButton productId={product.id} tone="dark" />
                 </div>
 
@@ -269,7 +275,13 @@ export default async function ProductPage({
                   independently verified them. Check the current rating and
                   reviews on the product’s Amazon page.
                   <div className="mt-3">
-                    <AmazonCta product={product} size="sm" withDisclosure={false} tone="dark" />
+                    <AmazonCta
+                      product={product}
+                      size="sm"
+                      withDisclosure={false}
+                      tone="dark"
+                      placement="product_page_reviews_tab"
+                    />
                   </div>
                 </Callout>
               ),

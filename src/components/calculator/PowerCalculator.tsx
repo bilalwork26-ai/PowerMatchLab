@@ -107,7 +107,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
   const ready = hasUsableInput(devices);
 
   // calculator_start fires the first time the visitor moves past step 1;
-  // calculator_complete the first time they reach a real (ready) result on
+  // calculator_completed the first time they reach a real (ready) result on
   // step 3. Each fires at most once per page load — a single guided pass
   // through the wizard is one funnel event, not one per re-visit of a step.
   const startedRef = useRef(false);
@@ -119,7 +119,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
     }
     if (step === 3 && ready && !completedRef.current) {
       completedRef.current = true;
-      trackEvent("calculator_complete", {
+      trackEvent("calculator_completed", {
         recommended_capacity_wh: Math.round(result.recommendedMinimumCapacityWh),
       });
     }

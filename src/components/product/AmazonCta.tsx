@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { Product } from "@/types/product";
 import { resolveAmazonLink } from "@/lib/amazon";
 import { cn } from "@/lib/cn";
-import { trackEvent } from "@/lib/analytics";
+import { trackEvent, type AffiliateClickPlacement } from "@/lib/analytics";
 
 /**
  * "Check Price on Amazon" CTA.
@@ -21,6 +21,7 @@ export function AmazonCta({
   withDisclosure = true,
   className,
   tone = "light",
+  placement,
 }: {
   product: Product;
   size?: "sm" | "md" | "lg";
@@ -28,6 +29,8 @@ export function AmazonCta({
   className?: string;
   /** "dark" keeps the required disclosure text readable (WCAG AA) on a dark card. */
   tone?: "light" | "dark";
+  /** Where on the site this CTA renders — an internal enum recorded on the affiliate_click event, never a URL. */
+  placement: AffiliateClickPlacement;
 }) {
   const { href, isAffiliate } = resolveAmazonLink(product);
 
@@ -46,9 +49,10 @@ export function AmazonCta({
           target="_blank"
           rel="nofollow sponsored noopener noreferrer"
           onClick={() =>
-            trackEvent("amazon_affiliate_click", {
+            trackEvent("affiliate_click", {
               product_id: product.id,
               is_affiliate: isAffiliate,
+              placement,
             })
           }
           className={cn(

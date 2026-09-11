@@ -42,6 +42,19 @@ export default function ComparePage() {
           { name: "Compare", path: "/compare" },
         ]}
       />
+      <div className="bg-navy-950 pt-6 text-white">
+        <div className="container-page">
+          <p className="max-w-2xl text-sm text-navy-300">
+            Pick up to 4 products from the catalog and see capacity, output,
+            surge, charging speed, weight and PowerMatch Score side by side in
+            one table — or browse a focused, editorial write-up for two
+            specific models below.{" "}
+            <a href="#compare-tool" className="font-medium text-cyan-300 underline">
+              Jump straight to the comparison tool ↓
+            </a>
+          </p>
+        </div>
+      </div>
       {COMPARISONS.length ? (
         <div className="bg-navy-950 pt-6 text-white">
           <div className="container-page">
@@ -79,9 +92,11 @@ export default function ComparePage() {
           </div>
         </div>
       ) : null}
-      <Suspense fallback={<CompareSkeleton />}>
-        <CompareView catalog={catalog} scores={scores} />
-      </Suspense>
+      <div id="compare-tool" className="scroll-mt-20">
+        <Suspense fallback={<CompareSkeleton />}>
+          <CompareView catalog={catalog} scores={scores} />
+        </Suspense>
+      </div>
 
       <div className="bg-navy-950 pb-16 text-white">
         <div className="container-page">

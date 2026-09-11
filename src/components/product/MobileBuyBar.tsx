@@ -37,9 +37,10 @@ export function MobileBuyBar({ product }: { product: Product }) {
             target="_blank"
             rel="nofollow sponsored noopener noreferrer"
             onClick={() =>
-              trackEvent("amazon_affiliate_click", {
+              trackEvent("affiliate_click", {
                 product_id: product.id,
                 is_affiliate: isAffiliate,
+                placement: "product_page_mobile_bar",
               })
             }
             className="amazon-cta-link inline-flex h-9 shrink-0 items-center justify-center rounded-lg border border-amazon-hover bg-amazon px-4 text-sm font-semibold text-amazon-text transition-colors hover:bg-amazon-hover"

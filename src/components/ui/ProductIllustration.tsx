@@ -24,12 +24,21 @@ export function ProductIllustration({
   className,
   showCaption = true,
   tone = "light",
+  priority = false,
 }: {
   product: Product;
   size?: number;
   className?: string;
   showCaption?: boolean;
   tone?: "light" | "dark";
+  /**
+   * Set only on the one illustration per page that's actually the LCP
+   * candidate (e.g. the product detail hero) — it skips lazy-loading and
+   * gets a fetch priority hint. Every other render of this component (grid
+   * cards, compare tables, recommendation cards) stays lazy by default;
+   * marking more than one image per page as priority defeats the point.
+   */
+  priority?: boolean;
 }) {
   const path = getIllustrationPath(product);
   const alt = getIllustrationAlt(product);
@@ -51,6 +60,7 @@ export function ProductIllustration({
           fill
           sizes={`${size}px`}
           className="object-contain p-2"
+          priority={priority}
         />
       </div>
       {showCaption ? (

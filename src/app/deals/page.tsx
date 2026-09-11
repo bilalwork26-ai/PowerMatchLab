@@ -90,7 +90,13 @@ export default function DealsPage() {
                     </a>
                   </p>
                   <div className="mt-3">
-                    <AmazonCta product={product} size="sm" withDisclosure={false} tone="dark" />
+                    <AmazonCta
+                      product={product}
+                      size="sm"
+                      withDisclosure={false}
+                      tone="dark"
+                      placement="deals_page"
+                    />
                   </div>
                 </li>
               );

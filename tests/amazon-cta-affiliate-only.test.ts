@@ -101,4 +101,27 @@ describe("Disclosure copy never claims a link is shown when none is", () => {
     const src = read("src/app/guides/[slug]/page.tsx");
     expect(src).not.toMatch(/normal Amazon product links? with no affiliate tracking/i);
   });
+
+  it("no page anywhere under src/app describes the CTA as falling back to a direct/product URL (the actual rule is: no affiliate URL means no link, ever)", () => {
+    const { readdirSync, statSync } = require("node:fs") as typeof import("node:fs");
+    const APP_DIR = join(ROOT, "src/app");
+    function walk(dir: string): string[] {
+      const out: string[] = [];
+      for (const entry of readdirSync(dir)) {
+        const full = join(dir, entry);
+        const st = statSync(full);
+        if (st.isDirectory()) out.push(...walk(full));
+        else if (/\.tsx?$/.test(entry)) out.push(full);
+      }
+      return out;
+    }
+    const offenders: string[] = [];
+    for (const file of walk(APP_DIR)) {
+      const src = readFileSync(file, "utf8");
+      if (/falls?\s+back\s+to\s+(the\s+)?(direct\s+)?(amazon\s+)?product\s+url/i.test(src)) {
+        offenders.push(file);
+      }
+    }
+    expect(offenders, `these pages wrongly describe a fallback to amazon_product_url: ${offenders.join(", ")}`).toEqual([]);
+  });
 });
