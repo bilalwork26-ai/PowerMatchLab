@@ -38,12 +38,45 @@ const SIZE_CLASS_BY_ID: Record<string, IllustrationSizeClass> = {
   "pecron-e3600lfp": "whole-home backup",
   "bluetti-elite-300": "whole-home backup",
   "anker-solix-f3000": "whole-home backup",
+
+  // Milestone 4 catalog expansion (2026-09-11).
+  "anker-solix-c800-plus": "mid-size",
+  "ecoflow-river-3-plus": "compact",
+  "jackery-explorer-300-plus": "compact",
+  "bluetti-ac70": "mid-size",
 };
 
 /**
- * Canonical local path for a product's image. Every catalog product id maps
- * to exactly one original render in public/illustrations/ — this is the
- * single source of truth for the path, so no component hardcodes it.
+ * Product ids whose render is a generated placeholder (brand/model text on a
+ * neutral card, with "ILLUSTRATIVE PLACEHOLDER" baked into the image) rather
+ * than an original 3D-style render. Purely a UI-labeling flag — both kinds
+ * of file are equally real, unique-per-product, and never claim to be a
+ * photograph; this just lets the interface say "placeholder" explicitly for
+ * the ones that are.
+ */
+const PLACEHOLDER_RENDER_IDS = new Set<string>([
+  "anker-solix-c800-plus",
+  "ecoflow-river-3-plus",
+  "jackery-explorer-300-plus",
+  "bluetti-ac70",
+]);
+
+export function isPlaceholderIllustration(product: Product): boolean {
+  return PLACEHOLDER_RENDER_IDS.has(product.id);
+}
+
+/**
+ * Every catalog product has its own dedicated file in public/illustrations/
+ * — one product, one file, never shared. Products v1/v2 (2026-09-05 and
+ * earlier) each got an original 3D-style render; products added from
+ * 2026-09-11 onward (this session has no image-generation capability) get a
+ * generated "illustrative placeholder" instead — a neutral, on-brand card
+ * with the product's own brand/model text baked in and an explicit
+ * "ILLUSTRATIVE PLACEHOLDER" label in the image itself (see
+ * scripts/gen-illustration-placeholder.py). Either way the file is unique to
+ * that product id; two different products never point at the same specific
+ * illustration. tests/illustration-integrity.test.ts enforces both the
+ * existence and the uniqueness of every path this function returns.
  */
 export function getIllustrationPath(product: Product): string {
   return `/illustrations/${product.id}.png`;
@@ -59,7 +92,16 @@ export function getIllustrationSizeClass(product: Product): IllustrationSizeClas
  */
 export function getIllustrationAlt(product: Product): string {
   const sizeClass = getIllustrationSizeClass(product);
+  if (isPlaceholderIllustration(product)) {
+    return `Illustrative placeholder for the ${product.brand} ${product.model} (${sizeClass} class) — brand and model name only, not a photograph or a rendering of the actual product design.`;
+  }
   return `Original illustrative render representing a ${sizeClass} portable power station — not an exact photograph of the ${product.brand} ${product.model}.`;
+}
+
+export function getIllustrationCaption(product: Product): string {
+  return isPlaceholderIllustration(product)
+    ? "Illustrative placeholder — not a photograph of this product."
+    : ILLUSTRATIVE_CAPTION_SHORT;
 }
 
 export const ILLUSTRATIVE_CAPTION_SHORT = "Illustrative image — not an exact product photograph.";

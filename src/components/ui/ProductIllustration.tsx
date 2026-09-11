@@ -3,8 +3,8 @@ import type { Product } from "@/types/product";
 import { cn } from "@/lib/cn";
 import {
   getIllustrationAlt,
+  getIllustrationCaption,
   getIllustrationPath,
-  ILLUSTRATIVE_CAPTION_SHORT,
 } from "@/lib/illustrations";
 
 /**
@@ -61,7 +61,7 @@ export function ProductIllustration({
           )}
           style={{ width: captionWidth }}
         >
-          {ILLUSTRATIVE_CAPTION_SHORT}
+          {getIllustrationCaption(product)}
         </p>
       ) : null}
     </div>
