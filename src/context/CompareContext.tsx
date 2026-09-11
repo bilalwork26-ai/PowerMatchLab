@@ -57,9 +57,14 @@ export function CompareProvider({ children }: { children: ReactNode }) {
     }
   }, [ids, ready]);
 
+  // comparison_started fires once, the moment the tray goes from empty to
+  // holding its first product — the actual start of a comparison session.
+  // compare_add_product still fires on every add (including the first) so
+  // per-product add-to-compare volume stays measurable too.
   const add = useCallback((id: string) => {
     setIds((prev) => {
       if (prev.includes(id) || prev.length >= MAX_COMPARE) return prev;
+      if (prev.length === 0) trackEvent("comparison_started");
       trackEvent("compare_add_product", { product_id: id });
       return [...prev, id];
     });
@@ -73,6 +78,7 @@ export function CompareProvider({ children }: { children: ReactNode }) {
     setIds((prev) => {
       if (prev.includes(id)) return prev.filter((v) => v !== id);
       if (prev.length >= MAX_COMPARE) return prev;
+      if (prev.length === 0) trackEvent("comparison_started");
       trackEvent("compare_add_product", { product_id: id });
       return [...prev, id];
     });

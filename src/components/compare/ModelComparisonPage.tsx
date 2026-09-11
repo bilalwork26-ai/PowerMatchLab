@@ -584,7 +584,7 @@ export function ModelComparisonPage({
                       Specs last checked {fmtDate(p.last_verified)}
                     </p>
                     <div className="mt-2 space-y-2">
-                      <AmazonCta product={p} size="sm" tone="dark" />
+                      <AmazonCta product={p} size="sm" tone="dark" placement="model_comparison_page" />
                       <Link
                         href={`/products/${p.id}`}
                         className="block text-xs font-medium text-cyan-300 hover:underline"

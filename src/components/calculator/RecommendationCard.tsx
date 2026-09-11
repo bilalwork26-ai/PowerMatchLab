@@ -106,7 +106,13 @@ export function RecommendationCard({
 
       <div className="mt-4 grid gap-2 sm:grid-cols-2">
         <CompareToggleButton productId={product.id} size="sm" tone={tone} />
-        <AmazonCta product={product} size="sm" withDisclosure={false} tone={tone} />
+        <AmazonCta
+          product={product}
+          size="sm"
+          withDisclosure={false}
+          tone={tone}
+          placement="calculator_recommendation"
+        />
       </div>
       <p className="sr-only">{productDisplayName(product)}</p>
     </article>

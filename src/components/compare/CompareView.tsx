@@ -56,10 +56,10 @@ export function CompareView({ catalog, scores }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready]);
 
-  // Fire compare_complete once per transition into a comparable (2+) selection.
+  // Fire comparison_completed once per transition into a comparable (2+) selection.
   useEffect(() => {
     if (prevCountRef.current < 2 && ids.length >= 2) {
-      trackEvent("compare_complete", { product_count: ids.length });
+      trackEvent("comparison_completed", { product_count: ids.length });
     }
     prevCountRef.current = ids.length;
   }, [ids.length]);
@@ -477,7 +477,13 @@ export function CompareView({ catalog, scores }: Props) {
                         Best for: {p.best_for.slice(0, 3).join(", ") || "—"}
                       </p>
                       <div className="mt-3">
-                        <AmazonCta product={p} size="sm" withDisclosure={false} tone="dark" />
+                        <AmazonCta
+                          product={p}
+                          size="sm"
+                          withDisclosure={false}
+                          tone="dark"
+                          placement="compare_page"
+                        />
                       </div>
                     </div>
                   );

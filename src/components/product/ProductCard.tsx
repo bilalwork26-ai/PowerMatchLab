@@ -110,7 +110,13 @@ export function ProductCard({
             View product
           </Link>
           <CompareToggleButton productId={product.id} size="sm" tone={tone} />
-          <AmazonCta product={product} size="sm" withDisclosure={false} tone={tone} />
+          <AmazonCta
+            product={product}
+            size="sm"
+            withDisclosure={false}
+            tone={tone}
+            placement="product_card"
+          />
         </div>
       ) : (
         <p className="sr-only">{name}</p>
