@@ -19,7 +19,7 @@ import { Callout } from "@/components/ui/Callout";
 import { ScoreCircle } from "@/components/ui/ScoreCircle";
 import { ProductIllustration } from "@/components/ui/ProductIllustration";
 import { EnergyLines } from "@/components/ui/EnergyLines";
-import { ILLUSTRATIVE_CAPTION_LONG } from "@/lib/illustrations";
+import { getIllustrationCaption } from "@/lib/illustrations";
 import { AmazonCta } from "@/components/product/AmazonCta";
 import { MobileBuyBar } from "@/components/product/MobileBuyBar";
 import { CompareToggleButton } from "@/components/product/CompareToggleButton";
@@ -102,7 +102,7 @@ export default async function ProductPage({
               <div className="mx-auto flex flex-col items-center gap-2 sm:mx-0 sm:items-start">
                 <ProductIllustration product={product} size={200} showCaption={false} tone="dark" />
                 <p className="max-w-[220px] text-center text-[10px] leading-snug text-navy-400 sm:text-left">
-                  {ILLUSTRATIVE_CAPTION_LONG}
+                  {getIllustrationCaption(product)}
                 </p>
               </div>
               <div className="min-w-0">
