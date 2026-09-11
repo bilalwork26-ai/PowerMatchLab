@@ -48,7 +48,7 @@ export function MobileBuyBar({ product }: { product: Product }) {
           </a>
         ) : (
           <span className="inline-flex h-9 shrink-0 items-center justify-center rounded-lg border border-navy-700 px-4 text-xs font-medium text-navy-400">
-            Not verified
+            {product.amazon_verification_status === "confirmed" ? "Link pending" : "Not verified"}
           </span>
         )}
       </div>

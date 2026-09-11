@@ -303,8 +303,8 @@ export default async function GuidePage({
               {allAffiliateLinks
                 ? "As an Amazon Associate, PowerMatchLab earns from qualifying purchases made through the Amazon links on this page"
                 : anyAffiliateLink
-                  ? "Some Amazon links on this page are PowerMatchLab Associates links (we may earn from qualifying purchases); others are normal Amazon product links with no affiliate tracking yet"
-                  : "The Amazon links on this page are normal product links; affiliate tracking has not been added for these products yet"}{" "}
+                  ? "Some Amazon links on this page are PowerMatchLab Associates links (we may earn from qualifying purchases); other products mentioned don't have a purchase link yet, since no affiliate link has been generated for them"
+                  : "None of the products mentioned on this page have a live Amazon purchase link yet, since no affiliate link has been generated for them"}{" "}
               — see the{" "}
               <Link href="/affiliate-disclosure" className="underline">
                 disclosure

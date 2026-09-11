@@ -197,16 +197,17 @@ describe("catalog data integrity", () => {
     }
   });
 
-  it("the confirmed V4 product (bluetti-apex-300) uses the honest direct-link fallback like V3", () => {
+  it("the confirmed V4 product (bluetti-apex-300) still shows no purchase link — confirmed identity is not a monetized link", () => {
     const p = getProductById("bluetti-apex-300")!;
     expect(p.amazon_verification_status).toBe("confirmed");
     expect(p.amazon_asin).toBe("B0F42JY551");
+    expect(p.amazon_affiliate_url).toBeNull();
     const link = resolveAmazonLink(p);
-    expect(link.href).toBe(p.amazon_product_url);
+    expect(link.href).toBeNull();
     expect(link.isAffiliate).toBe(false);
   });
 
-  it("Milestone 4 V3 products are real, distinct, and use the direct-link fallback honestly", () => {
+  it("Milestone 4 V3 products are real and distinct, and correctly show no purchase link pending an affiliate URL", () => {
     for (const id of V3_IDS) {
       const p = getProductById(id);
       expect(p, `V3 product "${id}" should exist`).toBeDefined();
@@ -217,9 +218,11 @@ describe("catalog data integrity", () => {
       expect(p!.amazon_product_url).toBe(`https://www.amazon.com/dp/${p!.amazon_asin}`);
       expect(p!.official_source).toBeTruthy();
       expect(p!.last_verified).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      // amazon_product_url is a research/matching field only — the CTA
+      // never uses it, confirmed or not.
       const link = resolveAmazonLink(p!);
       expect(link.isAffiliate).toBe(false);
-      expect(link.href).toBe(p!.amazon_product_url);
+      expect(link.href).toBeNull();
     }
     // No V3 product duplicates an existing id, ASIN, or product URL.
     const allIds = products.map((p) => p.id);
@@ -237,12 +240,11 @@ describe("catalog data integrity", () => {
     }
   });
 
-  it("still falls back to the direct product URL when a product has no affiliate link", () => {
+  it("shows no purchase link at all when a product has no affiliate link, even if amazon_product_url is populated", () => {
     const withoutAffiliate = { ...products[0], amazon_affiliate_url: null };
     const link = resolveAmazonLink(withoutAffiliate);
     expect(link.isAffiliate).toBe(false);
-    expect(link.href).toBe(withoutAffiliate.amazon_product_url);
-    expect(link.href).toMatch(/^https:\/\/www\.amazon\.com\/dp\//);
+    expect(link.href).toBeNull();
   });
 
   it("keeps the EcoFlow DELTA Pro 3 ASIN and product URL on the manually-verified listing", () => {
