@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import type { Product, UseCaseKey } from "@/types/product";
 import {
@@ -21,6 +21,7 @@ import {
   type RecommendationPreferences,
 } from "@/lib/recommend";
 import { fmtWh, fmtWatts } from "@/lib/format";
+import { trackEvent } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 import { Callout } from "@/components/ui/Callout";
 import { EstimateFactorsDisclosure } from "@/components/ui/EstimateFactorsDisclosure";
@@ -104,6 +105,26 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
   }, [result, catalog, prefs, devices]);
 
   const ready = hasUsableInput(devices);
+
+  // calculator_start fires the first time the visitor moves past step 1;
+  // calculator_complete the first time they reach a real (ready) result on
+  // step 3. Each fires at most once per page load — a single guided pass
+  // through the wizard is one funnel event, not one per re-visit of a step.
+  const startedRef = useRef(false);
+  const completedRef = useRef(false);
+  useEffect(() => {
+    if (step >= 2 && !startedRef.current) {
+      startedRef.current = true;
+      trackEvent("calculator_start");
+    }
+    if (step === 3 && ready && !completedRef.current) {
+      completedRef.current = true;
+      trackEvent("calculator_complete", {
+        recommended_capacity_wh: Math.round(result.recommendedMinimumCapacityWh),
+      });
+    }
+  }, [step, ready, result.recommendedMinimumCapacityWh]);
+
   const invalidRows = devices.filter(
     (d) => d.name.trim() !== "" && (d.watts <= 0 || d.quantity <= 0),
   );

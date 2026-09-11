@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import type { Product } from "@/types/product";
 import type { ProductScore } from "@/lib/score";
 import { ProductCard } from "./ProductCard";
@@ -81,6 +82,20 @@ export function ProductsBrowser({
 }: Props) {
   const [filters, setFilters] = useState<Filters>(emptyFilters);
   const [sort, setSort] = useState<SortKey>("score");
+  const searchParams = useSearchParams();
+  const seededFromUrl = useRef(false);
+
+  // One-time preset from a deep link (e.g. a guide linking to
+  // /products?solar=1 for "power stations with solar input"). Applied after
+  // mount so the server-rendered, filter-free markup matches hydration.
+  useEffect(() => {
+    if (seededFromUrl.current) return;
+    seededFromUrl.current = true;
+    if (searchParams.get("solar") === "1") {
+      setFilters((f) => ({ ...f, needsSolar: true }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const toggleSet = (key: "brands" | "chemistries" | "useCases", value: string) => {
     setFilters((f) => {

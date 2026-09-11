@@ -20,7 +20,11 @@ const config: Config = {
           100: "#dbe4f0",
           200: "#b7c8e0",
           300: "#8aa5cb",
-          400: "#5a7bae",
+          // Lightened from #5a7bae: the original shade sat under WCAG AA
+          // (~4.3:1) against the navy-900/950 panels every page renders on.
+          // #7290bc keeps the same muted secondary-text role but clears
+          // 4.5:1 against both.
+          400: "#7290bc",
           500: "#3a5a90",
           600: "#2b4472",
           700: "#22375c",

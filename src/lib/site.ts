@@ -59,7 +59,6 @@ export const PRIMARY_NAV: NavItem[] = [
   { label: "Power Calculator", href: "/power-calculator" },
   { label: "Studio", href: "/power-setup-studio" },
   { label: "Guides", href: "/guides" },
-  { label: "Deals", href: "/deals" },
 ];
 
 /** Full descriptive label for the footer link, distinct from the short "Studio" nav label above. */

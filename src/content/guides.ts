@@ -84,6 +84,20 @@ export interface Guide {
    * of the guide re-describing that list of variability factors in prose.
    */
   showEstimateFactorsDisclosure?: boolean;
+  /**
+   * Renders a small, self-contained interactive calculator right after the
+   * intro/key-takeaways, before the sections. Each value maps to one
+   * component in components/guides/ — add a new one there before adding a
+   * new value here. Optional — most guides don't need one.
+   */
+  embed?: "solar-charge-calculator" | "watt-hour-calculator";
+  /**
+   * Optional link to a pre-filtered /products view (e.g. "?solar=1"), shown
+   * in "Related products" alongside relatedProductIds. Only set this to a
+   * real, working filter query the catalog UI actually supports.
+   */
+  catalogFilterHref?: string;
+  catalogFilterLabel?: string;
   faq: GuideFaq[];
   sources: GuideSource[];
   lastUpdated: string; // ISO date
@@ -1507,11 +1521,12 @@ export const GUIDES: Guide[] = [
     group: "basics",
     title: "Watts vs Watt-Hours: What Power Station Buyers Need to Know",
     metaDescription:
-      "The difference between watts (W) and watt-hours (Wh) explained plainly, with common device wattage ranges and why confusing the two leads to the wrong power station.",
+      "Watts vs. watt-hours in one line: watts is a rate, watt-hours is a total. Plain-English formula, everyday examples and a W × h = Wh calculator.",
     intro: [
-      "Watts and watt-hours are the two numbers on every power station spec sheet, and mixing them up is one of the most common reasons people buy the wrong size. This guide is the plain-English explanation PowerMatchLab's other guides link back to.",
-      "Short version: watts is a rate, watt-hours is a total. Everything else follows from that distinction.",
+      "Short answer: watts (W) measures power right now — a rate, like speed. Watt-hours (Wh) measures energy over time — a total, like distance traveled. A device's watts tells you whether a station can start and run it; a device's watt-hours (watts × hours) tells you how long the station's capacity will sustain it.",
+      "Mixing the two up is one of the most common reasons people buy the wrong size power station. This guide is the plain-English explanation PowerMatchLab's other guides link back to.",
     ],
+    embed: "watt-hour-calculator",
     keyTakeaways: [
       "Watts (W) is a rate of power right now; watt-hours (Wh) is a total amount of energy over time — they answer different questions.",
       "A device's watts tells you whether a station can start and run it at all (check continuous and surge output).",
@@ -1617,11 +1632,12 @@ export const GUIDES: Guide[] = [
     group: "charging-ownership",
     title: "How Long Does It Take to Charge a Power Station with Solar Panels?",
     metaDescription:
-      "How to calculate solar charging time for a power station: the formula, why real panel output runs well below its rated watts, and a worked example table.",
+      "Solar charging time = energy needed ÷ realistic panel output. Use the calculator below with your own numbers, plus worked examples at 100W, 200W, 400W and 800W.",
     intro: [
-      "Solar charging time comes down to one calculation — energy needed divided by realistic panel output — but the \"realistic\" part is where most estimates go wrong. This guide walks through the formula and applies it to a few worked examples.",
+      "Short answer: charging time (hours) ≈ energy needed (Wh) ÷ realistic solar input (W), where realistic input is typically 60-80% of a panel's rated watts, not the rated number itself. Use the calculator below with your own capacity and panel wattage, or work through the formula manually in the sections that follow.",
       "For the deeper explanation of what a station's solar input spec actually means and how AC and solar charging compare, see PowerMatchLab's solar input and charging guide, linked below.",
     ],
+    embed: "solar-charge-calculator",
     sections: [
       {
         id: "solar-charge-formula",
@@ -1668,6 +1684,8 @@ export const GUIDES: Guide[] = [
     relatedProductIds: [
       "jackery-explorer-2000-v2",
     ],
+    catalogFilterHref: "/products?solar=1",
+    catalogFilterLabel: "Browse every power station with verified solar input",
     relatedGuideSlugs: [
       "solar-input-and-charging-times-explained",
       "how-many-solar-panels-do-i-need",

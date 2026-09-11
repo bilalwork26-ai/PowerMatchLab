@@ -103,6 +103,24 @@ export function productJsonLd(product: Product) {
   return node;
 }
 
+/**
+ * ItemList of catalog product pages. Deliberately carries only `position`,
+ * `name` and `url` for each item — no price, rating or review count, since
+ * none of that is verified data.
+ */
+export function itemListJsonLd(items: { name: string; path: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      url: absoluteUrl(item.path),
+    })),
+  };
+}
+
 export function articleJsonLd(input: {
   headline: string;
   description: string;

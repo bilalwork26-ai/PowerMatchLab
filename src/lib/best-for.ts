@@ -129,6 +129,81 @@ function caveatsFor(product: Product, useCase: UseCaseKey): string[] {
   return out;
 }
 
+export interface CategoryPick {
+  key: "overall" | "capacity" | "compact" | "solar";
+  label: string;
+  entry: BestForEntry;
+  reason: string;
+}
+
+/**
+ * Data-derived category picks for a Best-For page's top few models — never a
+ * "best value" category, since the catalog carries no price data to derive
+ * one from honestly. Only categories with a real, distinguishing verified
+ * field are included; a category is skipped entirely if the data doesn't
+ * support it (e.g. no weight data means no "most compact" pick).
+ */
+export function categoryPicksFor(
+  useCase: UseCaseKey,
+  catalog: Product[] = getAllProducts(),
+): CategoryPick[] {
+  const entries = selectBestFor(useCase, catalog);
+  const pool = entries.filter((e) => e.tagMatch);
+  if (pool.length === 0) return [];
+
+  const picks: CategoryPick[] = [];
+  const used = new Set<string>();
+
+  const overall = pool[0];
+  picks.push({
+    key: "overall",
+    label: "Best overall",
+    entry: overall,
+    reason: `Highest-ranked match for this use, weighing capacity, output and standby draw together (PowerMatch Score ${overall.score.overall ?? "not published"}).`,
+  });
+  used.add(overall.product.id);
+
+  const byCapacity = [...pool]
+    .filter((e) => e.product.capacity_wh != null && !used.has(e.product.id))
+    .sort((a, b) => (b.product.capacity_wh ?? 0) - (a.product.capacity_wh ?? 0))[0];
+  if (byCapacity && byCapacity.product.capacity_wh) {
+    picks.push({
+      key: "capacity",
+      label: "Best for long outages",
+      entry: byCapacity,
+      reason: `Largest verified capacity in this shortlist at ${byCapacity.product.capacity_wh.toLocaleString("en-US")} Wh — more stored energy to stretch across a multi-day outage.`,
+    });
+    used.add(byCapacity.product.id);
+  }
+
+  const byWeight = [...pool]
+    .filter((e) => e.product.weight_kg != null && !used.has(e.product.id))
+    .sort((a, b) => (a.product.weight_kg ?? Infinity) - (b.product.weight_kg ?? Infinity))[0];
+  if (byWeight && byWeight.product.weight_kg) {
+    picks.push({
+      key: "compact",
+      label: "Most compact",
+      entry: byWeight,
+      reason: `Lightest verified unit in this shortlist at ${byWeight.product.weight_kg.toFixed(1)} kg — easier to place, move or store.`,
+    });
+    used.add(byWeight.product.id);
+  }
+
+  const bySolar = [...pool]
+    .filter((e) => (e.product.solar_input_w ?? 0) > 0 && !used.has(e.product.id))
+    .sort((a, b) => (b.product.solar_input_w ?? 0) - (a.product.solar_input_w ?? 0))[0];
+  if (bySolar && bySolar.product.solar_input_w) {
+    picks.push({
+      key: "solar",
+      label: "Best solar recharge",
+      entry: bySolar,
+      reason: `Highest verified solar input in this shortlist at ${bySolar.product.solar_input_w} W — recharges faster off-grid during an extended outage.`,
+    });
+  }
+
+  return picks;
+}
+
 export function selectBestFor(
   useCase: UseCaseKey,
   catalog: Product[] = getAllProducts(),
