@@ -33,6 +33,20 @@ export default function GuidesPage() {
           { name: "Guides", path: "/guides" },
         ]}
       />
+      <div className="bg-navy-950 pt-6 text-white">
+        <div className="container-page">
+          <Link
+            href="/research/portable-power-station-specs-2026"
+            className="block rounded-xl border border-navy-700 bg-gradient-to-r from-navy-800 to-navy-900 p-4 text-sm transition-colors hover:border-cyan-400/40"
+          >
+            <span className="font-semibold text-cyan-300">Catalog dataset report →</span>{" "}
+            <span className="text-navy-300">
+              Capacity, output and weight distributions across all 39 products, computed
+              from the same data these guides cite — plus a free CSV download.
+            </span>
+          </Link>
+        </div>
+      </div>
       <div className="bg-navy-950 py-10 text-white">
         <div className="container-page space-y-12">
           {GROUP_ORDER.map((group) => {

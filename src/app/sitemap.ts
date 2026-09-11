@@ -16,6 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/power-calculator",
     "/power-setup-studio",
     "/guides",
+    "/research/portable-power-station-specs-2026",
     "/about-methodology",
     "/editorial-policy",
     "/contact",

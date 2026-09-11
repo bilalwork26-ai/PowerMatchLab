@@ -35,7 +35,20 @@ export type AnalyticsEvent =
   | "comparison_completed"
   | "affiliate_click"
   | "view_product"
-  | "guide_cta_click";
+  | "guide_cta_click"
+  | "share_click"
+  | "csv_download";
+
+/** Which shareable content block a share/copy/download action happened on — an internal enum, never a URL. */
+export type ShareableContentKey =
+  | "research_report"
+  | "guide"
+  | "best_for"
+  | "product"
+  | "compare";
+
+/** How a share_click was fulfilled — never which specific network, since the native picker doesn't report that. */
+export type ShareMethod = "native_share" | "copy_link";
 
 /**
  * Where on the site an affiliate click happened — an internal enum, never a
