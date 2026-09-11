@@ -4,6 +4,7 @@ import "./globals.css";
 import { SITE } from "@/lib/site";
 import { absoluteUrl, organizationJsonLd, webSiteJsonLd } from "@/lib/seo";
 import { CompareProvider } from "@/context/CompareContext";
+import { AnalyticsConsent } from "@/components/analytics/AnalyticsConsent";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { BrandMarquee } from "@/components/layout/BrandMarquee";
@@ -63,6 +64,30 @@ export default function RootLayout({
     <html lang="en" data-scroll-behavior="smooth" className="overflow-x-hidden">
       <body className="min-h-screen overflow-x-hidden">
         {/*
+          Consent Mode v2 defaults (all signals denied) — must run before any
+          other tag, including AdSense below, so AdSense also respects the
+          denied-by-default state from its very first request. See
+          lib/consent.ts and AnalyticsConsent.tsx for how a visitor's real
+          choice then updates this. Authored directly here (not as an
+          imported component) to match the AdSense script below: Next's lint
+          rule for `beforeInteractive` only recognizes scripts written
+          directly in the root layout.
+        */}
+        <Script id="consent-defaults" strategy="beforeInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            window.gtag = gtag;
+            gtag('consent', 'default', {
+              analytics_storage: 'denied',
+              ad_storage: 'denied',
+              ad_user_data: 'denied',
+              ad_personalization: 'denied',
+              wait_for_update: 500
+            });
+          `}
+        </Script>
+        {/*
           Google AdSense account/verification loader — the official
           snippet, unmodified, published once here so every route gets it
           exactly once. `beforeInteractive` is the only next/script
@@ -96,6 +121,14 @@ export default function RootLayout({
           data-cf-beacon='{"token": "d8fa61340b12435abf555f463e9a9f5b"}'
           strategy="afterInteractive"
         />
+        {/*
+          GA4 + the cookie-consent banner. GoogleAnalytics itself only loads
+          when NEXT_PUBLIC_GA_MEASUREMENT_ID is configured (see
+          lib/analytics.ts) AND the visitor has explicitly accepted — see
+          AnalyticsConsent.tsx, the single place that decides both. No
+          Measurement ID is hardcoded.
+        */}
+        <AnalyticsConsent />
         <JsonLd data={[organizationJsonLd(), webSiteJsonLd()]} />
         <a href="#main" className="skip-link">
           Skip to main content

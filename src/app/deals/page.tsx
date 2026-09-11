@@ -8,11 +8,15 @@ import { Callout } from "@/components/ui/Callout";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { AmazonCta } from "@/components/product/AmazonCta";
 
+// Noindexed while no verified deals are published: an empty results page adds
+// no unique search value. Remove `noindex` once DEALS (see lib/deals.ts) has
+// real entries — the page itself, and its URL, stay reachable either way.
 export const metadata: Metadata = pageMetadata({
   title: "Deals",
   description:
     "Verified price drops on portable power stations. PowerMatchLab never shows fake discounts, countdown timers or stock warnings — if nothing is verified, this page says so.",
   path: "/deals",
+  noindex: getActiveDeals().length === 0,
 });
 
 export default function DealsPage() {

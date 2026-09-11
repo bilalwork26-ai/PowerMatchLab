@@ -8,6 +8,7 @@ import {
   SITE,
 } from "@/lib/site";
 import { Logo } from "./Logo";
+import { CookiePreferencesLink } from "@/components/analytics/CookiePreferencesLink";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -73,6 +74,9 @@ export function Footer() {
                 </Link>
               </li>
             ))}
+            <li>
+              <CookiePreferencesLink className="text-navy-200 hover:text-cyan-300" />
+            </li>
           </ul>
         </nav>
       </div>

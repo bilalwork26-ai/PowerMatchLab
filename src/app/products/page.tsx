@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import {
   getAllProducts,
   getBrands,
@@ -6,7 +7,8 @@ import {
   getUseCaseTags,
 } from "@/data/products";
 import { scoreCatalog, type ProductScore } from "@/lib/score";
-import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
+import { pageMetadata, breadcrumbJsonLd, itemListJsonLd } from "@/lib/seo";
+import { productDisplayName } from "@/data/products";
 import { PageHero } from "@/components/layout/PageHero";
 import { ProductsBrowser } from "@/components/product/ProductsBrowser";
 import { JsonLd } from "@/components/ui/JsonLd";
@@ -26,26 +28,36 @@ export default function ProductsPage() {
   return (
     <>
       <JsonLd
-        data={breadcrumbJsonLd([
-          { name: "Home", path: "/" },
-          { name: "Products", path: "/products" },
-        ])}
+        data={[
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Products", path: "/products" },
+          ]),
+          itemListJsonLd(
+            products.map((p) => ({
+              name: productDisplayName(p),
+              path: `/products/${p.id}`,
+            })),
+          ),
+        ]}
       />
       <PageHero
         title="Power Stations Catalog"
-        lead="The V1 working catalog. Filters only act on data we have actually verified — an unverified field never counts as a yes or a no."
+        lead="Every portable power station we track, with the specs manufacturers publish. Filters only act on data we have actually verified — an unverified field never counts as a yes or a no."
         crumbs={[
           { name: "Home", path: "/" },
           { name: "Products", path: "/products" },
         ]}
       />
-      <ProductsBrowser
-        products={products}
-        scores={scores}
-        brands={getBrands()}
-        chemistries={getChemistries()}
-        useCaseTags={getUseCaseTags()}
-      />
+      <Suspense fallback={null}>
+        <ProductsBrowser
+          products={products}
+          scores={scores}
+          brands={getBrands()}
+          chemistries={getChemistries()}
+          useCaseTags={getUseCaseTags()}
+        />
+      </Suspense>
     </>
   );
 }

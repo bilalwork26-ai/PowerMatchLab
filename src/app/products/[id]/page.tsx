@@ -28,6 +28,7 @@ import { ProsCons } from "@/components/product/ProsCons";
 import { ScoreBreakdown } from "@/components/product/ScoreBreakdown";
 import { RuntimeExamples } from "@/components/product/RuntimeExamples";
 import { QuickComparison } from "@/components/product/QuickComparison";
+import { TrackProductView } from "@/components/analytics/TrackProductView";
 
 export function generateStaticParams() {
   return getAllProducts().map((p) => ({ id: p.id }));
@@ -81,6 +82,7 @@ export default async function ProductPage({
 
   return (
     <>
+      <TrackProductView productId={product.id} />
       <JsonLd
         data={[productJsonLd(product), breadcrumbJsonLd(crumbs)]}
       />

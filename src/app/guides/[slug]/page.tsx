@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import type { ComponentType } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { GUIDES, getGuide } from "@/content/guides";
+import { GUIDES, getGuide, type Guide } from "@/content/guides";
 import { getBestFor } from "@/content/best-for";
 import { getComparison } from "@/content/comparisons";
 import { getProductsByIds } from "@/data/products";
@@ -20,6 +21,14 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { Callout } from "@/components/ui/Callout";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { EstimateFactorsDisclosure } from "@/components/ui/EstimateFactorsDisclosure";
+import { TrackedLink } from "@/components/analytics/TrackedLink";
+import { SolarChargeCalculator } from "@/components/guides/SolarChargeCalculator";
+import { WattHourCalculator } from "@/components/guides/WattHourCalculator";
+
+const GUIDE_EMBEDS: Record<NonNullable<Guide["embed"]>, ComponentType> = {
+  "solar-charge-calculator": SolarChargeCalculator,
+  "watt-hour-calculator": WattHourCalculator,
+};
 
 export function generateStaticParams() {
   return GUIDES.map((g) => ({ slug: g.slug }));
@@ -69,6 +78,7 @@ export default async function GuidePage({
   const anyAffiliateLink = related.some((p) => resolveAmazonLink(p).isAffiliate);
   const allAffiliateLinks =
     related.length > 0 && related.every((p) => resolveAmazonLink(p).isAffiliate);
+  const Embed = guide.embed ? GUIDE_EMBEDS[guide.embed] : null;
 
   const crumbs: Crumb[] = [
     { name: "Home", path: "/" },
@@ -126,6 +136,8 @@ export default async function GuidePage({
             </div>
           ) : null}
 
+          {Embed ? <Embed /> : null}
+
           <nav
             aria-label="On this page"
             className="my-6 rounded-lg border border-navy-700 bg-navy-900/60 p-4"
@@ -168,9 +180,14 @@ export default async function GuidePage({
 
           <Callout tone="info" dark title="Put a number on it" className="my-8">
             The{" "}
-            <Link href="/power-calculator" className="underline">
+            <TrackedLink
+              href="/power-calculator"
+              event="guide_cta_click"
+              eventParams={{ guide_slug: guide.slug, cta: "power-calculator" }}
+              className="underline"
+            >
               Power Calculator
-            </Link>{" "}
+            </TrackedLink>{" "}
             turns the ideas above into a capacity and output target for your exact
             devices, then shows which stations can deliver it.
           </Callout>
@@ -191,12 +208,22 @@ export default async function GuidePage({
                   <ProductCard key={p.id} product={p} score={scores.get(p.id)} tone="dark" />
                 ))}
               </div>
-              <Link
-                href={`/compare?ids=${related.map((p) => p.id).join(",")}`}
-                className="mt-3 inline-flex text-sm font-semibold text-cyan-300 hover:underline"
-              >
-                Compare these →
-              </Link>
+              <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1">
+                <Link
+                  href={`/compare?ids=${related.map((p) => p.id).join(",")}`}
+                  className="inline-flex text-sm font-semibold text-cyan-300 hover:underline"
+                >
+                  Compare these →
+                </Link>
+                {guide.catalogFilterHref ? (
+                  <Link
+                    href={guide.catalogFilterHref}
+                    className="inline-flex text-sm font-semibold text-cyan-300 hover:underline"
+                  >
+                    {guide.catalogFilterLabel ?? "Browse the full catalog"} →
+                  </Link>
+                ) : null}
+              </div>
             </section>
           ) : null}
 

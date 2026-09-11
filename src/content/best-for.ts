@@ -11,6 +11,12 @@ export interface BestForContent {
   slug: string;
   title: string;
   metaDescription: string;
+  /**
+   * A one- or two-sentence direct answer shown before "intro", for readers
+   * who just want the bottom line. Optional — most pages lead with `intro`
+   * alone.
+   */
+  quickAnswer?: string;
   intro: string[];
   whatMatters: { heading: string; detail: string }[];
   commonMistakes: string[];
@@ -163,7 +169,9 @@ export const BEST_FOR: BestForContent[] = [
     slug: "best-for-refrigerator-backup",
     title: "Best Power Stations for Refrigerator Backup",
     metaDescription:
-      "For keeping a fridge or freezer cold through an outage: surge headroom, 1kWh+ usable capacity, low idle draw and ideally solar input for multi-day events.",
+      "Best power stations for refrigerator backup, ranked by verified surge rating, capacity and idle draw. Compare top picks, estimated runtime and solar recharge options.",
+    quickAnswer:
+      "For a fridge or freezer, prioritize a verified surge rating well above the compressor's startup spike and roughly 1,000-1,600 Wh of usable capacity per day of outage — the shortlist and comparison table below rank the catalog on exactly those fields.",
     intro: [
       "Keeping food cold through an outage is a focused job: handle the compressor's startup surge, then supply roughly 1,000-1,600 Wh per day for as long as the power is out.",
     ],

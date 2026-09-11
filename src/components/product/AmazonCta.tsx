@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import type { Product } from "@/types/product";
 import { resolveAmazonLink } from "@/lib/amazon";
 import { cn } from "@/lib/cn";
+import { trackEvent } from "@/lib/analytics";
 
 /**
  * "Check Price on Amazon" CTA.
@@ -40,6 +43,12 @@ export function AmazonCta({
           href={href}
           target="_blank"
           rel="nofollow sponsored noopener noreferrer"
+          onClick={() =>
+            trackEvent("amazon_affiliate_click", {
+              product_id: product.id,
+              is_affiliate: isAffiliate,
+            })
+          }
           className={cn(
             // `amazon-cta-link` is a bare styling hook (no CSS of its own) that
             // lets prose-scoped pages (globals.css `.prose-pml a`) exclude this

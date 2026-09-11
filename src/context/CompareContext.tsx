@@ -9,6 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 const STORAGE_KEY = "pml.compare.v1";
 export const MAX_COMPARE = 4;
@@ -57,9 +58,11 @@ export function CompareProvider({ children }: { children: ReactNode }) {
   }, [ids, ready]);
 
   const add = useCallback((id: string) => {
-    setIds((prev) =>
-      prev.includes(id) || prev.length >= MAX_COMPARE ? prev : [...prev, id],
-    );
+    setIds((prev) => {
+      if (prev.includes(id) || prev.length >= MAX_COMPARE) return prev;
+      trackEvent("compare_add_product", { product_id: id });
+      return [...prev, id];
+    });
   }, []);
 
   const remove = useCallback((id: string) => {
@@ -70,6 +73,7 @@ export function CompareProvider({ children }: { children: ReactNode }) {
     setIds((prev) => {
       if (prev.includes(id)) return prev.filter((v) => v !== id);
       if (prev.length >= MAX_COMPARE) return prev;
+      trackEvent("compare_add_product", { product_id: id });
       return [...prev, id];
     });
   }, []);

@@ -8,13 +8,14 @@ import type { ProductScore } from "@/lib/score";
 import { useCompare, MAX_COMPARE } from "@/context/CompareContext";
 import { COMPARE_ROWS, rowWinner } from "@/lib/compare-rows";
 import { cn } from "@/lib/cn";
+import { trackEvent } from "@/lib/analytics";
 import { ProductIllustration } from "@/components/ui/ProductIllustration";
 import { ScoreBar } from "@/components/ui/ScoreBar";
 import { ScoreCircle } from "@/components/ui/ScoreCircle";
 import { RadarChart } from "@/components/ui/RadarChart";
 import { Callout } from "@/components/ui/Callout";
 import { AmazonCta } from "@/components/product/AmazonCta";
-import { CheckIcon, TrashIcon, XIcon } from "@/components/ui/icons";
+import { CheckIcon, CopyIcon, TrashIcon, XIcon } from "@/components/ui/icons";
 
 const USE_CASES = [
   { key: "", label: "General" },
@@ -33,7 +34,10 @@ export function CompareView({ catalog, scores }: Props) {
   const { ids, add, remove, clear, ready, isFull, count } = useCompare();
   const searchParams = useSearchParams();
   const seededRef = useRef(false);
+  const prevCountRef = useRef(0);
   const [useCase, setUseCase] = useState("");
+  const [unknownIdCount, setUnknownIdCount] = useState(0);
+  const [copied, setCopied] = useState(false);
 
   // Seed selection from ?ids= once, after hydration.
   useEffect(() => {
@@ -41,10 +45,9 @@ export function CompareView({ catalog, scores }: Props) {
     seededRef.current = true;
     const param = searchParams.get("ids");
     if (!param) return;
-    const wanted = param
-      .split(",")
-      .map((s) => s.trim())
-      .filter((s) => catalog.some((p) => p.id === s));
+    const requested = param.split(",").map((s) => s.trim()).filter(Boolean);
+    const wanted = requested.filter((s) => catalog.some((p) => p.id === s));
+    setUnknownIdCount(requested.length - wanted.length);
     if (wanted.length === 0) return;
     // Only seed when the user has nothing selected yet, to avoid clobbering.
     if (ids.length === 0) {
@@ -52,6 +55,26 @@ export function CompareView({ catalog, scores }: Props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready]);
+
+  // Fire compare_complete once per transition into a comparable (2+) selection.
+  useEffect(() => {
+    if (prevCountRef.current < 2 && ids.length >= 2) {
+      trackEvent("compare_complete", { product_count: ids.length });
+    }
+    prevCountRef.current = ids.length;
+  }, [ids.length]);
+
+  const copyShareLink = async () => {
+    if (typeof window === "undefined") return;
+    const url = `${window.location.origin}/compare?ids=${ids.join(",")}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* clipboard API unavailable/denied — silently no-op, button just stays "Copy link" */
+    }
+  };
 
   const selected = useMemo(
     () =>
@@ -121,33 +144,45 @@ export function CompareView({ catalog, scores }: Props) {
     };
   }, [selected, scores]);
 
-  if (!ready) {
-    return (
-      <div className="bg-navy-950 py-12 text-sm text-navy-300">
-        <p className="container-page">Loading…</p>
-      </div>
-    );
-  }
-
   return (
     <div className="bg-navy-950 py-8 text-white">
       <div className="container-page">
+      {unknownIdCount > 0 ? (
+        <Callout tone="warn" dark className="mb-4">
+          {unknownIdCount === 1
+            ? "One product in this link was not recognized and could not be added."
+            : `${unknownIdCount} products in this link were not recognized and could not be added.`}
+        </Callout>
+      ) : null}
+
       {/* Selection tray */}
       <div className="glass-panel bg-navy-900/60 p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-sm font-semibold text-white">
             Your selection ({count}/{MAX_COMPARE})
           </h2>
-          {count > 0 ? (
-            <button
-              type="button"
-              onClick={clear}
-              className="inline-flex items-center gap-1 text-xs font-medium text-navy-300 hover:text-white"
-            >
-              <TrashIcon width={14} height={14} />
-              Clear all
-            </button>
-          ) : null}
+          <div className="flex items-center gap-3">
+            {count > 0 ? (
+              <button
+                type="button"
+                onClick={copyShareLink}
+                className="inline-flex items-center gap-1 text-xs font-medium text-cyan-300 hover:text-white"
+              >
+                <CopyIcon width={14} height={14} />
+                {copied ? "Link copied!" : "Copy comparison link"}
+              </button>
+            ) : null}
+            {count > 0 ? (
+              <button
+                type="button"
+                onClick={clear}
+                className="inline-flex items-center gap-1 text-xs font-medium text-navy-300 hover:text-white"
+              >
+                <TrashIcon width={14} height={14} />
+                Clear all
+              </button>
+            ) : null}
+          </div>
         </div>
 
         <div className="mt-3 flex flex-wrap gap-2">
@@ -235,8 +270,12 @@ export function CompareView({ catalog, scores }: Props) {
             </Callout>
           ) : null}
 
+          <p className="mt-4 text-xs text-navy-400 sm:hidden" aria-hidden="true">
+            Swipe the table horizontally to see every column →
+          </p>
+
           {/* Header row with product cards */}
-          <div className="mt-6 overflow-x-auto">
+          <div className="mt-2 overflow-x-auto sm:mt-6">
             <div
               className="grid gap-3"
               style={{
@@ -302,7 +341,7 @@ export function CompareView({ catalog, scores }: Props) {
                     <th
                       scope="colgroup"
                       colSpan={selected.length + 1}
-                      className="bg-navy-900/80 px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-navy-300"
+                      className="sticky top-16 z-10 border-y border-navy-700 bg-navy-900 px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-navy-300"
                     >
                       {g.group}
                     </th>
