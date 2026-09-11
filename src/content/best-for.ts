@@ -290,7 +290,12 @@ export const BEST_FOR: BestForContent[] = [
           "Add up the daily energy of the loads you want to keep on. Essentials (fridge, internet, phones, some lights) often land around 2,000-4,000 Wh per day; add reserve and divide by ~0.85 for usable capacity.",
       },
     ],
-    relatedGuideSlugs: ["power-station-for-home-backup", "power-station-for-power-outage"],
+    relatedGuideSlugs: [
+      "power-station-for-home-backup",
+      "power-station-for-power-outage",
+      "power-station-for-sump-pump",
+      "power-station-for-home-office",
+    ],
     relatedComparisonSlugs: [
       "ecoflow-delta-2-max-vs-anker-solix-c2000-gen-2",
       "anker-solix-c2000-gen-2-vs-jackery-explorer-2000-v2",
