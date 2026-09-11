@@ -580,6 +580,9 @@ export function ModelComparisonPage({
                     <p className="text-sm font-semibold text-white">
                       {p.brand} {p.model}
                     </p>
+                    <p className="mt-1 text-[11px] text-navy-400">
+                      Specs last checked {fmtDate(p.last_verified)}
+                    </p>
                     <div className="mt-2 space-y-2">
                       <AmazonCta product={p} size="sm" tone="dark" />
                       <Link
