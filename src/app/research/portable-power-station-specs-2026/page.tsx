@@ -23,9 +23,9 @@ export const metadata: Metadata = pageMetadata({
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-navy-200 bg-white p-3">
-      <dt className="text-xs text-navy-500">{label}</dt>
-      <dd className="mt-0.5 text-lg font-semibold text-navy-900">{value}</dd>
+    <div className="rounded-lg border border-navy-700 bg-navy-900/60 p-3">
+      <dt className="text-xs text-navy-400">{label}</dt>
+      <dd className="mt-0.5 text-lg font-semibold text-white">{value}</dd>
     </div>
   );
 }
@@ -77,9 +77,9 @@ export default function ResearchReportPage() {
         ]}
       />
 
-      <div className="bg-white py-10 text-navy-900">
+      <div className="bg-navy-950 py-10 text-white">
         <div className="container-page prose-pml max-w-3xl">
-          <Callout tone="warn" title="What this is, and what it isn't">
+          <Callout tone="warn" dark title="What this is, and what it isn't">
             This is a summary of specifications PowerMatchLab has collected editorially
             from manufacturer-published sources for the products currently in its own
             catalog — not an independent market study, not a measurement of sales or
@@ -110,7 +110,7 @@ export default function ResearchReportPage() {
             {stats.brands.map((b) => (
               <span
                 key={b.name}
-                className="rounded-full border border-navy-200 bg-navy-50 px-3 py-1 text-sm text-navy-700"
+                className="rounded-full border border-navy-700 bg-navy-900/60 px-3 py-1 text-sm text-navy-200"
               >
                 {b.name} <span className="text-navy-400">({b.count})</span>
               </span>
@@ -126,7 +126,7 @@ export default function ResearchReportPage() {
           <div className="not-prose my-4 overflow-x-auto">
             <table className="w-full min-w-[560px] border-collapse text-sm">
               <thead>
-                <tr className="border-b border-navy-200 text-left text-navy-500">
+                <tr className="border-b border-navy-700 text-left text-navy-400">
                   <th className="py-2 pr-3 font-medium">Field</th>
                   <th className="py-2 pr-3 font-medium">Known</th>
                   <th className="py-2 pr-3 font-medium">Unknown</th>
@@ -137,19 +137,19 @@ export default function ResearchReportPage() {
               </thead>
               <tbody>
                 {stats.numericFields.map((f) => (
-                  <tr key={f.field} className="border-b border-navy-100">
-                    <td className="py-2 pr-3 font-medium text-navy-800">{f.label}</td>
-                    <td className="py-2 pr-3 text-navy-600">
+                  <tr key={f.field} className="border-b border-navy-800">
+                    <td className="py-2 pr-3 font-medium text-white">{f.label}</td>
+                    <td className="py-2 pr-3 text-navy-200">
                       {f.knownCount}/{stats.productCount}
                     </td>
-                    <td className="py-2 pr-3 text-navy-600">{f.unknownPct}%</td>
-                    <td className="py-2 pr-3 text-navy-600">
+                    <td className="py-2 pr-3 text-navy-200">{f.unknownPct}%</td>
+                    <td className="py-2 pr-3 text-navy-200">
                       {f.min !== null ? `${f.min.toLocaleString("en-US")} ${f.unit}` : "—"}
                     </td>
-                    <td className="py-2 pr-3 font-medium text-navy-800">
+                    <td className="py-2 pr-3 font-medium text-white">
                       {f.median !== null ? `${f.median.toLocaleString("en-US")} ${f.unit}` : "—"}
                     </td>
-                    <td className="py-2 pr-3 text-navy-600">
+                    <td className="py-2 pr-3 text-navy-200">
                       {f.max !== null ? `${f.max.toLocaleString("en-US")} ${f.unit}` : "—"}
                     </td>
                   </tr>
@@ -162,14 +162,14 @@ export default function ResearchReportPage() {
           <div className="not-prose my-4 space-y-2" role="img" aria-label="Bar chart of product count by battery capacity range">
             {capacityBuckets.map((b) => (
               <div key={b.label} className="flex items-center gap-3 text-sm">
-                <span className="w-32 shrink-0 text-navy-600">{b.label}</span>
-                <div className="h-4 flex-1 rounded bg-navy-100">
+                <span className="w-32 shrink-0 text-navy-300">{b.label}</span>
+                <div className="h-4 flex-1 rounded bg-navy-800">
                   <div
-                    className="h-4 rounded bg-brand-500"
+                    className="h-4 rounded bg-cyan-400"
                     style={{ width: `${Math.max((b.count / maxBucketCount) * 100, b.count > 0 ? 4 : 0)}%` }}
                   />
                 </div>
-                <span className="w-6 shrink-0 text-right font-medium text-navy-800">{b.count}</span>
+                <span className="w-6 shrink-0 text-right font-medium text-white">{b.count}</span>
               </div>
             ))}
           </div>
@@ -178,7 +178,7 @@ export default function ResearchReportPage() {
           <div className="not-prose my-4 overflow-x-auto">
             <table className="w-full min-w-[360px] border-collapse text-sm">
               <thead>
-                <tr className="border-b border-navy-200 text-left text-navy-500">
+                <tr className="border-b border-navy-700 text-left text-navy-400">
                   <th className="py-2 pr-3 font-medium">Chemistry</th>
                   <th className="py-2 pr-3 font-medium">Products</th>
                   <th className="py-2 pr-3 font-medium">Share of catalog</th>
@@ -186,19 +186,19 @@ export default function ResearchReportPage() {
               </thead>
               <tbody>
                 {stats.categoricalFields[0]?.buckets.map((b) => (
-                  <tr key={b.value} className="border-b border-navy-100">
-                    <td className="py-2 pr-3 font-medium text-navy-800">{b.value}</td>
-                    <td className="py-2 pr-3 text-navy-600">{b.count}</td>
-                    <td className="py-2 pr-3 text-navy-600">{b.pct}%</td>
+                  <tr key={b.value} className="border-b border-navy-800">
+                    <td className="py-2 pr-3 font-medium text-white">{b.value}</td>
+                    <td className="py-2 pr-3 text-navy-200">{b.count}</td>
+                    <td className="py-2 pr-3 text-navy-200">{b.pct}%</td>
                   </tr>
                 ))}
                 {stats.categoricalFields[0]?.unknownCount ? (
                   <tr>
-                    <td className="py-2 pr-3 text-navy-500">Not verified</td>
-                    <td className="py-2 pr-3 text-navy-600">
+                    <td className="py-2 pr-3 text-navy-400">Not verified</td>
+                    <td className="py-2 pr-3 text-navy-200">
                       {stats.categoricalFields[0].unknownCount}
                     </td>
-                    <td className="py-2 pr-3 text-navy-600">
+                    <td className="py-2 pr-3 text-navy-200">
                       {stats.categoricalFields[0].unknownPct}%
                     </td>
                   </tr>
@@ -217,7 +217,7 @@ export default function ResearchReportPage() {
           <div className="not-prose my-4 overflow-x-auto">
             <table className="w-full min-w-[720px] border-collapse text-sm">
               <thead>
-                <tr className="border-b border-navy-200 text-left text-navy-500">
+                <tr className="border-b border-navy-700 text-left text-navy-400">
                   <th className="py-2 pr-3 font-medium">Product</th>
                   <th className="py-2 pr-3 font-medium">Capacity (Wh)</th>
                   <th className="py-2 pr-3 font-medium">Output (W)</th>
@@ -227,20 +227,20 @@ export default function ResearchReportPage() {
               </thead>
               <tbody>
                 {products.map((p) => (
-                  <tr key={p.id} className="border-b border-navy-100">
+                  <tr key={p.id} className="border-b border-navy-800">
                     <td className="py-2 pr-3">
-                      <Link href={`/products/${p.id}`} className="font-medium text-brand-700 hover:underline">
+                      <Link href={`/products/${p.id}`} className="font-medium text-cyan-300 hover:underline">
                         {p.brand} {p.model}
                       </Link>
                     </td>
-                    <td className="py-2 pr-3 text-navy-600">
+                    <td className="py-2 pr-3 text-navy-200">
                       {p.capacity_wh?.toLocaleString("en-US") ?? "—"}
                     </td>
-                    <td className="py-2 pr-3 text-navy-600">
+                    <td className="py-2 pr-3 text-navy-200">
                       {p.rated_output_w?.toLocaleString("en-US") ?? "—"}
                     </td>
-                    <td className="py-2 pr-3 text-navy-600">{p.weight_kg ?? "—"}</td>
-                    <td className="py-2 pr-3 text-navy-600">{p.battery_chemistry ?? "—"}</td>
+                    <td className="py-2 pr-3 text-navy-200">{p.weight_kg ?? "—"}</td>
+                    <td className="py-2 pr-3 text-navy-200">{p.battery_chemistry ?? "—"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -253,7 +253,7 @@ export default function ResearchReportPage() {
             specification columns only. No affiliate links, no Amazon URLs, no ASINs,
             and no internal editorial notes are included in this file.
           </p>
-          <div className="not-prose my-4 rounded-xl border border-navy-200 bg-navy-50 p-4">
+          <div className="not-prose my-4 rounded-xl border border-navy-700 bg-navy-900/60 p-4">
             <ShareBar url={url} title={TITLE} contentKey="research_report" csvHref={CSV_PATH} csvLabel="Download CSV" />
           </div>
 
@@ -308,16 +308,16 @@ export default function ResearchReportPage() {
             </li>
           </ul>
 
-          <div className="not-prose my-8 rounded-xl border border-navy-200 bg-navy-50 p-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-navy-500">
+          <div className="not-prose my-8 rounded-xl border border-navy-700 bg-navy-900/60 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-navy-400">
               To cite this resource
             </p>
-            <p className="mt-2 text-sm text-navy-700">
-              <strong>{TITLE}</strong>
+            <p className="mt-2 text-sm text-navy-200">
+              <strong className="text-white">{TITLE}</strong>
               <br />
               PowerMatchLab
               <br />
-              <Link href={PATH} className="text-brand-700 hover:underline">
+              <Link href={PATH} className="text-cyan-300 hover:underline">
                 {url}
               </Link>
               <br />
@@ -325,7 +325,7 @@ export default function ResearchReportPage() {
             </p>
           </div>
 
-          <p className="text-sm text-navy-500">
+          <p className="text-sm text-navy-400">
             Found an error in a specific product&rsquo;s specifications? See the{" "}
             <Link href="/editorial-policy">Editorial Policy</Link> for how corrections
             work — corrections to the underlying data flow through this report
