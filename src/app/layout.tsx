@@ -53,6 +53,11 @@ export const metadata: Metadata = {
     // response even without JavaScript. Matches the same AdSense account
     // as the loader script below (client=ca-pub-5968945060876033).
     "google-adsense-account": "ca-pub-5968945060876033",
+    // Pinterest domain-verification tag, same rationale as the AdSense tag
+    // above: rendered server-side via the Metadata API so it's present in
+    // the raw HTML on the homepage without JavaScript or consent, which is
+    // what Pinterest's crawler requires.
+    "p:domain_verify": "08e12e8703f4aff19fa13a58705211bc",
   },
 };
 
