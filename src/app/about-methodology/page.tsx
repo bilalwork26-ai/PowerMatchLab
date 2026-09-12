@@ -149,29 +149,62 @@ export default function MethodologyPage() {
 
         <h2 id="recommendations">Recommendation engine</h2>
         <p>
-          After the calculation, every catalog product is classified against your
-          requirement:
+          After the calculation, every catalog product is classified in two
+          separate steps — compatibility, then proportionality — because
+          clearing the minimum bar is not the same thing as being a sensible
+          recommendation. A 6,000 Wh station technically has enough capacity
+          for a 400 Wh need, but recommending it first would bury genuinely
+          well-matched, smaller options under enormous overkill.
+        </p>
+        <h3>Step 1 — Compatibility</h3>
+        <p>A product fails compatibility, and is labeled Not Suitable with the exact reason, when it does not meet a verified hard requirement:</p>
+        <ul>
+          <li>Capacity below the usable energy your devices need.</li>
+          <li>Continuous output below your simultaneous load.</li>
+          <li>A verified surge rating below the estimated startup spike (when a real spike is expected).</li>
+          <li>240V, TT-30, or expansion capability explicitly absent when you marked it required.</li>
+        </ul>
+        <p>
+          An unverified field is never treated as a pass — it is shown as a
+          named caveat instead (&ldquo;240V capability is not verified for this
+          unit&rdquo;), and the product is labeled <strong>Possible Match</strong>{" "}
+          when core capacity or output data is missing entirely, since
+          compatibility itself cannot be confirmed either way.
+        </p>
+        <h3>Step 2 — Fit (proportionality)</h3>
+        <p>
+          Among compatible products, a sizing-fit function — documented in
+          full in <code>src/lib/size-fit.ts</code> — classifies how
+          proportionate each one is to your stated need, using the ratio of
+          considered capacity to your recommended minimum, and rated output
+          to your required continuous output:
         </p>
         <ul>
           <li>
-            <strong>Best Match</strong> — meets capacity with reserve, clears the
-            continuous load with margin, covers the estimated surge, satisfies
-            your stated requirements, and scores reasonably.
+            <strong>Best Fit</strong> — capacity within 1.0-1.5× your
+            recommended minimum (already includes reserve headroom) and
+            output within a normal range for that capacity tier.
           </li>
           <li>
-            <strong>Good Match</strong> — meets the required capacity and output
-            with some margin.
+            <strong>Good Fit</strong> — capacity 1.5-3.0× the recommended
+            minimum: meaningful extra headroom, still proportionate.
           </li>
           <li>
-            <strong>Possible Match</strong> — meets the bare minimum, or has
-            caveats such as an unverified surge rating.
-          </li>
-          <li>
-            <strong>Not Suitable</strong> — fails your required continuous output
-            or capacity, or a hard requirement (240V, TT-30). Shown with the
-            reason, not hidden.
+            <strong>Oversized</strong> — capacity beyond 3.0× the recommended
+            minimum (or output beyond 20× the requirement). Fully compatible,
+            but disproportionate for the stated need — shown as a clearly
+            labeled alternative, never mixed into the primary results.
           </li>
         </ul>
+        <p>
+          These thresholds are deliberately round, stated numbers rather than
+          a fitted model — there is no external standard for &ldquo;how much
+          extra capacity is too much,&rdquo; so the reasoning is documented in code
+          instead of hidden behind an opaque score. Ranking within a status
+          never considers price, popularity, rating, or whether a product has
+          an affiliate link — only verified specification fields from{" "}
+          <code>products.json</code>.
+        </p>
 
         <h2 id="scoring">PowerMatch Score</h2>
         <p>

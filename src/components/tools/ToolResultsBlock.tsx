@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Recommendation } from "@/lib/recommend";
+import { groupRecommendations, type Recommendation } from "@/lib/recommend";
 import type { SolarAdjustedResult } from "@/lib/tools-engine";
 import { estimateAutonomyUnits } from "@/lib/tools-engine";
 import { fmtWh } from "@/lib/format";
@@ -56,11 +56,7 @@ export function ToolResultsBlock({
     );
   }
 
-  const bestAndGood = recommendations.filter(
-    (r) => r.status === "Best Match" || r.status === "Good Match",
-  );
-  const possible = recommendations.filter((r) => r.status === "Possible Match");
-  const notSuitable = recommendations.filter((r) => r.status === "Not Suitable");
+  const { primary, oversized, possible, notSuitable } = groupRecommendations(recommendations);
 
   const withAutonomy = (rec: Recommendation) => {
     const units = estimateAutonomyUnits(
@@ -133,14 +129,16 @@ export function ToolResultsBlock({
         </div>
         <p className="mt-1 text-sm text-navy-300">
           Every product in the catalog is classified against your requirement using
-          the same engine as the Power Calculator. Units that fail a hard
-          requirement are shown as <strong>Not Suitable</strong> with the reason,
-          rather than hidden.
+          the same engine as the Power Calculator: first compatibility (does it meet
+          every hard requirement), then how proportionate it is to your need. Units
+          that fail a hard requirement are shown as <strong>Not Suitable</strong>{" "}
+          with the reason, rather than hidden — and units far larger than you need
+          are labeled <strong>Oversized</strong> rather than presented as a top pick.
         </p>
 
-        {bestAndGood.length ? (
+        {primary.length ? (
           <div className="mt-4 grid gap-4 md:grid-cols-2">
-            {bestAndGood.map((rec) => (
+            {primary.map((rec) => (
               <RecommendationCard
                 key={rec.product.id}
                 rec={rec}
@@ -151,14 +149,39 @@ export function ToolResultsBlock({
           </div>
         ) : (
           <Callout tone="warn" dark live className="mt-4">
-            No product in the current catalog comfortably meets this requirement.
-            The closest options are listed under &ldquo;Possible match&rdquo; below —
-            check their limitations carefully.
+            No product in the current catalog is a proportionate match for this
+            requirement.{" "}
+            {oversized.length
+              ? "Larger, oversized alternatives are listed below."
+              : 'The closest options are listed under "Possible match" below — check their limitations carefully.'}
           </Callout>
         )}
 
+        {oversized.length ? (
+          <details className="mt-6" open={primary.length === 0}>
+            <summary className="cursor-pointer text-sm font-semibold text-navy-200">
+              Oversized alternatives — larger than you need ({oversized.length})
+            </summary>
+            <p className="mt-2 text-xs text-navy-400">
+              These fully meet your requirement but carry much more capacity or
+              output than your calculation needs. They can still make sense for
+              future growth, but they are not the proportionate pick.
+            </p>
+            <div className="mt-3 grid gap-4 md:grid-cols-2">
+              {oversized.map((rec) => (
+                <RecommendationCard
+                  key={rec.product.id}
+                  rec={rec}
+                  tone="dark"
+                  extraStat={withAutonomy(rec)}
+                />
+              ))}
+            </div>
+          </details>
+        ) : null}
+
         {possible.length ? (
-          <details className="mt-6" open={bestAndGood.length === 0}>
+          <details className="mt-6" open={primary.length === 0 && oversized.length === 0}>
             <summary className="cursor-pointer text-sm font-semibold text-navy-200">
               Possible matches ({possible.length})
             </summary>
