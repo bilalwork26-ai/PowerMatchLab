@@ -19,6 +19,18 @@ const NAVY_900 = "#0b1f3a";
 const CYAN_300 = "#67e8f9";
 const BRAND_300 = "#93c5fd";
 
+/**
+ * next/og's ImageResponse renderer has no glyph for "≈" (renders as a
+ * missing-character box) even though the same text displays fine in a
+ * normal browser via system fonts — found while adding OG images for the
+ * /tools calculators, several of which quote their formula with "≈" in
+ * copy also reused here. "~" conveys the same "approximately" meaning and
+ * is present in every font next/og uses.
+ */
+function sanitizeForOgFont(text: string): string {
+  return text.replace(/≈/g, "~");
+}
+
 export function ogTemplate({
   eyebrow,
   title,
@@ -31,6 +43,8 @@ export function ogTemplate({
   /** One supporting line, e.g. the page's own metaDescription, truncated by the caller if needed. */
   subtitle?: string;
 }) {
+  title = sanitizeForOgFont(title);
+  subtitle = subtitle ? sanitizeForOgFont(subtitle) : subtitle;
   return (
     <div
       style={{
