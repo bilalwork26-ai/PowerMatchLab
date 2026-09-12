@@ -160,7 +160,7 @@ export function LoadListCalculator({
   return (
     <div>
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        <label className="text-sm">
+        <label className="w-full min-w-0 text-sm sm:w-auto">
           <span className="sr-only">{config.addExampleLabel}</span>
           <select
             value={exampleKey}
@@ -168,7 +168,7 @@ export function LoadListCalculator({
               setExampleKey(e.target.value);
               if (e.target.value) addExample(e.target.value);
             }}
-            className={darkSelect}
+            className={cn("w-full sm:w-auto", darkSelect)}
           >
             <option value="">+ {config.addExampleLabel}…</option>
             {config.presets.map((p) => (

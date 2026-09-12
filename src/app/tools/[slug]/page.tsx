@@ -112,7 +112,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
 
       <div className="bg-navy-950 py-10 text-white">
         <div className="container-page grid gap-10 lg:grid-cols-[1fr_280px]">
-          <div>
+          <div className="min-w-0">
             <p className="text-sm text-navy-300">{tool.forWhom}</p>
 
             <div className="mt-6 rounded-xl border border-navy-700 bg-navy-900/40 p-4 sm:p-6">

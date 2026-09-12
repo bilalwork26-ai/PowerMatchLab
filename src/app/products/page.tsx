@@ -13,8 +13,15 @@ import { PageHero } from "@/components/layout/PageHero";
 import { ProductsBrowser } from "@/components/product/ProductsBrowser";
 import { JsonLd } from "@/components/ui/JsonLd";
 
+// "Power Stations Catalog" tested no clicks across 10 impressions at an
+// average position of 5.9 — a generic, self-referential title with no
+// value proposition. Naming the real, current catalog size gives a
+// searcher a concrete reason to click; computed from the catalog itself so
+// it can never drift out of sync as products are added or removed.
+const PRODUCT_COUNT = getAllProducts().length;
+
 export const metadata: Metadata = pageMetadata({
-  title: "Power Stations Catalog",
+  title: `Portable Power Station Catalog: Compare ${PRODUCT_COUNT} Models by Spec`,
   description:
     "Browse and filter every portable power station in the PowerMatchLab catalog by brand, capacity, output, chemistry, weight, solar input, 240V, TT-30 and more.",
   path: "/products",

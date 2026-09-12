@@ -4,6 +4,7 @@ import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 import { SITE } from "@/lib/site";
 import { PageHero } from "@/components/layout/PageHero";
 import { JsonLd } from "@/components/ui/JsonLd";
+import { Callout } from "@/components/ui/Callout";
 import {
   DEFAULT_ASSUMPTIONS,
   ASSUMPTION_NOTES,
@@ -314,6 +315,18 @@ export default function MethodologyPage() {
           is for, and the <Link href="/editorial-policy">Editorial Policy</Link>{" "}
           for how we handle a report.
         </p>
+
+        <Callout tone="info" dark title="Put this methodology to work" className="not-prose my-8">
+          Now that you know how the numbers are built, use the{" "}
+          <Link href="/power-calculator" className="underline">
+            Power Calculator
+          </Link>{" "}
+          to turn your own devices into a capacity and output target, or{" "}
+          <Link href="/compare" className="underline">
+            compare power stations side by side
+          </Link>{" "}
+          against those same verified specs.
+        </Callout>
       </div>
       </div>
     </>
