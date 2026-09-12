@@ -14,6 +14,7 @@ import { JsonLd } from "@/components/ui/JsonLd";
 import { breadcrumbJsonLd } from "@/lib/seo";
 import { scoreCatalog } from "@/lib/score";
 import { cn } from "@/lib/cn";
+import { BILAL_SIALI } from "@/lib/authors";
 
 /** Rows shown in the compact shortlist table — the specs that matter most across every use case. */
 const SHORTLIST_ROW_KEYS = [
@@ -310,7 +311,11 @@ export function BestForPage({ content }: { content: BestForContent }) {
           </section>
 
           <p className="mt-8 text-xs text-navy-400">
-            Last updated {content.lastUpdated}. Specifications are manufacturer
+            By{" "}
+            <Link href={BILAL_SIALI.path} className="underline hover:text-cyan-300">
+              {BILAL_SIALI.name}
+            </Link>{" "}
+            · Last updated {content.lastUpdated}. Specifications are manufacturer
             claims; PowerMatchLab has not physically tested these units.
           </p>
         </div>
