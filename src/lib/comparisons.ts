@@ -9,12 +9,12 @@
  */
 
 import type { Product } from "@/types/product";
-import { productDisplayName, getProductsByIds } from "@/data/products";
+import { productDisplayName } from "@/data/products";
 import { COMPARE_ROWS, rowWinner, type CompareRow } from "./compare-rows";
 import { getApplianceExample } from "./appliances";
 import { estimateRuntimeHours } from "./runtime";
 import { RUNTIME_EFFICIENCY } from "./assumptions";
-import type { Comparison } from "@/content/comparisons";
+import type { Comparison, IndexCategory } from "@/content/comparisons";
 
 export interface UseCaseVerdict {
   key: string;
@@ -77,8 +77,8 @@ const VERDICT_CONFIG: { key: string; label: string; rowKeys: string[] }[] = [
   },
 ];
 
-/** True when both products have a non-null value for this row (a null field is neither a win nor a loss). */
-export function isComparable(row: CompareRow, products: [Product, Product]): boolean {
+/** True when every product has a non-null value for this row (a null field is neither a win nor a loss). */
+export function isComparable(row: CompareRow, products: Product[]): boolean {
   return products.every((p) => row.numeric(p) != null);
 }
 
@@ -88,21 +88,19 @@ export interface CapacityParity {
   display: string;
 }
 
-/** Whether the two products' registered capacity is comparable, and if so, whether it ties. */
-export function capacityParity(products: [Product, Product]): CapacityParity {
+/** Whether every product's registered capacity is comparable, and if so, whether they all tie. */
+export function capacityParity(products: Product[]): CapacityParity {
   const row = COMPARE_ROWS.find((r) => r.key === "capacity_wh")!;
   const comparable = isComparable(row, products);
-  const [a, b] = products;
+  const values = products.map((p) => row.numeric(p));
   return {
     comparable,
-    equal: comparable && row.numeric(a) === row.numeric(b),
-    display: row.display(a),
+    equal: comparable && new Set(values).size === 1,
+    display: row.display(products[0]),
   };
 }
 
-export function evaluateUseCases(products: [Product, Product]): UseCaseVerdict[] {
-  const [a, b] = products;
-
+export function evaluateUseCases(products: Product[]): UseCaseVerdict[] {
   return VERDICT_CONFIG.map(({ key, label, rowKeys }) => {
     const rows = COMPARE_ROWS.filter((r) => rowKeys.includes(r.key));
     const isSingleCriterionCategory = rows.length === 1;
@@ -112,7 +110,8 @@ export function evaluateUseCases(products: [Product, Product]): UseCaseVerdict[]
       .map((row) => ({ row, result: rowWinner(row, products) }))
       .filter((d) => !d.result.tie && d.result.winnerIds.length === 1);
 
-    const tally: Record<string, number> = { [a.id]: 0, [b.id]: 0 };
+    const tally: Record<string, number> = {};
+    for (const p of products) tally[p.id] = 0;
     for (const d of decisive) tally[d.result.winnerIds[0]] += 1;
 
     let winnerId: string | null = null;
@@ -121,8 +120,12 @@ export function evaluateUseCases(products: [Product, Product]): UseCaseVerdict[]
     if (isSingleCriterionCategory || decisive.length >= 2) {
       // Either this category's entire criterion is one row (legitimately
       // decidable from it alone), or at least two independent rows agree —
-      // enough signal for an overall verdict.
-      winnerId = tally[a.id] === tally[b.id] ? null : tally[a.id] > tally[b.id] ? a.id : b.id;
+      // enough signal for an overall verdict. A unique highest tally wins;
+      // any tie for the top spot (including an all-zero tally) means no
+      // clear overall winner among however many products are compared.
+      const maxTally = Math.max(...products.map((p) => tally[p.id]));
+      const topIds = products.filter((p) => tally[p.id] === maxTally).map((p) => p.id);
+      winnerId = maxTally > 0 && topIds.length === 1 ? topIds[0] : null;
     } else if (decisive.length === 1) {
       // Exactly one decisive row in a multi-criterion category: real, but not
       // enough to call the whole category. Name the specific edge instead.
@@ -137,7 +140,7 @@ export function evaluateUseCases(products: [Product, Product]): UseCaseVerdict[]
         (otherLabels.length
           ? `, but ${otherLabels.join(" and ").toLowerCase()} ${
               otherLabels.length > 1 ? "are" : "is"
-            } not verified for one or both units.`
+            } not verified for one or more of these units.`
           : ".");
     }
     // decisive.length === 0: no note, no winner — nothing distinguishes them.
@@ -169,9 +172,7 @@ export interface ComparisonRuntimeRow {
  */
 const RUNTIME_APPLIANCE_KEYS = ["fridge", "cpap", "led-lights"] as const;
 
-export function buildComparisonRuntimeRows(
-  products: [Product, Product],
-): ComparisonRuntimeRow[] {
+export function buildComparisonRuntimeRows(products: Product[]): ComparisonRuntimeRow[] {
   return RUNTIME_APPLIANCE_KEYS.map((key) => {
     const appliance = getApplianceExample(key);
     if (!appliance) {
@@ -209,10 +210,11 @@ export interface HeadlineDifference {
   rowLabel: string;
   winnerId: string;
   winnerDisplay: string;
-  loserDisplay: string;
+  /** Display values for every other product in the comparison, in the same order as `products`. */
+  otherDisplays: string[];
 }
 
-export function headlineDifferences(products: [Product, Product]): HeadlineDifference[] {
+export function headlineDifferences(products: Product[]): HeadlineDifference[] {
   const rows = COMPARE_ROWS.filter((r) => HEADLINE_ROW_KEYS.includes(r.key));
   const out: HeadlineDifference[] = [];
   for (const row of rows) {
@@ -220,40 +222,26 @@ export function headlineDifferences(products: [Product, Product]): HeadlineDiffe
     if (winner.tie || winner.winnerIds.length !== 1) continue;
     const winnerId = winner.winnerIds[0];
     const winnerProduct = products.find((p) => p.id === winnerId)!;
-    const loserProduct = products.find((p) => p.id !== winnerId)!;
+    const otherProducts = products.filter((p) => p.id !== winnerId);
     out.push({
       rowLabel: row.label,
       winnerId,
       winnerDisplay: row.display(winnerProduct),
-      loserDisplay: row.display(loserProduct),
+      otherDisplays: otherProducts.map((p) => row.display(p)),
     });
   }
   return out;
 }
 
-/** Earliest (most conservative) last-checked date across both products, or null if neither has one. */
-export function earliestLastChecked(products: [Product, Product]): string | null {
+/** Earliest (most conservative) last-checked date across every product, or null if none has one. */
+export function earliestLastChecked(products: Product[]): string | null {
   const dates = products.map((p) => p.last_verified).filter((d): d is string => Boolean(d));
   if (dates.length === 0) return null;
   return dates.sort()[0];
 }
 
-/**
- * Capacity tiers for the comparisons index page. Boundaries are picked to
- * split the current catalog into roughly even, recognizable buying classes
- * — not derived from any external source, just a bucketing of on-file
- * capacity_wh values.
- */
-const CAPACITY_TIERS: { maxWh: number; label: string }[] = [
-  { maxWh: 800, label: "Compact (under 800 Wh)" },
-  { maxWh: 1300, label: "Mid-size (800–1,300 Wh)" },
-  { maxWh: 2200, label: "~2,000 Wh class" },
-  { maxWh: Infinity, label: "Large / whole-home (2,200+ Wh)" },
-];
-
 export interface ComparisonIndexEntry {
   comparison: Comparison;
-  capacityTierLabel: string;
   /** The single most relevant use-case label, from the comparison's own curated relatedBestForSlugs — never inferred or guessed. */
   useCaseLabel: string | null;
 }
@@ -265,37 +253,64 @@ const USE_CASE_LABELS: Record<string, string> = {
   "best-for-home-backup": "Home backup",
 };
 
+/** Display order and copy for the /compare index page's category sections. */
+const INDEX_CATEGORY_ORDER: IndexCategory[] = [
+  "same-family",
+  "~1000wh",
+  "~2000wh",
+  "high-capacity-home-backup",
+  "portability-camping",
+  "cross-brand",
+];
+
+const INDEX_CATEGORY_LABELS: Record<IndexCategory, string> = {
+  "same-family": "Same-family models",
+  "~1000wh": "~1,000 Wh class",
+  "~2000wh": "~2,000 Wh class",
+  "high-capacity-home-backup": "High-capacity home backup",
+  "portability-camping": "Portability & camping",
+  "cross-brand": "Cross-brand shootouts",
+};
+
+const INDEX_CATEGORY_BLURBS: Record<IndexCategory, string> = {
+  "same-family":
+    "Choosing between different sizes or generations within one manufacturer's own product line.",
+  "~1000wh":
+    "Compact, roughly 1,000 Wh stations usually sized around a single major appliance like a refrigerator.",
+  "~2000wh":
+    "Mid-size, roughly 2,000 Wh stations for home essentials, RV use or refrigerator backup with headroom to spare.",
+  "high-capacity-home-backup":
+    "Large, multi-kilowatt-hour stations aimed at extended, whole-home outage backup rather than portable use.",
+  "portability-camping":
+    "Compact, lightweight stations chosen mainly for carrying to a campsite, job site or daily errands.",
+  "cross-brand":
+    "Similar-capacity stations from different manufacturers, compared strictly on verified specs.",
+};
+
 /**
- * Groups every entry in COMPARISONS by capacity tier (from the average
- * registered capacity of its two products) for the /compare index page.
- * Never invents a tier or use case — a pairing with no on-file capacity for
- * either product falls into the largest tier's "Not verified" bucket rather
- * than being silently dropped.
+ * Groups every entry in COMPARISONS by its curated `indexCategory` for the
+ * /compare index page. The category is an editorial label set on each
+ * Comparison entry (not derived or guessed here), so a comparison always
+ * lands in exactly one, explicit, human-decided section.
  */
-export function groupComparisonsForIndex(comparisons: Comparison[]): {
-  tierLabel: string;
+export function groupComparisonsByCategory(comparisons: Comparison[]): {
+  category: IndexCategory;
+  label: string;
+  blurb: string;
   entries: ComparisonIndexEntry[];
 }[] {
-  const withTier: ComparisonIndexEntry[] = comparisons.map((comparison) => {
-    const products = getProductsByIds(comparison.productIds);
-    const capacities = products.map((p) => p.capacity_wh).filter((v): v is number => v != null);
-    const avg = capacities.length ? capacities.reduce((a, b) => a + b, 0) / capacities.length : null;
-    const tier = avg == null ? CAPACITY_TIERS[CAPACITY_TIERS.length - 1] : CAPACITY_TIERS.find((t) => avg <= t.maxWh)!;
-    const useCaseSlug = comparison.relatedBestForSlugs[0];
-    return {
-      comparison,
-      capacityTierLabel: tier.label,
-      useCaseLabel: useCaseSlug ? (USE_CASE_LABELS[useCaseSlug] ?? null) : null,
-    };
-  });
-
-  const order = CAPACITY_TIERS.map((t) => t.label);
-  const grouped = order
-    .map((tierLabel) => ({
-      tierLabel,
-      entries: withTier.filter((e) => e.capacityTierLabel === tierLabel),
-    }))
-    .filter((g) => g.entries.length > 0);
-
-  return grouped;
+  return INDEX_CATEGORY_ORDER.map((category) => ({
+    category,
+    label: INDEX_CATEGORY_LABELS[category],
+    blurb: INDEX_CATEGORY_BLURBS[category],
+    entries: comparisons
+      .filter((c) => c.indexCategory === category)
+      .map((comparison) => {
+        const useCaseSlug = comparison.relatedBestForSlugs[0];
+        return {
+          comparison,
+          useCaseLabel: useCaseSlug ? (USE_CASE_LABELS[useCaseSlug] ?? null) : null,
+        };
+      }),
+  })).filter((g) => g.entries.length > 0);
 }

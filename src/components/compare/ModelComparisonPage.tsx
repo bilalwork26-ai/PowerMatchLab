@@ -37,7 +37,7 @@ export function ModelComparisonPage({
   products,
 }: {
   comparison: Comparison;
-  products: [Product, Product];
+  products: Product[];
 }) {
   const catalog = getAllProducts();
   const scores = products.map((p) => scoreProduct(p, catalog));
@@ -133,7 +133,7 @@ export function ModelComparisonPage({
                     return (
                       <li key={d.rowLabel}>
                         {winnerName} leads on {d.rowLabel.toLowerCase()} (
-                        {d.winnerDisplay} vs {d.loserDisplay}).
+                        {d.winnerDisplay} vs {d.otherDisplays.join(", ")}).
                       </li>
                     );
                   })}
@@ -164,7 +164,12 @@ export function ModelComparisonPage({
             </section>
 
             {/* Product header cards */}
-            <div className="mt-8 grid grid-cols-2 gap-4">
+            <div
+              className={cn(
+                "mt-8 grid gap-4",
+                products.length >= 3 ? "grid-cols-1 sm:grid-cols-3" : "grid-cols-2",
+              )}
+            >
               {products.map((p, i) => (
                 <div
                   key={p.id}
@@ -222,8 +227,8 @@ export function ModelComparisonPage({
               >
                 <table className="w-full min-w-[480px] border-collapse text-sm">
                   <caption className="sr-only">
-                    Specification comparison between {productDisplayName(products[0])} and{" "}
-                    {productDisplayName(products[1])}
+                    Specification comparison between{" "}
+                    {products.map((p) => productDisplayName(p)).join(", ")}
                   </caption>
                   <thead>
                     <tr>
@@ -246,7 +251,7 @@ export function ModelComparisonPage({
                       <tr>
                         <th
                           scope="colgroup"
-                          colSpan={3}
+                          colSpan={products.length + 1}
                           className="bg-navy-900/80 px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-navy-300"
                         >
                           {g.group}
@@ -297,7 +302,7 @@ export function ModelComparisonPage({
                     <tr>
                       <th
                         scope="colgroup"
-                        colSpan={3}
+                        colSpan={products.length + 1}
                         className="bg-navy-900/80 px-3 py-2 text-left text-xs font-semibold uppercase tracking-wide text-navy-300"
                       >
                         PowerMatch Score
@@ -446,7 +451,12 @@ export function ModelComparisonPage({
                 impressions, noise, build-quality or real-world behavior is
                 added here.
               </p>
-              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <div
+                className={cn(
+                  "mt-4 grid gap-4",
+                  products.length >= 3 ? "sm:grid-cols-3" : "sm:grid-cols-2",
+                )}
+              >
                 {products.map((p) => (
                   <div
                     key={p.id}
@@ -482,7 +492,10 @@ export function ModelComparisonPage({
               <div className="mt-2 space-y-3 text-[15px] leading-7 text-navy-200">
                 <p>
                   {capacity.comparable && capacity.equal ? (
-                    <>Both units share the same registered capacity ({capacity.display}). </>
+                    <>
+                      {products.length > 2 ? "All compared units" : "Both units"} share the
+                      same registered capacity ({capacity.display}).{" "}
+                    </>
                   ) : null}
                   {products.map((p) => {
                     const diffs = diffsByWinnerId.get(p.id) ?? [];
@@ -509,10 +522,10 @@ export function ModelComparisonPage({
                           </span>
                         ))}
                       With those gaps, there is no absolute winner between
-                      these two units based on the data currently on file.
+                      these units based on the data currently on file.
                     </>
                   ) : (
-                    "There is no absolute winner between these two units based on the data currently on file."
+                    "There is no absolute winner between these units based on the data currently on file."
                   )}
                 </p>
                 <p>
@@ -541,10 +554,10 @@ export function ModelComparisonPage({
                   )}
                 </p>
                 <p>
-                  Neither unit has been physically tested by PowerMatchLab.
-                  Before buying, enter your own devices in the Power
-                  Calculator — the numbers above use example loads, and your
-                  real appliances may draw differently.
+                  None of these units have been physically tested by
+                  PowerMatchLab. Before buying, enter your own devices in the
+                  Power Calculator — the numbers above use example loads, and
+                  your real appliances may draw differently.
                 </p>
               </div>
 
@@ -571,7 +584,12 @@ export function ModelComparisonPage({
                 ) : null}
               </div>
 
-              <div className="mt-6 grid gap-4 sm:grid-cols-2">
+              <div
+                className={cn(
+                  "mt-6 grid gap-4",
+                  products.length >= 3 ? "sm:grid-cols-3" : "sm:grid-cols-2",
+                )}
+              >
                 {products.map((p, i) => (
                   <div
                     key={p.id}

@@ -4,6 +4,7 @@ import { COMPARISONS, getComparison } from "@/content/comparisons";
 import { getProductsByIds } from "@/data/products";
 import { pageMetadata, breadcrumbJsonLd, articleJsonLd } from "@/lib/seo";
 import { earliestLastChecked } from "@/lib/comparisons";
+import { BILAL_SIALI } from "@/lib/authors";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { ModelComparisonPage } from "@/components/compare/ModelComparisonPage";
 
@@ -53,8 +54,9 @@ export default async function ComparisonPage({
   if (!comparison) notFound();
 
   const products = getProductsByIds(comparison.productIds);
-  if (products.length !== 2) notFound();
-  const pair: [typeof products[0], typeof products[0]] = [products[0], products[1]];
+  // Every curated comparison is either a 2-way or 3-way editorial page —
+  // never a dynamically-sized combination of the catalog.
+  if (products.length < 2 || products.length > 3) notFound();
 
   const crumbs = [
     { name: "Home", path: "/" },
@@ -62,7 +64,7 @@ export default async function ComparisonPage({
     { name: comparison.h1, path: `/compare/${comparison.slug}` },
   ];
 
-  const lastChecked = earliestLastChecked(pair);
+  const lastChecked = earliestLastChecked(products);
 
   return (
     <>
@@ -74,10 +76,11 @@ export default async function ComparisonPage({
             description: comparison.metaDescription,
             path: `/compare/${comparison.slug}`,
             datePublished: lastChecked ?? undefined,
+            author: { name: BILAL_SIALI.name, path: BILAL_SIALI.path },
           }),
         ]}
       />
-      <ModelComparisonPage comparison={comparison} products={pair} />
+      <ModelComparisonPage comparison={comparison} products={products} />
     </>
   );
 }
