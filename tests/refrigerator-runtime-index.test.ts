@@ -311,6 +311,9 @@ describe("Shareable URL state: encode -> decode round-trip", () => {
     efficiencyPct: 80,
     reservePct: 25,
     prefs: { wantsExpandable: true, prioritisePortability: false },
+    entryMode: "watts",
+    dailyEnergyEntries: {},
+    solar: { source: "manual", panelWatts: 100, peakSunHours: 4, realizationPct: 70 },
   };
   const prefsConfig = { wantsExpandable: true, prioritisePortability: true };
 

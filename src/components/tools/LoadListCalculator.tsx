@@ -9,7 +9,6 @@ import { calculatePower, hasUsableInput, type DeviceInput } from "@/lib/calculat
 import { recommendProducts, type RecommendationPreferences } from "@/lib/recommend";
 import {
   applySolarOffset,
-  withSolarAdjustedCapacity,
   deriveWattsAndHoursFromDailyEnergy,
   dailyEnergyUnitToWh,
   estimateDailySolarWh,
@@ -21,6 +20,7 @@ import {
 import {
   encodeLoadListShareState,
   decodeLoadListShareState,
+  type SolarShareState,
 } from "@/lib/tools-share-state";
 import { buildRuntimeIndexCsv, downloadCsv } from "@/lib/csv-export";
 import { fmtWh, fmtWatts } from "@/lib/format";
@@ -122,10 +122,12 @@ export function LoadListCalculator({
   // Daily-energy entry mode (config.allowDailyEnergyMode only) — purely a UI
   // convenience layered on top of the same DeviceInput[] the engine already
   // consumes; see deriveWattsAndHoursFromDailyEnergy in tools-engine.ts.
-  const [entryMode, setEntryMode] = useState<"watts" | "daily-energy">("watts");
+  const [entryMode, setEntryMode] = useState<"watts" | "daily-energy">(
+    () => restoredShareState?.entryMode ?? "watts",
+  );
   const [dailyEnergyEntries, setDailyEnergyEntries] = useState<
     Record<string, { raw: string; unit: DailyEnergyUnit }>
-  >({});
+  >(() => restoredShareState?.dailyEnergyEntries ?? {});
 
   // Solar panel estimator (config.allowSolarEstimator only) — pre-fills
   // dailySolarWh; the visitor can still overwrite that field by hand.
@@ -137,10 +139,14 @@ export function LoadListCalculator({
       ? Math.round(restoredShareState.days * 24)
       : 24),
   );
-  const [showSolarEstimator, setShowSolarEstimator] = useState(false);
-  const [panelWatts, setPanelWatts] = useState(100);
-  const [peakSunHours, setPeakSunHours] = useState(4);
-  const [solarRealizationPct, setSolarRealizationPct] = useState(70);
+  const [showSolarEstimator, setShowSolarEstimator] = useState(
+    () => restoredShareState?.solar.source === "panel-spec",
+  );
+  const [panelWatts, setPanelWatts] = useState(() => restoredShareState?.solar.panelWatts ?? 100);
+  const [peakSunHours, setPeakSunHours] = useState(() => restoredShareState?.solar.peakSunHours ?? 4);
+  const [solarRealizationPct, setSolarRealizationPct] = useState(
+    () => restoredShareState?.solar.realizationPct ?? 70,
+  );
   /**
    * Whether the current `dailySolarWh` figure came from the panel-spec
    * estimator (a product-agnostic, uncapped best case that must be capped
@@ -150,9 +156,17 @@ export function LoadListCalculator({
    * visitor (a single number we cannot safely re-derive per product, since
    * we don't know what panel wattage — if any — produced it). Defaults to
    * "manual" and flips to "panel-spec" only when "Use this estimate" is
-   * clicked; typing directly into the Wh field flips it back.
+   * clicked, or when a shared link explicitly carried a complete, valid
+   * panel-spec parameter set (see tools-share-state.ts's
+   * `hasCompletePanelSpec`) — an incomplete or tampered set always decodes
+   * to "manual" there, never silently to "panel-spec". Either way, this
+   * value is used ONLY for display (which entry the Runtime Index table's
+   * per-product autonomy uses) — it never feeds `recommendations` below,
+   * which is always computed from the battery-only `result`.
    */
-  const [solarSource, setSolarSource] = useState<"manual" | "panel-spec">("manual");
+  const [solarSource, setSolarSource] = useState<"manual" | "panel-spec">(
+    () => restoredShareState?.solar.source ?? "manual",
+  );
 
   // Resolved client-side only (see PrintSummary's generatedAt prop doc) so
   // the printed report never mismatches between a statically-built server
@@ -178,28 +192,32 @@ export function LoadListCalculator({
     [solarEnabled, result, dailySolarWh, days],
   );
 
-  // The panel-spec estimator's output is a product-agnostic BEST CASE: it
-  // assumes a station that can accept the visitor's full panel wattage,
-  // which most models cannot (see each product's own `solar_input_w`).
-  // Letting that uncapped figure reduce the shared capacity requirement
-  // used for EVERY product's Suitable/Oversized classification would let a
-  // large stated panel wattage inflate a small-solar-input product's
-  // standing just as much as a large-solar-input one's — exactly the
-  // "artificially improves classification" failure mode this must avoid.
-  // A manually-typed Wh/day figure has no known panel wattage to cap by, so
-  // it keeps the pre-existing, sitewide (RV/Home Backup share this) global
-  // behavior; only the new automatic estimator path is restricted here.
-  const solarForGlobalUse = solarEnabled && solarSource === "manual" ? solar : null;
-
-  const effectiveResult = useMemo(
-    () => (solarForGlobalUse ? withSolarAdjustedCapacity(result, solarForGlobalUse) : result),
-    [result, solarForGlobalUse],
-  );
-
+  /**
+   * Product classification (Suitable/Best Fit/Good Fit/Oversized/Not
+   * Suitable) and the headline "recommended minimum capacity" are ALWAYS
+   * battery-only — no solar contribution, manual or panel-spec, ever
+   * reduces the capacity/output requirement fed to recommendProducts.
+   *
+   * Neither solar source is safe to apply uniformly across every product
+   * for a commercial ranking: a manually-typed Wh/day figure may have been
+   * measured at ONE specific station's charging port and cannot be assumed
+   * to transfer to a different model's port, and a panel-spec estimate is
+   * only ever capped to a SPECIFIC product's own solar_input_w (see
+   * estimateProductDailySolarWh below) — a single global capacity
+   * requirement has no such per-product concept. Solar is instead shown as
+   * a clearly separate, secondary planning layer: an aggregate deficit
+   * stat (informational only, see the `solar &&` block passed to
+   * ToolResultsBlock) and, for the panel-spec path specifically, a genuine
+   * per-product autonomy estimate in the Runtime Index table below, capped
+   * to each product's own verified rating. This is intentionally identical
+   * for every /tools calculator built on this component (RV, Home Backup
+   * included) — a solar figure here was always either global-manual (this
+   * exact same architectural gap) or absent.
+   */
   const recommendations = useMemo(() => {
     if (!hasUsableInput(devices)) return [];
-    return recommendProducts(effectiveResult, catalog, prefs);
-  }, [effectiveResult, catalog, prefs, devices]);
+    return recommendProducts(result, catalog, prefs);
+  }, [result, catalog, prefs, devices]);
 
   const ready = hasUsableInput(devices);
 
@@ -216,10 +234,10 @@ export function LoadListCalculator({
       completedRef.current = true;
       trackEvent("calculator_completed", {
         calculator_type: config.calculatorType,
-        recommended_capacity_wh: Math.round(effectiveResult.recommendedMinimumCapacityWh),
+        recommended_capacity_wh: Math.round(result.recommendedMinimumCapacityWh),
       });
     }
-  }, [ready, effectiveResult.recommendedMinimumCapacityWh, config.calculatorType]);
+  }, [ready, result.recommendedMinimumCapacityWh, config.calculatorType]);
 
   const invalidRows = devices.filter(
     (d) => d.name.trim() !== "" && (d.watts <= 0 || d.quantity <= 0),
@@ -307,61 +325,57 @@ export function LoadListCalculator({
   };
 
   const buildShareUrl = () => {
+    const solarShareState: SolarShareState = {
+      source: solarSource,
+      panelWatts,
+      peakSunHours,
+      realizationPct: solarRealizationPct,
+    };
     const query = encodeLoadListShareState(
-      { devices, days, dailySolarWh, efficiencyPct, reservePct, prefs },
+      { devices, days, dailySolarWh, efficiencyPct, reservePct, prefs, entryMode, dailyEnergyEntries, solar: solarShareState },
       config.calculatorType,
       config.prefsConfig,
     );
     return `${SITE.url}${config.toolPath}?${query}`;
   };
 
-  const autonomyDailyEnergyWh = solarForGlobalUse ? solarForGlobalUse.netDailyEnergyWh : effectiveResult.dailyEnergyWh;
+  // Battery-only, always — see the `recommendations` comment above for why
+  // no solar source (manual or panel-spec) may reduce this uniformly across
+  // every product. This same figure feeds ToolResultsBlock's per-card
+  // "estimated autonomy" stat and the Runtime Index table's default
+  // (non-panel-spec) column — the panel-spec branch below overrides it
+  // per-product instead of using this shared figure.
+  const autonomyDailyEnergyWh = result.dailyEnergyWh;
 
   /**
-   * Per-product autonomy AND the "solar may already cover this" flag.
-   *
-   * When the panel-spec estimator produced the current solar figure, every
-   * product gets its OWN daily solar contribution — the same array charges
-   * a 1,000 W-input station much faster than it can a 100 W-input one — by
-   * capping the stated panel wattage to that product's own verified
-   * `solar_input_w` (estimateProductDailySolarWh returns null, never an
-   * assumed full-wattage figure, when that spec is unverified). Otherwise
-   * (a manually-typed Wh/day figure, or no solar at all) every product
-   * shares the same single global daily-energy figure — unchanged,
-   * pre-existing behavior.
+   * Per-product "solar may already cover this" flag — PANEL-SPEC ONLY. Only
+   * the panel-spec path ever computes a genuine per-product figure (each
+   * product's own solar_input_w caps the contribution), so only it can
+   * honestly claim a specific product's load may be covered. A manually-
+   * typed Wh/day figure never populates this set, even when it fully
+   * offsets the aggregate daily load (see the independent, aggregate-only
+   * "Daily deficit after solar" stat passed to ToolResultsBlock instead) —
+   * applying it per-product here would imply a per-product claim the
+   * engine cannot actually back for that source (see the `recommendations`
+   * comment above for the full reasoning).
    */
   const solarCoveredProductIds = useMemo(() => {
     const covered = new Set<string>();
-    if (!solarEnabled || dailySolarWh <= 0) return covered;
-    if (solarSource === "panel-spec") {
-      if (result.dailyEnergyWh <= 0) return covered;
-      for (const rec of recommendations) {
-        const productDailySolarWh = estimateProductDailySolarWh({
-          panelWatts,
-          peakSunHours,
-          realizationFraction: solarRealizationPct / 100,
-          productSolarInputW: rec.product.solar_input_w,
-        });
-        if (productDailySolarWh != null && productDailySolarWh >= result.dailyEnergyWh) {
-          covered.add(rec.product.id);
-        }
+    if (!solarEnabled || dailySolarWh <= 0 || solarSource !== "panel-spec") return covered;
+    if (result.dailyEnergyWh <= 0) return covered;
+    for (const rec of recommendations) {
+      const productDailySolarWh = estimateProductDailySolarWh({
+        panelWatts,
+        peakSunHours,
+        realizationFraction: solarRealizationPct / 100,
+        productSolarInputW: rec.product.solar_input_w,
+      });
+      if (productDailySolarWh != null && productDailySolarWh >= result.dailyEnergyWh) {
+        covered.add(rec.product.id);
       }
-    } else if (solar?.fullyOffsetBySolar) {
-      // Manual/global figure fully covers the load — applies uniformly.
-      for (const rec of recommendations) covered.add(rec.product.id);
     }
     return covered;
-  }, [
-    solarEnabled,
-    dailySolarWh,
-    solarSource,
-    recommendations,
-    panelWatts,
-    peakSunHours,
-    solarRealizationPct,
-    result.dailyEnergyWh,
-    solar,
-  ]);
+  }, [solarEnabled, dailySolarWh, solarSource, recommendations, panelWatts, peakSunHours, solarRealizationPct, result.dailyEnergyWh]);
 
   const autonomyByProductId = useMemo(() => {
     const map = new Map<string, number | null>();
@@ -407,9 +421,10 @@ export function LoadListCalculator({
     result.dailyEnergyWh,
   ]);
 
-  const formulaText = `= (${result.dailyEnergyWh.toLocaleString("en-US")} Wh/day${
-    solarForGlobalUse ? ` − ${solarForGlobalUse.solarContributionWh.toLocaleString("en-US")} Wh/day solar` : ""
-  } × ${days} ${days === 1 ? "day" : "days"}) ÷ ${efficiencyPct}% usable × (1 + ${reservePct}% reserve)`;
+  // Always battery-only, matching the headline capacity number exactly — a
+  // formula that subtracted solar here while the number above didn't would
+  // be its own (new) bug.
+  const formulaText = `= (${result.dailyEnergyWh.toLocaleString("en-US")} Wh/day × ${days} ${days === 1 ? "day" : "days"}) ÷ ${efficiencyPct}% usable × (1 + ${reservePct}% reserve)`;
 
   const handleCsvDownload = () => {
     const csv = buildRuntimeIndexCsv(
@@ -421,9 +436,9 @@ export function LoadListCalculator({
         siteUrl: `${SITE.url}${config.toolPath}`,
         formulaText,
         dailyEnergyWh: result.dailyEnergyWh,
-        recommendedCapacityWh: effectiveResult.recommendedMinimumCapacityWh,
-        requiredContinuousOutputW: effectiveResult.requiredContinuousOutputW,
-        requiredSurgeOutputW: effectiveResult.requiredSurgeOutputW,
+        recommendedCapacityWh: result.recommendedMinimumCapacityWh,
+        requiredContinuousOutputW: result.requiredContinuousOutputW,
+        requiredSurgeOutputW: result.requiredSurgeOutputW,
         days,
         efficiencyPct,
         reservePct,
@@ -796,7 +811,11 @@ export function LoadListCalculator({
             </label>
           ) : null}
           {config.solarLabel && config.allowSolarEstimator ? (
-            <details className="mt-3 rounded-lg border border-navy-700 bg-navy-900/60 p-3">
+            <details
+              open={showSolarEstimator}
+              onToggle={(e) => setShowSolarEstimator(e.currentTarget.open)}
+              className="mt-3 rounded-lg border border-navy-700 bg-navy-900/60 p-3"
+            >
               <summary className="cursor-pointer text-xs font-semibold text-cyan-300">
                 Don&rsquo;t know your daily solar Wh? Estimate it from panel specs
               </summary>
@@ -949,33 +968,59 @@ export function LoadListCalculator({
         <ToolResultsBlock
           ready={ready}
           notReadyMessage="Add at least one load with a running-watts value above to get a result."
-          headlineLabel="Recommended minimum capacity"
-          headlineValueWh={effectiveResult.recommendedMinimumCapacityWh}
+          headlineLabel={
+            solarEnabled && dailySolarWh > 0
+              ? "Recommended minimum capacity (battery only, no solar credit)"
+              : "Recommended minimum capacity"
+          }
+          headlineValueWh={result.recommendedMinimumCapacityWh}
           formulaText={formulaText}
           stats={[
             { label: "Total daily energy", value: fmtWh(result.dailyEnergyWh) },
-            ...(solarForGlobalUse
-              ? [{ label: "Daily deficit after solar", value: fmtWh(solarForGlobalUse.dailyDeficitWh) }]
+            // Informational/aggregate only — see the `recommendations`
+            // comment above. Shown for ANY nonzero solar input (manual or
+            // panel-spec) since it never feeds capacity, classification, or
+            // any single product's autonomy figure; it just states what a
+            // stated solar contribution would mean in aggregate.
+            ...(solar && dailySolarWh > 0
+              ? [{ label: "Daily deficit after solar (planning estimate)", value: fmtWh(solar.dailyDeficitWh) }]
               : []),
-            { label: "Required continuous output", value: fmtWatts(effectiveResult.requiredContinuousOutputW) },
-            { label: "Required surge capability", value: fmtWatts(effectiveResult.requiredSurgeOutputW) },
+            { label: "Required continuous output", value: fmtWatts(result.requiredContinuousOutputW) },
+            { label: "Required surge capability", value: fmtWatts(result.requiredSurgeOutputW) },
           ]}
-          solar={solarForGlobalUse}
+          solar={solar}
           efficiency={efficiencyPct / 100}
           autonomyDailyEnergyWh={autonomyDailyEnergyWh}
           autonomyUnit={config.autonomyUnit}
           recommendations={recommendations}
         />
-        {ready && solarSource === "panel-spec" && dailySolarWh > 0 ? (
+        {ready && solarEnabled && dailySolarWh > 0 ? (
           <Callout tone="info" dark className="mt-4">
-            Because this used the panel-spec estimator, the capacity and
-            recommendation above are calculated WITHOUT solar credit — a
-            station&rsquo;s real charging rate depends on its own solar input
-            rating, not just your panels&rsquo; wattage, so PowerMatchLab does not
-            apply one uncapped estimate to every product&rsquo;s classification.
-            The Runtime Index table below shows each product&rsquo;s own
-            solar-adjusted autonomy estimate instead, capped to that
-            product&rsquo;s own verified solar input rating.
+            {solarSource === "panel-spec" ? (
+              <>
+                Because this used the panel-spec estimator, the capacity and
+                classification above are calculated WITHOUT solar credit — a
+                station&rsquo;s real charging rate depends on its own solar
+                input rating, not just your panels&rsquo; wattage, so
+                PowerMatchLab never applies one uncapped estimate to every
+                product&rsquo;s classification. The Runtime Index table below
+                shows each product&rsquo;s own solar-adjusted autonomy
+                estimate instead, capped to that product&rsquo;s own verified
+                solar input rating.
+              </>
+            ) : (
+              <>
+                This manual solar figure is shown only as an aggregate
+                planning scenario (see &ldquo;Daily deficit after solar&rdquo;
+                above) — it does <strong>not</strong> change the capacity,
+                classification, or any single product&rsquo;s autonomy
+                estimate below, since the same Wh/day figure may not transfer
+                to every station&rsquo;s charging port. To see a
+                solar-adjusted autonomy estimate that correctly varies by
+                each product&rsquo;s own solar input rating, use the
+                panel-spec estimator above instead.
+              </>
+            )}
           </Callout>
         ) : null}
       </div>
@@ -1036,9 +1081,9 @@ export function LoadListCalculator({
             ]}
             resultsSummary={[
               `Total daily energy: ${fmtWh(result.dailyEnergyWh)}`,
-              `Recommended minimum capacity: ${fmtWh(effectiveResult.recommendedMinimumCapacityWh)}`,
-              `Required continuous output: ${fmtWatts(effectiveResult.requiredContinuousOutputW)}`,
-              `Required surge capability: ${fmtWatts(effectiveResult.requiredSurgeOutputW)}`,
+              `Recommended minimum capacity: ${fmtWh(result.recommendedMinimumCapacityWh)}`,
+              `Required continuous output: ${fmtWatts(result.requiredContinuousOutputW)}`,
+              `Required surge capability: ${fmtWatts(result.requiredSurgeOutputW)}`,
             ]}
             productCount={catalog.length}
           />

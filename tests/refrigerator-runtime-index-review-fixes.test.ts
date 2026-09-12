@@ -31,6 +31,7 @@ import {
   estimateProductDailySolarWh,
   estimateDailySolarWh,
   applySolarOffset,
+  withSolarAdjustedCapacity,
 } from "@/lib/tools-engine";
 import { buildRuntimeIndexCsv } from "@/lib/csv-export";
 import { recommendProducts } from "@/lib/recommend";
@@ -328,16 +329,44 @@ describe("Per-product solar results reach the Runtime Index table and CSV — ne
   });
 });
 
-describe("Solar credit never inflates a product's Suitable/Oversized classification when the panel-spec estimator is used", () => {
-  it("recommendProducts classification is computed from the UNADJUSTED result (never withSolarAdjustedCapacity's output) when solarSource is panel-spec", () => {
-    const src = read("src/components/tools/LoadListCalculator.tsx");
-    // The capacity-reducing helper is only applied through solarForGlobalUse,
-    // which is explicitly null whenever solarSource !== "manual".
-    expect(src).toContain('solarEnabled && solarSource === "manual" ? solar : null');
-    expect(src).toMatch(/const effectiveResult = useMemo\(\s*\(\) => \(solarForGlobalUse \? withSolarAdjustedCapacity\(result, solarForGlobalUse\) : result\)/);
+describe("Solar credit NEVER changes product classification — battery-only, always, for every solar source (2nd review round)", () => {
+  it("real computation: recommendProducts on the raw result vs. on a hypothetically solar-adjusted one gives DIFFERENT classifications — proving solar credit really would move products between statuses if it were ever applied", () => {
+    // This demonstrates the bug this fix prevents: if the component DID feed
+    // a solar-adjusted result into recommendProducts (which it no longer
+    // does — see the source-scan tests below), a product that hard-fails
+    // capacity battery-only could flip to a compatible status purely from
+    // an unverifiable, non-product-specific solar figure.
+    const device = baseDevice({ watts: 200, hoursPerDay: 10, surgeWatts: null }); // 2000 Wh/day
+    const result = calculatePower([device], { days: 1 }); // requiredUsableCapacityWh ~2353 Wh at default 85% efficiency
+    const solarAdjusted = withSolarAdjustedCapacity(result, applySolarOffset(result, 500, 1)); // 500 Wh/day solar credit
+    // 2000 Wh is below the battery-only requirement but above the
+    // solar-adjusted one — chosen deliberately to straddle both.
+    const product = baseProduct({ id: "borderline", capacity_wh: 2000, rated_output_w: 250 });
+
+    const batteryOnlyRec = recommendProducts(result, [product])[0];
+    const wouldBeSolarAdjustedRec = recommendProducts(solarAdjusted, [product])[0];
+    expect(batteryOnlyRec.status).toBe("Not Suitable");
+    expect(wouldBeSolarAdjustedRec.status).not.toBe("Not Suitable");
+    expect(batteryOnlyRec.status).not.toBe(wouldBeSolarAdjustedRec.status);
   });
 
-  it("a manually-typed solar figure resets solarSource back to \"manual\" so it never keeps using a stale panel-spec-only classification bypass", () => {
+  it("recommendProducts is called with the plain battery-only `result` — never a solar-adjusted one — as the ONLY call site in LoadListCalculator.tsx", () => {
+    const src = read("src/components/tools/LoadListCalculator.tsx");
+    const calls = [...src.matchAll(/recommendProducts\(([a-zA-Z]+),/g)].map((m) => m[1]);
+    expect(calls.length).toBeGreaterThan(0);
+    for (const arg of calls) {
+      expect(arg).toBe("result");
+    }
+  });
+
+  it("withSolarAdjustedCapacity and the old solarForGlobalUse/effectiveResult indirection no longer exist anywhere in LoadListCalculator.tsx", () => {
+    const src = read("src/components/tools/LoadListCalculator.tsx");
+    expect(src).not.toContain("withSolarAdjustedCapacity");
+    expect(src).not.toContain("solarForGlobalUse");
+    expect(src).not.toContain("effectiveResult");
+  });
+
+  it("a manually-typed solar figure resets solarSource back to \"manual\" (still tracked for the Runtime Index table's per-product display, though it no longer has any bearing on classification)", () => {
     const src = read("src/components/tools/LoadListCalculator.tsx");
     expect(src).toMatch(/setDailySolarWh\(Math\.max\(0, Number\(e\.target\.value\) \|\| 0\)\);\s*setSolarSource\("manual"\);/);
   });
@@ -347,24 +376,55 @@ describe("Solar credit never inflates a product's Suitable/Oversized classificat
     expect(src.toLowerCase()).toContain("applied the same way to every product below");
   });
 
+  it("the manual-solar info callout explicitly states classification and per-product autonomy are unaffected, and points to the panel-spec estimator for a per-product comparison", () => {
+    const src = read("src/components/tools/LoadListCalculator.tsx");
+    expect(src).toContain("This manual solar figure is shown only as an aggregate");
+    expect(src.replace(/\s+/g, " ").toLowerCase()).toContain("use the panel-spec estimator above instead");
+  });
+
+  it("the panel-spec info callout explicitly states the capacity and classification are calculated without solar credit", () => {
+    const src = read("src/components/tools/LoadListCalculator.tsx");
+    expect(src).toContain("the capacity and\n                classification above are calculated WITHOUT solar credit");
+  });
+
   it("the panel-spec estimator's own explanatory copy distinguishes panel wattage, the station's own solar input rating, estimated production, and remaining deficit", () => {
     const src = read("src/components/tools/LoadListCalculator.tsx");
     expect(src).toContain("panel&rsquo;s nameplate wattage");
     expect(src).toContain("solar input\n                rating");
   });
-});
 
-describe("Solar fully covering the daily load shows an honest message, never a bare not-verified fallback", () => {
-  it("applySolarOffset still reports fullyOffsetBySolar for the global/manual path (unchanged, pre-existing behavior)", () => {
-    const result = calculatePower([baseDevice({ watts: 50, hoursPerDay: 2 })], { days: 1 }); // 100 Wh/day
-    const solar = applySolarOffset(result, 500, 1);
-    expect(solar.fullyOffsetBySolar).toBe(true);
-    expect(solar.netDailyEnergyWh).toBe(0);
+  it("the headline capacity label discloses \"battery only, no solar credit\" whenever a nonzero solar figure is present", () => {
+    const src = read("src/components/tools/LoadListCalculator.tsx");
+    expect(src).toContain("Recommended minimum capacity (battery only, no solar credit)");
   });
 
-  it("LoadListCalculator populates solarCoveredProductIds for every product when the manual/global solar figure fully offsets the load", () => {
+  it("formulaText never subtracts a solar term — it must always match the battery-only headline number exactly", () => {
     const src = read("src/components/tools/LoadListCalculator.tsx");
-    expect(src).toContain("solar?.fullyOffsetBySolar");
+    expect(src).not.toMatch(/formulaText = `[^`]*solar/);
+  });
+});
+
+describe("Manual solar never applies a per-product 'covers the load' claim — only the panel-spec path can honestly make a per-product claim", () => {
+  it("real computation: solarCoveredProductIds-equivalent logic only ever adds a product when its OWN capped solar contribution is computed — a manual/global fullyOffsetBySolar flag is a different, aggregate-only concept", () => {
+    const result = calculatePower([baseDevice({ watts: 50, hoursPerDay: 2 })], { days: 1 }); // 100 Wh/day
+    const solar = applySolarOffset(result, 500, 1);
+    expect(solar.fullyOffsetBySolar).toBe(true); // the aggregate fact still exists...
+    // ...but per-product coverage must come only from a per-product capped
+    // calculation, never from this aggregate flag:
+    const perProductCoverage = estimateProductDailySolarWh({
+      panelWatts: 0, // no panel spec in the manual scenario
+      peakSunHours: 0,
+      realizationFraction: 0,
+      productSolarInputW: 200,
+    });
+    expect(perProductCoverage).toBe(0); // never inherits the aggregate "fully offset" fact
+  });
+
+  it("LoadListCalculator's solarCoveredProductIds is gated on solarSource === \"panel-spec\" and never reads solar.fullyOffsetBySolar", () => {
+    const src = read("src/components/tools/LoadListCalculator.tsx");
+    expect(src).not.toContain("solar?.fullyOffsetBySolar");
+    expect(src).not.toContain("Manual/global figure fully covers the load");
+    expect(src).toMatch(/solarCoveredProductIds = useMemo\(\(\) => \{\s*const covered = new Set<string>\(\);\s*if \(!solarEnabled \|\| dailySolarWh <= 0 \|\| solarSource !== "panel-spec"\) return covered;/);
   });
 });
 
