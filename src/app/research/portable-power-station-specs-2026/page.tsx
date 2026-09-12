@@ -4,6 +4,7 @@ import { getAllProducts } from "@/data/products";
 import { computeCatalogStats } from "@/lib/catalog-stats";
 import { pageMetadata, breadcrumbJsonLd, datasetJsonLd, absoluteUrl } from "@/lib/seo";
 import { fmtDate } from "@/lib/format";
+import { BILAL_SIALI } from "@/lib/authors";
 import { PageHero } from "@/components/layout/PageHero";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { Callout } from "@/components/ui/Callout";
@@ -79,6 +80,14 @@ export default function ResearchReportPage() {
 
       <div className="bg-navy-950 py-10 text-white">
         <div className="container-page prose-pml max-w-3xl">
+          <p className="not-prose -mt-2 mb-4 text-xs text-navy-400">
+            Compiled and maintained by{" "}
+            <Link href={BILAL_SIALI.path} className="underline hover:text-cyan-300">
+              {BILAL_SIALI.name}
+            </Link>{" "}
+            · Data current through {fmtDate(stats.dataCurrentThrough)}
+          </p>
+
           <Callout tone="warn" dark title="What this is, and what it isn't">
             This is a summary of specifications PowerMatchLab has collected editorially
             from manufacturer-published sources for the products currently in its own

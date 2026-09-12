@@ -19,6 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/tools",
     "/guides",
     "/research/portable-power-station-specs-2026",
+    "/authors/bilal-siali",
     "/about-methodology",
     "/editorial-policy",
     "/contact",
