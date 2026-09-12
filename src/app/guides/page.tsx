@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { GUIDES, GUIDE_GROUP_LABELS, type GuideGroup } from "@/content/guides";
+import { getAllProducts } from "@/data/products";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 import { PageHero } from "@/components/layout/PageHero";
 import { JsonLd } from "@/components/ui/JsonLd";
@@ -17,6 +18,7 @@ export const metadata: Metadata = pageMetadata({
 const GROUP_ORDER: GuideGroup[] = ["basics", "runtime", "use-cases", "charging-ownership"];
 
 export default function GuidesPage() {
+  const productCount = getAllProducts().length;
   return (
     <>
       <JsonLd
@@ -41,7 +43,7 @@ export default function GuidesPage() {
           >
             <span className="font-semibold text-cyan-300">Catalog dataset report →</span>{" "}
             <span className="text-navy-300">
-              Capacity, output and weight distributions across all 39 products, computed
+              Capacity, output and weight distributions across all {productCount} products, computed
               from the same data these guides cite — plus a free CSV download.
             </span>
           </Link>

@@ -59,6 +59,18 @@ const SIZE_CLASS_BY_ID: Record<string, IllustrationSizeClass> = {
   "bluetti-apex-300": "whole-home backup",
   "jackery-explorer-5000-plus": "whole-home backup",
   "ecoflow-delta-pro-ultra": "whole-home backup",
+
+  // 10-product catalog expansion, site-owner-supplied editorial illustrations (2026-09-12).
+  "ecoflow-river-3": "compact",
+  "goal-zero-yeti-300": "compact",
+  "bluetti-elite-200-v2": "large",
+  "ecoflow-delta-3-max": "large",
+  "ecoflow-delta-3-max-plus": "large",
+  "anker-solix-f2000": "large",
+  "jackery-homepower-3000": "whole-home backup",
+  "ecoflow-delta-3-ultra-plus": "whole-home backup",
+  "bluetti-elite-400": "whole-home backup",
+  "jackery-homepower-3600-plus": "whole-home backup",
 };
 
 /**
@@ -83,10 +95,14 @@ export function isPlaceholderIllustration(product: Product): boolean {
 
 /**
  * Product ids whose /illustrations/<id>.png is an independently-produced
- * editorial illustration supplied directly by the site owner (2026-09-11,
- * package "powermatchlab-illustrations", 17 files) — distinct both from the
- * V1/V2 cohort's original PowerMatchLab renders and from a generated
- * placeholder. Per the site owner's own integration instructions: these are
+ * editorial illustration supplied directly by the site owner — distinct
+ * both from the V1/V2 cohort's original PowerMatchLab renders and from a
+ * generated placeholder. Two batches so far: 2026-09-11 (package
+ * "powermatchlab-illustrations", 17 files) and 2026-09-12 (package
+ * "powermatchlab-10-product-images", 10 files, background-removed from
+ * opaque studio-background source renders — see
+ * tests/illustration-integrity.test.ts for the transparency regression
+ * coverage). Per the site owner's own integration instructions: these are
  * explicitly NOT official manufacturer photographs and must never be
  * captioned as one, but each one is a real, brand/model-specific artwork
  * (not a generic size-class stand-in) unique to its product id.
@@ -109,6 +125,18 @@ const EDITORIAL_ILLUSTRATION_IDS = new Set<string>([
   "jackery-explorer-500-v2",
   "jackery-explorer-5000-plus",
   "mango-power-e",
+
+  // 10-product catalog expansion, site-owner-supplied editorial illustrations (2026-09-12).
+  "bluetti-elite-200-v2",
+  "ecoflow-river-3",
+  "jackery-homepower-3000",
+  "ecoflow-delta-3-max",
+  "ecoflow-delta-3-max-plus",
+  "ecoflow-delta-3-ultra-plus",
+  "bluetti-elite-400",
+  "goal-zero-yeti-300",
+  "anker-solix-f2000",
+  "jackery-homepower-3600-plus",
 ]);
 
 export function isEditorialIllustration(product: Product): boolean {
