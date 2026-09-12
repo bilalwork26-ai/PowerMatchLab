@@ -109,7 +109,7 @@ export default async function GuidePage({
 
       <div className="bg-navy-950 py-10 text-white">
         <div className="container-page grid gap-10 lg:grid-cols-[1fr_280px]">
-        <article className="prose-pml max-w-none">
+        <article className="prose-pml min-w-0 max-w-none">
           <p className="not-prose -mt-2 mb-4 text-xs text-navy-400">
             By{" "}
             <Link href="/editorial-policy" className="underline hover:text-cyan-300">

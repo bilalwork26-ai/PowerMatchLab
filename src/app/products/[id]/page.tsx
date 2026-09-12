@@ -46,7 +46,10 @@ export async function generateMetadata({
   const name = productDisplayName(product);
   return pageMetadata({
     title: `${name} — Specs, PowerMatch Score & Runtime`,
-    description: `${name}: manufacturer-published specifications, PowerMatchLab's editorial score where the data justifies one, estimated runtime examples, pros and cons, and a direct link to Amazon.`,
+    // Kept under ~150 chars for every product name in the catalog (checked
+    // against the longest current name) so Google's snippet doesn't cut it
+    // mid-sentence on mobile, where every confirmed click so far originates.
+    description: `${name}: manufacturer specs, an editorial PowerMatch Score, estimated runtime examples, pros and cons, and a verified link to Amazon.`,
     path: `/products/${product.id}`,
   });
 }
