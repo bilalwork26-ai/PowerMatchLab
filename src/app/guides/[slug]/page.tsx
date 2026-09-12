@@ -9,6 +9,7 @@ import { getTool } from "@/content/tools";
 import { getProductsByIds } from "@/data/products";
 import { scoreCatalog } from "@/lib/score";
 import { getAllProducts } from "@/data/products";
+import { BILAL_SIALI } from "@/lib/authors";
 import {
   pageMetadata,
   breadcrumbJsonLd,
@@ -102,6 +103,7 @@ export default async function GuidePage({
             description: guide.metaDescription,
             path: `/guides/${guide.slug}`,
             datePublished: guide.lastUpdated,
+            author: { name: BILAL_SIALI.name, path: BILAL_SIALI.path },
           }),
         ]}
       />
@@ -112,8 +114,8 @@ export default async function GuidePage({
         <article className="prose-pml min-w-0 max-w-none">
           <p className="not-prose -mt-2 mb-4 text-xs text-navy-400">
             By{" "}
-            <Link href="/editorial-policy" className="underline hover:text-cyan-300">
-              PowerMatchLab Editorial
+            <Link href={BILAL_SIALI.path} className="underline hover:text-cyan-300">
+              {BILAL_SIALI.name}
             </Link>{" "}
             · Last updated {fmtDate(guide.lastUpdated)}
           </p>
