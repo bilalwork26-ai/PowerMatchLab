@@ -22,7 +22,18 @@ export function PrintSummary({
   toolTitle: string;
   siteUrl: string;
   formulaText: string;
-  generatedAt: Date;
+  /**
+   * `null` until the caller has resolved it client-side after mount. This
+   * component is always present in the DOM (`hidden` on screen, not
+   * conditionally unmounted), so a `new Date()` computed directly during
+   * render would differ between the server/build-time render and the
+   * browser's hydration render — for a statically-generated page that can
+   * be days or weeks apart, not just a midnight edge case — causing a
+   * hydration mismatch AND printing the wrong (build) date. Resolving it in
+   * a `useEffect` at the call site avoids both: see LoadListCalculator's
+   * `generatedAt` state.
+   */
+  generatedAt: Date | null;
   inputsSummary: string[];
   assumptionsSummary: string[];
   resultsSummary: string[];
@@ -32,8 +43,11 @@ export function PrintSummary({
     <div className="hidden print:block print:text-black">
       <h2 className="text-lg font-bold">{toolTitle} — PowerMatchLab</h2>
       <p className="text-xs">
-        Generated {generatedAt.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })} ·{" "}
-        {siteUrl}
+        Generated{" "}
+        {generatedAt
+          ? generatedAt.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+          : "—"}{" "}
+        · {siteUrl}
       </p>
 
       <h3 className="mt-3 text-sm font-bold">Your inputs</h3>

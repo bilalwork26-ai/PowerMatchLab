@@ -157,7 +157,7 @@ describe("Outage duration: hours and whole days both produce a valid, finite cal
     expect(result.totalEnergyDemandWh).toBeLessThan(oneDay.totalEnergyDemandWh);
   });
 
-  it("a sub-hour or zero/negative days value clamps up to MIN_DAYS, never to 0 or NaN", () => {
+  it("every day value produces a finite, positive result — see refrigerator-runtime-index-review-fixes.test.ts for the exact 1-hour-vs-1-day fallback distinction", () => {
     for (const bad of [0, -5, 0.0001]) {
       const result = calculatePower([baseDevice()], { days: bad });
       expect(Number.isFinite(result.totalEnergyDemandWh)).toBe(true);

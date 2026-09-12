@@ -13,17 +13,11 @@
  * documented assumptions — never a measured or guaranteed result.
  */
 
-import { MIN_DAYS, type CalculatorResult } from "./calculator";
+import { sanitizeAutonomyDays, type CalculatorResult } from "./calculator";
 
 function sanitizeNonNegative(value: number, max = Number.MAX_SAFE_INTEGER): number {
   if (!Number.isFinite(value) || Number.isNaN(value)) return 0;
   return Math.min(max, Math.max(0, value));
-}
-
-/** Mirrors calculatePower's own days clamp exactly (MIN_DAYS, one hour, through 30) so a solar-adjusted result never disagrees with the unadjusted one over a sub-day autonomy window. */
-function sanitizeDays(value: number): number {
-  if (!Number.isFinite(value) || Number.isNaN(value)) return MIN_DAYS;
-  return Math.min(30, Math.max(MIN_DAYS, value));
 }
 
 export interface SolarAdjustedResult {
@@ -59,7 +53,7 @@ export function applySolarOffset(
   days: number,
 ): SolarAdjustedResult {
   const solar = sanitizeNonNegative(dailySolarWh, 100_000);
-  const daysUsed = sanitizeDays(days);
+  const daysUsed = sanitizeAutonomyDays(days);
   const dailyEnergyWh = sanitizeNonNegative(result.dailyEnergyWh, 1_000_000);
 
   const solarContributionWh = Math.min(solar, dailyEnergyWh);
@@ -141,10 +135,41 @@ export function deriveWattsAndHoursFromDailyEnergy(dailyEnergyWh: number): {
   return { watts: safeWh / 24, hoursPerDay: 24 };
 }
 
-/** Exact, unrounded kWh → Wh conversion (×1000) — the only unit conversion this feature needs. */
+/** Exact, unrounded kWh → Wh conversion (×1000). */
 export function kwhToWh(kwh: number): number {
   if (!Number.isFinite(kwh) || kwh <= 0) return 0;
   return kwh * 1000;
+}
+
+/**
+ * The three units a visitor might reasonably have their refrigerator's daily
+ * energy figure in. `kWhYear` exists specifically because the US
+ * EnergyGuide label required on refrigerators shows ANNUAL kWh/year, not a
+ * daily figure — see {@link dailyEnergyUnitToWh}.
+ */
+export type DailyEnergyUnit = "Wh" | "kWh" | "kWhYear";
+
+/**
+ * Converts a value entered in any of the three supported daily-energy units
+ * into Wh/day — the one place the annual→daily conversion happens.
+ *
+ * This exists because a US EnergyGuide label almost always states annual
+ * consumption in kWh/year, not a daily kWh or Wh figure. Treating that
+ * annual number as if it were already daily (e.g. entering "438" under
+ * "kWh/day") would overstate daily consumption by roughly 365×, so `kWhYear`
+ * is its own explicit unit rather than folded into `kWh`, and divides by
+ * 365 here rather than asking the visitor to do that math themselves.
+ */
+export function dailyEnergyUnitToWh(value: number, unit: DailyEnergyUnit): number {
+  if (!Number.isFinite(value) || value <= 0) return 0;
+  switch (unit) {
+    case "Wh":
+      return value;
+    case "kWh":
+      return kwhToWh(value);
+    case "kWhYear":
+      return kwhToWh(value) / 365;
+  }
 }
 
 export interface SolarEstimateInput {
@@ -174,6 +199,37 @@ export function estimateDailySolarWh(input: SolarEstimateInput): number {
     ? Math.min(1, Math.max(0, input.realizationFraction))
     : 0.7;
   return panelWatts * peakSunHours * realizationFraction;
+}
+
+export interface ProductSolarCapInput extends SolarEstimateInput {
+  /** The specific product's own verified max solar charging input, in watts — null when unverified. */
+  productSolarInputW: number | null;
+}
+
+/**
+ * Caps a panel-spec solar estimate to ONE SPECIFIC product's own verified
+ * solar input rating. A 1,000 W array cannot charge a station with only a
+ * 200 W solar input port any faster than that 200 W port allows, so the
+ * same panel spec produces a different realistic daily contribution for
+ * every product — never one global number applied uniformly.
+ *
+ * Returns `null` when the product's own solar input rating is unverified:
+ * an unknown limit is never assumed to be "no limit" (i.e. the full,
+ * uncapped panel wattage), since that would let a missing spec silently
+ * inflate that product's estimated autonomy or standing versus a product
+ * whose (possibly much lower) rating IS verified.
+ */
+export function estimateProductDailySolarWh(input: ProductSolarCapInput): number | null {
+  if (input.productSolarInputW == null) return null;
+  const cappedPanelWatts = Math.min(
+    sanitizeNonNegative(input.panelWatts, 100_000),
+    sanitizeNonNegative(input.productSolarInputW, 100_000),
+  );
+  return estimateDailySolarWh({
+    panelWatts: cappedPanelWatts,
+    peakSunHours: input.peakSunHours,
+    realizationFraction: input.realizationFraction,
+  });
 }
 
 /** Closed enum for the `calculator_type` analytics parameter — see analytics.ts. */

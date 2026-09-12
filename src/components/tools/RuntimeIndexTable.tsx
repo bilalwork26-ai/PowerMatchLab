@@ -14,7 +14,18 @@ import { productDisplayName } from "@/data/products";
 import { STATUS_STYLES_DARK } from "@/components/calculator/RecommendationCard";
 import { AmazonCta } from "@/components/product/AmazonCta";
 import { CompareToggleButton } from "@/components/product/CompareToggleButton";
+import { cn } from "@/lib/cn";
 import { formatAutonomy } from "./shared";
+
+/**
+ * Shown instead of a battery-only "days of autonomy" figure when the
+ * caller determined this product's own (solar-input-capped) estimated daily
+ * solar contribution meets or exceeds the daily energy need — an honest
+ * explanation, never a bare "Not verified" that would look like missing
+ * data when the real reason is "solar may already cover this".
+ */
+const SOLAR_MAY_COVER_LOAD_MESSAGE =
+  "Estimated solar production may cover the stated daily load; battery capacity still provides overnight and low-sun buffering.";
 
 const STATUS_OPTIONS: { value: MatchStatus | "all"; label: string }[] = [
   { value: "all", label: "All statuses" },
@@ -58,12 +69,23 @@ export function RuntimeIndexTable({
   autonomyByProductId,
   autonomyUnit,
   catalogCount,
+  solarCoveredProductIds,
 }: {
   recommendations: Recommendation[];
   /** Precomputed once by the caller (see LoadListCalculator) so this table and the CSV export never compute autonomy independently and risk drifting apart. */
   autonomyByProductId: ReadonlyMap<string, number | null>;
   autonomyUnit: { singular: string; plural: string };
   catalogCount: number;
+  /**
+   * Product IDs for which the caller determined the estimated (per-product,
+   * solar-input-capped) daily solar contribution meets or exceeds the daily
+   * energy need — `autonomyByProductId` is `null` for these (a battery-only
+   * "days of autonomy" figure isn't a meaningful number when solar may cover
+   * the whole load), but that is a DIFFERENT reason than "not enough data",
+   * so the table shows an honest explanation instead of the generic
+   * not-verified fallback. Defaults to empty.
+   */
+  solarCoveredProductIds?: ReadonlySet<string>;
 }) {
   const [sortKey, setSortKey] = useState<RuntimeIndexSortKey>("status");
   const [sortDir, setSortDir] = useState<SortDirection>("asc");
@@ -171,8 +193,18 @@ export function RuntimeIndexTable({
                     </Link>
                   </td>
                   {visibleColumns.map((col) => (
-                    <td key={col.key} className="whitespace-nowrap px-2 py-2 text-navy-200">
-                      {renderCell(col.key, rec, autonomyUnits, autonomyUnit)}
+                    <td
+                      key={col.key}
+                      className={cn(
+                        "px-2 py-2 text-navy-200",
+                        col.key === "autonomy" && solarCoveredProductIds?.has(rec.product.id)
+                          ? "whitespace-normal"
+                          : "whitespace-nowrap",
+                      )}
+                    >
+                      {col.key === "autonomy" && solarCoveredProductIds?.has(rec.product.id)
+                        ? SOLAR_MAY_COVER_LOAD_MESSAGE
+                        : renderCell(col.key, rec, autonomyUnits, autonomyUnit)}
                     </td>
                   ))}
                   <td className="py-2 pl-2 pr-3">

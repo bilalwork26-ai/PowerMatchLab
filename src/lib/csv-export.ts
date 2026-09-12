@@ -38,8 +38,12 @@ export interface RuntimeIndexCsvMeta {
   autonomyUnitPlural: string;
 }
 
-function autonomyValue(units: number | null, unitPlural: string): string {
-  if (units == null) return NOT_VERIFIED;
+/** Same honest message shown in RuntimeIndexTable.tsx for the same condition — see that file's SOLAR_MAY_COVER_LOAD_MESSAGE. */
+const SOLAR_MAY_COVER_LOAD_MESSAGE =
+  "Estimated solar production may cover the stated daily load; battery capacity still provides overnight and low-sun buffering.";
+
+function autonomyValue(units: number | null, unitPlural: string, solarCovered: boolean): string {
+  if (units == null) return solarCovered ? SOLAR_MAY_COVER_LOAD_MESSAGE : NOT_VERIFIED;
   return `${(Math.round(units * 10) / 10).toFixed(1)} ${unitPlural}`;
 }
 
@@ -53,6 +57,8 @@ export function buildRuntimeIndexCsv(
   recommendations: Recommendation[],
   autonomyByProductId: Map<string, number | null>,
   meta: RuntimeIndexCsvMeta,
+  /** Same set passed to RuntimeIndexTable — see its doc comment. Defaults to empty. */
+  solarCoveredProductIds: ReadonlySet<string> = new Set(),
 ): string {
   const lines: string[] = [
     `# ${meta.toolTitle} — PowerMatchLab Runtime Index export`,
@@ -89,7 +95,7 @@ export function buildRuntimeIndexCsv(
         p.brand,
         p.model,
         rec.status,
-        autonomyValue(autonomyByProductId.get(p.id) ?? null, meta.autonomyUnitPlural),
+        autonomyValue(autonomyByProductId.get(p.id) ?? null, meta.autonomyUnitPlural, solarCoveredProductIds.has(p.id)),
         p.capacity_wh ?? NOT_VERIFIED,
         p.rated_output_w ?? NOT_VERIFIED,
         p.surge_output_w ?? NOT_VERIFIED,

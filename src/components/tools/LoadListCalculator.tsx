@@ -11,9 +11,11 @@ import {
   applySolarOffset,
   withSolarAdjustedCapacity,
   deriveWattsAndHoursFromDailyEnergy,
-  kwhToWh,
+  dailyEnergyUnitToWh,
   estimateDailySolarWh,
+  estimateProductDailySolarWh,
   estimateAutonomyUnits,
+  type DailyEnergyUnit,
   type ToolCalculatorType,
 } from "@/lib/tools-engine";
 import {
@@ -122,7 +124,7 @@ export function LoadListCalculator({
   // consumes; see deriveWattsAndHoursFromDailyEnergy in tools-engine.ts.
   const [entryMode, setEntryMode] = useState<"watts" | "daily-energy">("watts");
   const [dailyEnergyEntries, setDailyEnergyEntries] = useState<
-    Record<string, { raw: string; unit: "Wh" | "kWh" }>
+    Record<string, { raw: string; unit: DailyEnergyUnit }>
   >({});
 
   // Solar panel estimator (config.allowSolarEstimator only) — pre-fills
@@ -139,6 +141,26 @@ export function LoadListCalculator({
   const [panelWatts, setPanelWatts] = useState(100);
   const [peakSunHours, setPeakSunHours] = useState(4);
   const [solarRealizationPct, setSolarRealizationPct] = useState(70);
+  /**
+   * Whether the current `dailySolarWh` figure came from the panel-spec
+   * estimator (a product-agnostic, uncapped best case that must be capped
+   * to each product's OWN solar_input_w before it means anything for a
+   * specific model — see the per-product solarCoveredProductIds/
+   * autonomyByProductId computation below) or was typed directly by the
+   * visitor (a single number we cannot safely re-derive per product, since
+   * we don't know what panel wattage — if any — produced it). Defaults to
+   * "manual" and flips to "panel-spec" only when "Use this estimate" is
+   * clicked; typing directly into the Wh field flips it back.
+   */
+  const [solarSource, setSolarSource] = useState<"manual" | "panel-spec">("manual");
+
+  // Resolved client-side only (see PrintSummary's generatedAt prop doc) so
+  // the printed report never mismatches between a statically-built server
+  // render and the browser's hydration render.
+  const [generatedAt, setGeneratedAt] = useState<Date | null>(null);
+  useEffect(() => {
+    setGeneratedAt(new Date());
+  }, []);
 
   const result = useMemo(
     () =>
@@ -156,9 +178,22 @@ export function LoadListCalculator({
     [solarEnabled, result, dailySolarWh, days],
   );
 
+  // The panel-spec estimator's output is a product-agnostic BEST CASE: it
+  // assumes a station that can accept the visitor's full panel wattage,
+  // which most models cannot (see each product's own `solar_input_w`).
+  // Letting that uncapped figure reduce the shared capacity requirement
+  // used for EVERY product's Suitable/Oversized classification would let a
+  // large stated panel wattage inflate a small-solar-input product's
+  // standing just as much as a large-solar-input one's — exactly the
+  // "artificially improves classification" failure mode this must avoid.
+  // A manually-typed Wh/day figure has no known panel wattage to cap by, so
+  // it keeps the pre-existing, sitewide (RV/Home Backup share this) global
+  // behavior; only the new automatic estimator path is restricted here.
+  const solarForGlobalUse = solarEnabled && solarSource === "manual" ? solar : null;
+
   const effectiveResult = useMemo(
-    () => (solar ? withSolarAdjustedCapacity(result, solar) : result),
-    [result, solar],
+    () => (solarForGlobalUse ? withSolarAdjustedCapacity(result, solarForGlobalUse) : result),
+    [result, solarForGlobalUse],
   );
 
   const recommendations = useMemo(() => {
@@ -225,12 +260,40 @@ export function LoadListCalculator({
   };
 
   /** Daily-energy mode: the visitor edits one "daily energy" figure + unit for a row; watts/hoursPerDay are derived so calculatePower never sees a second input shape. */
-  const updateDailyEnergyRow = (id: string, raw: string, unit: "Wh" | "kWh") => {
+  const updateDailyEnergyRow = (id: string, raw: string, unit: DailyEnergyUnit) => {
     setDailyEnergyEntries((prev) => ({ ...prev, [id]: { raw, unit } }));
     const parsed = Number(raw);
-    const dailyWh = Number.isFinite(parsed) && parsed > 0 ? (unit === "kWh" ? kwhToWh(parsed) : parsed) : 0;
+    const dailyWh = Number.isFinite(parsed) && parsed > 0 ? dailyEnergyUnitToWh(parsed, unit) : 0;
     const { watts, hoursPerDay } = deriveWattsAndHoursFromDailyEnergy(dailyWh);
     updateRow(id, { watts, hoursPerDay });
+  };
+
+  /** The per-unit daily Wh a row currently represents, from its live watts × hoursPerDay — used to show the daily-energy field's equivalent value the instant a row is first seen in that mode (a newly switched-to row, or a preset/custom row added while already in that mode), rather than a blank field backed by a hidden, un-displayed figure. */
+  const rowDailyWh = (row: DeviceInput) => Math.round(row.watts * row.hoursPerDay);
+
+  /** Renders a Wh figure in the given display unit — the inverse of dailyEnergyUnitToWh, for showing an equivalent value the visitor hasn't explicitly typed. */
+  const formatDailyWhForUnit = (dailyWh: number, unit: DailyEnergyUnit): string => {
+    if (dailyWh <= 0) return "";
+    if (unit === "kWh") return String(Math.round((dailyWh / 1000) * 100) / 100);
+    if (unit === "kWhYear") return String(Math.round(((dailyWh * 365) / 1000) * 100) / 100);
+    return String(dailyWh);
+  };
+
+  /**
+   * Switching ONLY the unit dropdown (not the number) must re-express the
+   * SAME underlying energy value in the new unit — never silently
+   * reinterpret the same digits as if they meant something ~365x or 1000x
+   * different. Converts the row's current daily Wh (from its stored raw
+   * entry if the visitor has typed one, or its live watts × hoursPerDay
+   * otherwise) into the new unit's number before handing off to
+   * updateDailyEnergyRow.
+   */
+  const changeDailyEnergyUnit = (row: DeviceInput, newUnit: DailyEnergyUnit) => {
+    const stored = dailyEnergyEntries[row.id];
+    const currentDailyWh = stored
+      ? dailyEnergyUnitToWh(Number(stored.raw) || 0, stored.unit)
+      : rowDailyWh(row);
+    updateDailyEnergyRow(row.id, formatDailyWhForUnit(currentDailyWh, newUnit), newUnit);
   };
 
   const applySolarEstimate = () => {
@@ -240,6 +303,7 @@ export function LoadListCalculator({
       realizationFraction: solarRealizationPct / 100,
     });
     setDailySolarWh(Math.round(estimated));
+    setSolarSource("panel-spec");
   };
 
   const buildShareUrl = () => {
@@ -251,37 +315,122 @@ export function LoadListCalculator({
     return `${SITE.url}${config.toolPath}?${query}`;
   };
 
-  const autonomyDailyEnergyWh = solar ? solar.netDailyEnergyWh : effectiveResult.dailyEnergyWh;
+  const autonomyDailyEnergyWh = solarForGlobalUse ? solarForGlobalUse.netDailyEnergyWh : effectiveResult.dailyEnergyWh;
+
+  /**
+   * Per-product autonomy AND the "solar may already cover this" flag.
+   *
+   * When the panel-spec estimator produced the current solar figure, every
+   * product gets its OWN daily solar contribution — the same array charges
+   * a 1,000 W-input station much faster than it can a 100 W-input one — by
+   * capping the stated panel wattage to that product's own verified
+   * `solar_input_w` (estimateProductDailySolarWh returns null, never an
+   * assumed full-wattage figure, when that spec is unverified). Otherwise
+   * (a manually-typed Wh/day figure, or no solar at all) every product
+   * shares the same single global daily-energy figure — unchanged,
+   * pre-existing behavior.
+   */
+  const solarCoveredProductIds = useMemo(() => {
+    const covered = new Set<string>();
+    if (!solarEnabled || dailySolarWh <= 0) return covered;
+    if (solarSource === "panel-spec") {
+      if (result.dailyEnergyWh <= 0) return covered;
+      for (const rec of recommendations) {
+        const productDailySolarWh = estimateProductDailySolarWh({
+          panelWatts,
+          peakSunHours,
+          realizationFraction: solarRealizationPct / 100,
+          productSolarInputW: rec.product.solar_input_w,
+        });
+        if (productDailySolarWh != null && productDailySolarWh >= result.dailyEnergyWh) {
+          covered.add(rec.product.id);
+        }
+      }
+    } else if (solar?.fullyOffsetBySolar) {
+      // Manual/global figure fully covers the load — applies uniformly.
+      for (const rec of recommendations) covered.add(rec.product.id);
+    }
+    return covered;
+  }, [
+    solarEnabled,
+    dailySolarWh,
+    solarSource,
+    recommendations,
+    panelWatts,
+    peakSunHours,
+    solarRealizationPct,
+    result.dailyEnergyWh,
+    solar,
+  ]);
+
   const autonomyByProductId = useMemo(() => {
     const map = new Map<string, number | null>();
     for (const rec of recommendations) {
-      map.set(
-        rec.product.id,
-        estimateAutonomyUnits(rec.product.capacity_wh, autonomyDailyEnergyWh, efficiencyPct / 100),
-      );
+      if (solarSource === "panel-spec" && solarEnabled && dailySolarWh > 0) {
+        const productDailySolarWh = estimateProductDailySolarWh({
+          panelWatts,
+          peakSunHours,
+          realizationFraction: solarRealizationPct / 100,
+          productSolarInputW: rec.product.solar_input_w,
+        });
+        if (productDailySolarWh == null) {
+          // Unverified solar_input_w — never assumed to accept the full
+          // panel wattage, so there is nothing safe to compute.
+          map.set(rec.product.id, null);
+          continue;
+        }
+        const productNetDailyEnergyWh = Math.max(0, result.dailyEnergyWh - productDailySolarWh);
+        map.set(
+          rec.product.id,
+          productNetDailyEnergyWh > 0
+            ? estimateAutonomyUnits(rec.product.capacity_wh, productNetDailyEnergyWh, efficiencyPct / 100)
+            : null, // fully covered — see solarCoveredProductIds for the honest display text
+        );
+      } else {
+        map.set(
+          rec.product.id,
+          estimateAutonomyUnits(rec.product.capacity_wh, autonomyDailyEnergyWh, efficiencyPct / 100),
+        );
+      }
     }
     return map;
-  }, [recommendations, autonomyDailyEnergyWh, efficiencyPct]);
+  }, [
+    recommendations,
+    autonomyDailyEnergyWh,
+    efficiencyPct,
+    solarSource,
+    solarEnabled,
+    dailySolarWh,
+    panelWatts,
+    peakSunHours,
+    solarRealizationPct,
+    result.dailyEnergyWh,
+  ]);
 
   const formulaText = `= (${result.dailyEnergyWh.toLocaleString("en-US")} Wh/day${
-    solar ? ` − ${solar.solarContributionWh.toLocaleString("en-US")} Wh/day solar` : ""
+    solarForGlobalUse ? ` − ${solarForGlobalUse.solarContributionWh.toLocaleString("en-US")} Wh/day solar` : ""
   } × ${days} ${days === 1 ? "day" : "days"}) ÷ ${efficiencyPct}% usable × (1 + ${reservePct}% reserve)`;
 
   const handleCsvDownload = () => {
-    const csv = buildRuntimeIndexCsv(recommendations, autonomyByProductId, {
-      toolTitle: config.toolTitle,
-      generatedAtIso: new Date().toISOString(),
-      siteUrl: `${SITE.url}${config.toolPath}`,
-      formulaText,
-      dailyEnergyWh: result.dailyEnergyWh,
-      recommendedCapacityWh: effectiveResult.recommendedMinimumCapacityWh,
-      requiredContinuousOutputW: effectiveResult.requiredContinuousOutputW,
-      requiredSurgeOutputW: effectiveResult.requiredSurgeOutputW,
-      days,
-      efficiencyPct,
-      reservePct,
-      autonomyUnitPlural: config.autonomyUnit.plural,
-    });
+    const csv = buildRuntimeIndexCsv(
+      recommendations,
+      autonomyByProductId,
+      {
+        toolTitle: config.toolTitle,
+        generatedAtIso: new Date().toISOString(),
+        siteUrl: `${SITE.url}${config.toolPath}`,
+        formulaText,
+        dailyEnergyWh: result.dailyEnergyWh,
+        recommendedCapacityWh: effectiveResult.recommendedMinimumCapacityWh,
+        requiredContinuousOutputW: effectiveResult.requiredContinuousOutputW,
+        requiredSurgeOutputW: effectiveResult.requiredSurgeOutputW,
+        days,
+        efficiencyPct,
+        reservePct,
+        autonomyUnitPlural: config.autonomyUnit.plural,
+      },
+      solarCoveredProductIds,
+    );
     downloadCsv(csv, `powermatchlab-${config.calculatorType}-runtime-index.csv`);
     trackEvent("csv_download", { content_key: "tool" });
   };
@@ -320,9 +469,18 @@ export function LoadListCalculator({
                 onChange={() => setEntryMode("daily-energy")}
                 className="h-4 w-4 border-navy-600 bg-navy-900 text-cyan-500 focus:ring-cyan-400"
               />
-              Daily energy (Wh or kWh) — e.g. from an EnergyGuide label
+              Daily or annual energy — from an EnergyGuide label or a plug-in meter
             </label>
           </div>
+          {entryMode === "daily-energy" ? (
+            <p className="mt-1.5 text-xs text-navy-400">
+              The yellow US EnergyGuide label on a refrigerator states ANNUAL
+              consumption in kWh/year, not a daily figure — select
+              &ldquo;kWh/year&rdquo; below and PowerMatchLab divides by 365 for you.
+              A 24-hour reading from a plug-in energy meter is a daily figure
+              already, so use Wh/day or kWh/day for that instead.
+            </p>
+          ) : null}
         </fieldset>
       ) : null}
 
@@ -389,7 +547,19 @@ export function LoadListCalculator({
               const wh = Math.round(
                 Math.max(0, row.watts) * Math.max(0, row.quantity) * Math.max(0, row.hoursPerDay),
               );
-              const dailyEntry = dailyEnergyEntries[row.id] ?? { raw: "", unit: "Wh" as const };
+              // A row with no explicit entry yet in this mode (just switched
+              // into daily-energy mode, or a preset/custom row added while
+              // already in it) shows the EQUIVALENT of its current
+              // watts x hoursPerDay rather than a blank field — the engine
+              // keeps using row.watts/row.hoursPerDay regardless, so a blank
+              // field here would visually hide a real, nonzero figure still
+              // driving the calculation below.
+              const storedDailyEntry = dailyEnergyEntries[row.id];
+              const dailyEntryUnit = storedDailyEntry?.unit ?? "Wh";
+              const dailyEntry = storedDailyEntry ?? {
+                raw: formatDailyWhForUnit(rowDailyWh(row), dailyEntryUnit),
+                unit: dailyEntryUnit,
+              };
               return (
                 <tr key={row.id} className="border-b border-navy-800">
                   <td className="py-2 pr-2">
@@ -416,14 +586,13 @@ export function LoadListCalculator({
                         />
                         <select
                           value={dailyEntry.unit}
-                          onChange={(e) =>
-                            updateDailyEnergyRow(row.id, dailyEntry.raw, e.target.value as "Wh" | "kWh")
-                          }
+                          onChange={(e) => changeDailyEnergyUnit(row, e.target.value as DailyEnergyUnit)}
                           aria-label="Daily energy unit"
                           className={cn("py-1.5", darkSelect)}
                         >
                           <option value="Wh">Wh/day</option>
                           <option value="kWh">kWh/day</option>
+                          <option value="kWhYear">kWh/year (EnergyGuide label)</option>
                         </select>
                       </div>
                     </td>
@@ -609,13 +778,20 @@ export function LoadListCalculator({
                 type="number"
                 min={0}
                 value={dailySolarWh || ""}
-                onChange={(e) => setDailySolarWh(Math.max(0, Number(e.target.value) || 0))}
+                onChange={(e) => {
+                  setDailySolarWh(Math.max(0, Number(e.target.value) || 0));
+                  setSolarSource("manual");
+                }}
                 placeholder="0"
                 className={cn("mt-1 w-full", darkInput)}
               />
               <span className="mt-1 block text-xs text-navy-400">
                 Leave at 0 if you have no solar recharge. This is a planning estimate
                 of your panel&rsquo;s realistic daily output, not a guarantee of sun.
+                This single figure is applied the same way to every product below;
+                if you measured it at one specific station&rsquo;s charging port,
+                results for a different model may vary in reality, since PowerMatchLab
+                has no way to know that station&rsquo;s own solar input rating.
               </span>
             </label>
           ) : null}
@@ -665,6 +841,20 @@ export function LoadListCalculator({
                 the equivalent hours at full rated output. Realistic yield accounts for
                 angle, temperature, haze and wiring losses; 60-80% is a common planning
                 range, never the full nameplate wattage.
+              </p>
+              <p className="mt-2 text-[11px] text-navy-400">
+                Four different numbers matter here, and they are not interchangeable:
+                your <strong className="text-navy-300">panel&rsquo;s nameplate wattage</strong> (entered
+                above), each station&rsquo;s own <strong className="text-navy-300">solar input
+                rating</strong> (its charging port&rsquo;s hardware limit — see the Runtime Index
+                table below), the <strong className="text-navy-300">estimated daily
+                production</strong> that actually results (capped to whichever of those two
+                is smaller), and the <strong className="text-navy-300">daily deficit</strong> still
+                left for the battery to cover. A bigger panel than a station&rsquo;s own
+                rating cannot charge it any faster than that rating allows — so once you
+                use this estimator, the Runtime Index table below shows each product&rsquo;s
+                own solar-adjusted estimate, capped to its own rating, rather than one
+                number applied to every model.
               </p>
               <button
                 type="button"
@@ -764,16 +954,30 @@ export function LoadListCalculator({
           formulaText={formulaText}
           stats={[
             { label: "Total daily energy", value: fmtWh(result.dailyEnergyWh) },
-            ...(solar ? [{ label: "Daily deficit after solar", value: fmtWh(solar.dailyDeficitWh) }] : []),
+            ...(solarForGlobalUse
+              ? [{ label: "Daily deficit after solar", value: fmtWh(solarForGlobalUse.dailyDeficitWh) }]
+              : []),
             { label: "Required continuous output", value: fmtWatts(effectiveResult.requiredContinuousOutputW) },
             { label: "Required surge capability", value: fmtWatts(effectiveResult.requiredSurgeOutputW) },
           ]}
-          solar={solar}
+          solar={solarForGlobalUse}
           efficiency={efficiencyPct / 100}
           autonomyDailyEnergyWh={autonomyDailyEnergyWh}
           autonomyUnit={config.autonomyUnit}
           recommendations={recommendations}
         />
+        {ready && solarSource === "panel-spec" && dailySolarWh > 0 ? (
+          <Callout tone="info" dark className="mt-4">
+            Because this used the panel-spec estimator, the capacity and
+            recommendation above are calculated WITHOUT solar credit — a
+            station&rsquo;s real charging rate depends on its own solar input
+            rating, not just your panels&rsquo; wattage, so PowerMatchLab does not
+            apply one uncapped estimate to every product&rsquo;s classification.
+            The Runtime Index table below shows each product&rsquo;s own
+            solar-adjusted autonomy estimate instead, capped to that
+            product&rsquo;s own verified solar input rating.
+          </Callout>
+        ) : null}
       </div>
 
       {ready && config.allowShareAndExport ? (
@@ -804,18 +1008,27 @@ export function LoadListCalculator({
             toolTitle={config.toolTitle}
             siteUrl={SITE.url}
             formulaText={formulaText}
-            generatedAt={new Date()}
+            generatedAt={generatedAt}
             inputsSummary={devices
               .filter((d) => d.watts > 0)
-              .map(
-                (d) =>
-                  `${d.name || "Load"}: ${d.watts} W × ${d.quantity} × ${d.hoursPerDay} h/day${
-                    d.surgeWatts != null ? `, surge ${d.surgeWatts} W (user-entered)` : ", surge not entered — a conservative multiplier was assumed"
-                  }`,
-              )
+              .map((d) => {
+                const surgeSuffix =
+                  d.surgeWatts != null
+                    ? `, surge ${d.surgeWatts} W (user-entered)`
+                    : ", surge not entered — a conservative multiplier was assumed";
+                const dailyEntry = dailyEnergyEntries[d.id];
+                if (entryMode === "daily-energy" && dailyEntry && dailyEntry.raw !== "") {
+                  const unitLabel =
+                    dailyEntry.unit === "Wh" ? "Wh/day" : dailyEntry.unit === "kWh" ? "kWh/day" : "kWh/year";
+                  return `${d.name || "Load"}: entered as ${dailyEntry.raw} ${unitLabel} → ${rowDailyWh(d).toLocaleString("en-US")} Wh/day derived × ${d.quantity}${surgeSuffix}`;
+                }
+                return `${d.name || "Load"}: ${d.watts} W × ${d.quantity} × ${d.hoursPerDay} h/day${surgeSuffix}`;
+              })
               .concat([
                 `Autonomy target: ${days} ${days === 1 ? "day" : "days"}`,
-                dailySolarWh > 0 ? `Daily solar recharge (user estimate): ${Math.round(dailySolarWh)} Wh/day` : "No solar recharge entered",
+                dailySolarWh > 0
+                  ? `Daily solar recharge (${solarSource === "panel-spec" ? "estimated from panel specs, capped per product in the table below" : "user estimate"}): ${Math.round(dailySolarWh)} Wh/day`
+                  : "No solar recharge entered",
               ])}
             assumptionsSummary={[
               `Usable efficiency: ${efficiencyPct}% (PowerMatchLab assumption — ${ASSUMPTION_NOTES.systemEfficiency})`,
@@ -837,6 +1050,7 @@ export function LoadListCalculator({
                 autonomyByProductId={autonomyByProductId}
                 autonomyUnit={config.autonomyUnit}
                 catalogCount={catalog.length}
+                solarCoveredProductIds={solarCoveredProductIds}
               />
             </div>
           ) : null}

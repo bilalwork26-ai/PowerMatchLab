@@ -22,7 +22,7 @@
  *    for indexing.
  */
 
-import { MIN_DAYS, type DeviceInput } from "./calculator";
+import { sanitizeAutonomyDays, type DeviceInput } from "./calculator";
 import type { RecommendationPreferences } from "./recommend";
 import type { ToolCalculatorType } from "./tools-engine";
 
@@ -34,7 +34,6 @@ const CLAMPS = {
   quantity: { min: 0, max: 999 },
   hoursPerDay: { min: 0, max: 24 },
   surgeWatts: { min: 0, max: 200_000 },
-  days: { min: MIN_DAYS, max: 30 },
   dailySolarWh: { min: 0, max: 100_000 },
   efficiencyPct: { min: 70, max: 95 },
   reservePct: { min: 0, max: 50 },
@@ -122,7 +121,7 @@ export function encodeLoadListShareState(
     params.set("l", JSON.stringify(meaningfulDevices));
   }
 
-  params.set("d", String(clamp(state.days, CLAMPS.days, 1)));
+  params.set("d", String(sanitizeAutonomyDays(state.days)));
   if (state.dailySolarWh > 0) {
     params.set("s", String(clamp(state.dailySolarWh, CLAMPS.dailySolarWh, 0)));
   }
@@ -179,7 +178,13 @@ export function decodeLoadListShareState(
     return clamp(Number(raw), bounds, fallback);
   };
 
-  const days = parseParam("d", 1, CLAMPS.days);
+  // Not routed through parseParam/clamp: sanitizeAutonomyDays already applies
+  // the exact same "invalid or non-positive -> 1 day, valid but sub-hour ->
+  // rounded up to MIN_DAYS" rule calculatePower itself uses, so a tampered
+  // or stale `d` param can never restore a session at a silently different
+  // duration than a fresh visit with the same (invalid) input would get.
+  const rawDays = searchParams.get("d");
+  const days = rawDays === null || rawDays === "" ? 1 : sanitizeAutonomyDays(Number(rawDays));
   const dailySolarWh = parseParam("s", 0, CLAMPS.dailySolarWh);
   const efficiencyPct = parseParam("e", 85, CLAMPS.efficiencyPct);
   const reservePct = parseParam("r", 20, CLAMPS.reservePct);
