@@ -17,6 +17,7 @@ import {
   type DeviceInput,
 } from "@/lib/calculator";
 import {
+  groupRecommendations,
   recommendProducts,
   type RecommendationPreferences,
 } from "@/lib/recommend";
@@ -178,11 +179,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
     setStep(1);
   };
 
-  const bestAndGood = recommendations.filter(
-    (r) => r.status === "Best Match" || r.status === "Good Match",
-  );
-  const possible = recommendations.filter((r) => r.status === "Possible Match");
-  const notSuitable = recommendations.filter((r) => r.status === "Not Suitable");
+  const { primary, oversized, possible, notSuitable } = groupRecommendations(recommendations);
 
   return (
     <div className="bg-navy-950 py-8 text-white">
@@ -585,7 +582,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
                 onChange={(v) => setPrefs((p) => ({ ...p, needsTT30: v }))}
               />
               <PrefCheck
-                label="I want to add expansion batteries later"
+                label="I need to be able to add expansion batteries later"
                 checked={!!prefs.wantsExpandable}
                 onChange={(v) => setPrefs((p) => ({ ...p, wantsExpandable: v }))}
               />
@@ -702,28 +699,49 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
                   </Link>
                 </div>
                 <p className="mt-1 text-sm text-navy-300">
-                  Every product in the catalog is classified below against your
-                  requirement. Units that fail your continuous output or capacity
-                  need are shown as <strong>Not Suitable</strong> rather than
-                  hidden.
+                  Every product is classified in two steps: whether it meets your
+                  hard requirements (units that don&rsquo;t are{" "}
+                  <strong>Not Suitable</strong>, shown with the reason rather than
+                  hidden), then how proportionate it is to your need — a unit far
+                  larger than necessary is labeled <strong>Oversized</strong> rather
+                  than presented as a top pick.
                 </p>
 
-                {bestAndGood.length ? (
+                {primary.length ? (
                   <div className="mt-4 grid gap-4 md:grid-cols-2">
-                    {bestAndGood.map((rec) => (
+                    {primary.map((rec) => (
                       <RecommendationCard key={rec.product.id} rec={rec} tone="dark" />
                     ))}
                   </div>
                 ) : (
                   <Callout tone="warn" dark live className="mt-4">
-                    No product in the current catalog comfortably meets this
-                    requirement. The closest options are listed under “Possible
-                    match” below — check their limitations carefully.
+                    No product in the current catalog is a proportionate match for
+                    this requirement.{" "}
+                    {oversized.length
+                      ? "Larger, oversized alternatives are listed below."
+                      : "The closest options are listed under “Possible match” below — check their limitations carefully."}
                   </Callout>
                 )}
 
+                {oversized.length ? (
+                  <details className="mt-6" open={primary.length === 0}>
+                    <summary className="cursor-pointer text-sm font-semibold text-navy-200">
+                      Oversized alternatives — larger than you need ({oversized.length})
+                    </summary>
+                    <p className="mt-2 text-xs text-navy-400">
+                      These fully meet your requirement but carry much more capacity
+                      or output than your calculation needs.
+                    </p>
+                    <div className="mt-3 grid gap-4 md:grid-cols-2">
+                      {oversized.map((rec) => (
+                        <RecommendationCard key={rec.product.id} rec={rec} tone="dark" />
+                      ))}
+                    </div>
+                  </details>
+                ) : null}
+
                 {possible.length ? (
-                  <details className="mt-6" open={bestAndGood.length === 0}>
+                  <details className="mt-6" open={primary.length === 0 && oversized.length === 0}>
                     <summary className="cursor-pointer text-sm font-semibold text-navy-200">
                       Possible matches ({possible.length})
                     </summary>
@@ -750,11 +768,14 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
               </div>
 
               <Callout tone="neutral" dark className="mt-8" title="Why these results?">
-                Recommendations are deterministic. We compare your required
-                continuous output, capacity (with reserve) and estimated surge
-                against each unit’s manufacturer-published specs, then apply your
-                stated requirements (240V, TT-30, expansion, portability). Nothing
-                here is sponsored, and no score is invented to rank a product.
+                Recommendations are deterministic and happen in two steps: first
+                compatibility (continuous output, capacity, surge, and any 240V/
+                TT-30/expansion requirement you set), then proportionality — a unit
+                that merely clears the minimum isn&rsquo;t ranked the same as one
+                actually sized for your need, and units many times larger are
+                labeled Oversized rather than shown as a top pick. Nothing here is
+                sponsored, and whether a product has an Amazon link never affects
+                its ranking.
               </Callout>
 
               <div className="mt-4 flex gap-3">

@@ -422,7 +422,7 @@ export function LoadListCalculator({
             ) : null}
             {config.prefsConfig.wantsExpandable ? (
               <ToolPrefCheckbox
-                label="I want to add expansion batteries later"
+                label="I need to be able to add expansion batteries later"
                 checked={!!prefs.wantsExpandable}
                 onChange={(v) => setPrefs((p) => ({ ...p, wantsExpandable: v }))}
               />

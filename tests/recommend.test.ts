@@ -65,7 +65,7 @@ describe("recommendProducts — hard failures", () => {
 });
 
 describe("recommendProducts — positive classification", () => {
-  it("gives a comfortable unit Best or Good Match and orders it above weaker ones", () => {
+  it("gives a comfortable unit Best or Good Fit and orders it above weaker ones", () => {
     const result = calculatePower(load(300, 4), { days: 1 }); // 1200 Wh, 300 W
     const catalog = [
       makeProduct({
@@ -89,7 +89,7 @@ describe("recommendProducts — positive classification", () => {
     ];
     const recs = recommendProducts(result, catalog);
     const ideal = recs.find((r) => r.product.id === "ideal")!;
-    expect(["Best Match", "Good Match"]).toContain(ideal.status);
+    expect(["Best Fit", "Good Fit"]).toContain(ideal.status);
     expect(recs[0].product.id).toBe("ideal");
   });
 

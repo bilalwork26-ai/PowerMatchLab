@@ -10,18 +10,35 @@ import { CompareToggleButton } from "@/components/product/CompareToggleButton";
 import { CheckIcon, InfoIcon, XIcon } from "@/components/ui/icons";
 
 const STATUS_STYLES: Record<MatchStatus, string> = {
-  "Best Match": "bg-positive-50 text-positive-700 border-positive-200",
-  "Good Match": "bg-brand-50 text-brand-700 border-brand-200",
+  "Best Fit": "bg-positive-50 text-positive-700 border-positive-200",
+  "Good Fit": "bg-brand-50 text-brand-700 border-brand-200",
+  Oversized: "bg-violet-50 text-violet-700 border-violet-200",
   "Possible Match": "bg-warn-50 text-warn-DEFAULT border-warn-100",
   "Not Suitable": "bg-navy-100 text-navy-600 border-navy-200",
 };
 
 const STATUS_STYLES_DARK: Record<MatchStatus, string> = {
-  "Best Match": "bg-navy-800 text-positive-500 border-positive-500/40",
-  "Good Match": "bg-navy-800 text-cyan-300 border-cyan-400/40",
+  "Best Fit": "bg-navy-800 text-positive-500 border-positive-500/40",
+  "Good Fit": "bg-navy-800 text-cyan-300 border-cyan-400/40",
+  Oversized: "bg-navy-800 text-violet-300 border-violet-400/40",
   "Possible Match": "bg-navy-800 text-amber-300 border-amber-400/40",
   "Not Suitable": "bg-navy-800 text-navy-300 border-navy-600",
 };
+
+/** Short, honest caption shown right under the status badge — the "why" at a glance, before the full reasons list. */
+function statusCaption(rec: Recommendation): string | null {
+  if (rec.status === "Best Fit" || rec.status === "Good Fit") {
+    return rec.capacityRatio != null
+      ? `≈${rec.capacityRatio.toFixed(1)}× your recommended minimum capacity`
+      : null;
+  }
+  if (rec.status === "Oversized") {
+    return rec.capacityRatio != null
+      ? `≈${rec.capacityRatio.toFixed(1)}× your recommended minimum — much more than needed`
+      : "Capable, but far larger than your calculated need";
+  }
+  return null;
+}
 
 export function RecommendationCard({
   rec,
@@ -40,6 +57,7 @@ export function RecommendationCard({
 }) {
   const { product, status, reasons, limitations, powerMatchScore } = rec;
   const dark = tone === "dark";
+  const caption = statusCaption(rec);
   return (
     <article
       className={cn(
@@ -76,6 +94,11 @@ export function RecommendationCard({
             >
               {status}
             </span>
+            {caption ? (
+              <p className={cn("mt-1 text-[11px]", dark ? "text-navy-400" : "text-navy-500")}>
+                {caption}
+              </p>
+            ) : null}
           </div>
         </div>
         <ScoreCircle

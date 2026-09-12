@@ -213,7 +213,7 @@ describe("Power Setup Studio — recommendation engine integration", () => {
     }
   });
 
-  it("gives every 'Best Match' / 'Good Match' recommendation a working affiliate CTA for its own product", () => {
+  it("gives every 'Best Fit' / 'Good Fit' recommendation a working affiliate CTA for its own product", () => {
     const scenario = getStudioScenario("remote-work")!;
     const devices: DeviceInput[] = scenario.appliances
       .filter((a) => a.defaultOn)
@@ -230,7 +230,7 @@ describe("Power Setup Studio — recommendation engine integration", () => {
       });
     const result = calculatePower(devices, { days: 1 });
     const recs = recommendProducts(result, catalog, { useCase: scenario.useCase });
-    const goodOrBetter = recs.filter((r) => r.status === "Best Match" || r.status === "Good Match");
+    const goodOrBetter = recs.filter((r) => r.status === "Best Fit" || r.status === "Good Fit");
     expect(goodOrBetter.length).toBeGreaterThan(0);
 
     for (const rec of goodOrBetter) {

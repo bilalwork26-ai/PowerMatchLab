@@ -2,18 +2,40 @@
  * Deterministic, explainable recommendation engine.
  *
  * Given the output of the Power Calculator plus a few stated preferences, it
- * classifies every catalog product and explains why. It never fabricates a
- * score and never silently hides a product that fails a hard requirement — it
- * labels it "Not Suitable" with the reason.
+ * classifies every catalog product in two separate steps:
+ *
+ * 1. COMPATIBILITY — does it meet every verifiable hard requirement
+ *    (capacity, continuous output, surge when a real spike is expected,
+ *    240V/TT-30/expansion when the visitor marks them required)? A product
+ *    that fails any of these is never hidden — it is labeled "Not Suitable"
+ *    with the exact reason.
+ * 2. FIT — among compatible products, how PROPORTIONATE is it to the
+ *    stated need? Clearing the minimum bar is not enough to be a good
+ *    recommendation: see size-fit.ts for the "Best Fit / Good Fit /
+ *    Oversized" classification that prevents a 6,000 Wh station from
+ *    outranking a well-matched 800 Wh one for a 400 Wh requirement.
+ *
+ * It never fabricates a score, never lets affiliate-link availability
+ * influence ranking, and never treats an unverified field as a pass.
  */
 
 import type { Product, UseCaseKey } from "@/types/product";
 import type { CalculatorResult } from "./calculator";
 import { type ProductScore, scoreProduct } from "./score";
+import { capacityFitScore, combinedSizeFit, outputFitScore } from "./size-fit";
 
+/**
+ * Best Fit / Good Fit / Oversized are all COMPATIBLE (every hard
+ * requirement is met) — they differ only in how proportionate the product
+ * is to the stated need, per size-fit.ts. Possible Match means core
+ * capacity/output data is unverified, so compatibility itself cannot be
+ * confirmed either way. Not Suitable means a verified hard requirement
+ * failed, with the reason always stated.
+ */
 export type MatchStatus =
-  | "Best Match"
-  | "Good Match"
+  | "Best Fit"
+  | "Good Fit"
+  | "Oversized"
   | "Possible Match"
   | "Not Suitable";
 
@@ -23,7 +45,13 @@ export interface RecommendationPreferences {
   needs240V?: boolean;
   /** Visitor needs an RV TT-30 outlet. */
   needsTT30?: boolean;
-  /** Visitor wants to be able to add expansion batteries later. */
+  /**
+   * Visitor requires the ability to add expansion batteries later. Unlike
+   * needsUpsTransfer below, this has a clean binary answer in the catalog
+   * (`expandable: true | false | null`), so when set it is a HARD
+   * requirement: a unit explicitly marked non-expandable is Not Suitable,
+   * not just penalized.
+   */
   wantsExpandable?: boolean;
   /**
    * Visitor wants a fast automatic transfer switch / UPS-style behavior.
@@ -53,6 +81,14 @@ export interface Recommendation {
   meetsContinuous: boolean;
   meetsCapacity: boolean;
   meetsSurge: boolean | null; // null when surge data missing
+  /**
+   * consideredCapacityWh ÷ recommendedMinimumCapacityWh, null when capacity
+   * is unverified. Exposed so the UI can explain the exact proportion
+   * ("2.6x your recommended minimum") rather than just naming a tier.
+   */
+  capacityRatio: number | null;
+  /** rated_output_w ÷ requiredContinuousOutputW, null when output is unverified. */
+  outputRatio: number | null;
 }
 
 const USE_CASE_TAGS: Record<UseCaseKey, string[]> = {
@@ -91,10 +127,11 @@ export function recommendProducts(
   );
 
   const statusRank: Record<MatchStatus, number> = {
-    "Best Match": 0,
-    "Good Match": 1,
-    "Possible Match": 2,
-    "Not Suitable": 3,
+    "Best Fit": 0,
+    "Good Fit": 1,
+    "Oversized": 2,
+    "Possible Match": 3,
+    "Not Suitable": 4,
   };
 
   return recs.sort((a, b) => {
@@ -103,6 +140,35 @@ export function recommendProducts(
     }
     return b.fitScore - a.fitScore;
   });
+}
+
+export interface RecommendationGroups {
+  /** Best Fit + Good Fit — the small set of genuinely proportionate options to show first. */
+  primary: Recommendation[];
+  /** Compatible but disproportionately large — shown separately, never mixed into primary. */
+  oversized: Recommendation[];
+  /** Core capacity/output data unverified — compatibility itself can't be confirmed. */
+  possible: Recommendation[];
+  /** Fails a verified hard requirement — always kept accessible with the exact reason. */
+  notSuitable: Recommendation[];
+}
+
+/**
+ * Single source of truth for grouping a sorted `Recommendation[]` into the
+ * sections every calculator UI renders (primary results up front, oversized
+ * alternatives and unverified/incompatible products tucked into secondary,
+ * disclosed sections). Previously each of the Power Calculator, the /tools
+ * results block, and Power Setup Studio re-implemented this filtering
+ * independently — centralizing it here means they can never drift apart,
+ * and a product's status is only ever interpreted in one place.
+ */
+export function groupRecommendations(recs: Recommendation[]): RecommendationGroups {
+  return {
+    primary: recs.filter((r) => r.status === "Best Fit" || r.status === "Good Fit"),
+    oversized: recs.filter((r) => r.status === "Oversized"),
+    possible: recs.filter((r) => r.status === "Possible Match"),
+    notSuitable: recs.filter((r) => r.status === "Not Suitable"),
+  };
 }
 
 function evaluateProduct(
@@ -191,6 +257,11 @@ function evaluateProduct(
   }
 
   // ---- Surge ----------------------------------------------------------
+  // A verified surge rating that falls short of the estimated startup spike
+  // is a real, checkable hard requirement (the unit could fail to start a
+  // motor-driven device) — it hard-fails below, exactly like capacity and
+  // continuous output. Only when the spec is unverified does it remain a
+  // soft "cannot confirm" limitation, since there is nothing to check.
   let meetsSurge: boolean | null = null;
   if (result.requiredSurgeOutputW > result.requiredContinuousOutputW) {
     if (product.surge_output_w != null) {
@@ -258,7 +329,8 @@ function evaluateProduct(
           : "Supports expansion batteries (ceiling not verified).",
       );
     } else if (product.expandable === false) {
-      limitations.push("Not expandable — capacity is fixed.");
+      limitations.push("Not expandable, which you marked as required — capacity is fixed.");
+      hardFailPrefs = true;
     } else {
       limitations.push("Expansion capability is not verified for this unit.");
     }
@@ -288,38 +360,37 @@ function evaluateProduct(
     }
   }
 
-  // ---- Status ---------------------------------------------------------
+  // ---- Status: compatibility first, then proportionality -------------
+  // A verified insufficient surge rating is a real, checkable hard
+  // requirement (see the Surge section above) — it hard-fails alongside
+  // capacity and continuous output, not just capacity/output.
   const hardFailCapacityOrOutput =
     (product.capacity_wh != null && !meetsCapacity) ||
-    (product.rated_output_w != null && !meetsContinuous);
+    (product.rated_output_w != null && !meetsContinuous) ||
+    meetsSurge === false;
+
+  const capacityRatio = consideredCapacityWh != null ? capacityComfort : null;
+  const outputRatio = product.rated_output_w != null ? outputComfort : null;
 
   let status: MatchStatus;
   if (hardFailCapacityOrOutput || hardFailPrefs) {
     status = "Not Suitable";
-  } else if (product.capacity_wh == null || product.rated_output_w == null) {
-    // Missing the data needed to confirm the core requirements.
+  } else if (capacityRatio == null || outputRatio == null) {
+    // Missing the data needed to confirm compatibility AND proportionality.
     status = "Possible Match";
   } else {
-    const comfortable =
-      capacityComfort >= 1 &&
-      outputComfort >= 1.2 &&
-      meetsSurge !== false &&
-      (powerMatchScore.overall == null || powerMatchScore.overall >= 55);
-    const workable =
-      meetsCapacity &&
-      meetsContinuous &&
-      outputComfort >= 1.05 &&
-      meetsSurge !== false;
-
-    if (comfortable) status = "Best Match";
-    else if (workable) status = "Good Match";
-    else status = "Possible Match";
+    // Everything above this point is COMPATIBLE (meetsCapacity,
+    // meetsContinuous, meetsSurge !== false, no hard-failed preference) —
+    // size-fit.ts now decides how PROPORTIONATE it is, replacing the old
+    // `>= 1` cliff that let arbitrarily oversized units claim "Best Match".
+    const fit = combinedSizeFit(capacityRatio, outputRatio);
+    status = fit === "best" ? "Best Fit" : fit === "good" ? "Good Fit" : "Oversized";
   }
 
   // ---- Fit score for intra-band ordering ------------------------------
   const fitScore = computeFitScore({
-    capacityComfort,
-    outputComfort,
+    capacityRatio,
+    outputRatio,
     meetsSurge,
     powerMatchOverall: powerMatchScore.overall,
     prefs,
@@ -337,30 +408,41 @@ function evaluateProduct(
     meetsContinuous,
     meetsCapacity,
     meetsSurge,
+    capacityRatio,
+    outputRatio,
   };
 }
 
+/**
+ * Ranking signal used only to order products WITHIN the same status —
+ * never to decide status itself. Dominated by proportionality
+ * (capacity/output fit, see size-fit.ts), with small tie-break
+ * contributions from verified surge headroom, the catalog-relative
+ * PowerMatch Score (a secondary signal, not a gate), and portability when
+ * the visitor asked for it. Deliberately excludes anything not in
+ * products.json — no price, popularity, rating, or affiliate-link
+ * availability ever contributes here.
+ */
 function computeFitScore(args: {
-  capacityComfort: number;
-  outputComfort: number;
+  capacityRatio: number | null;
+  outputRatio: number | null;
   meetsSurge: boolean | null;
   powerMatchOverall: number | null;
   prefs: RecommendationPreferences;
   product: Product;
 }): number {
-  const { capacityComfort, outputComfort, meetsSurge, powerMatchOverall, prefs, product } =
-    args;
+  const { capacityRatio, outputRatio, meetsSurge, powerMatchOverall, prefs, product } = args;
   let score = 0;
-  // Reward being close to (not wildly above) the recommended minimum.
-  score += Math.max(0, 40 - Math.abs(1 - Math.min(capacityComfort, 3)) * 20);
-  score += Math.min(25, outputComfort * 12);
+  score += capacityRatio != null ? capacityFitScore(capacityRatio) : 20; // neutral mid-value when unverified
+  score += outputRatio != null ? outputFitScore(outputRatio) : 12;
   if (meetsSurge === true) score += 10;
   if (meetsSurge === null) score += 4;
-  if (powerMatchOverall != null) score += powerMatchOverall * 0.2;
+  if (powerMatchOverall != null) score += powerMatchOverall * 0.15;
   if (prefs.prioritisePortability && product.weight_kg != null) {
     score += Math.max(0, 15 - product.weight_kg * 0.4);
   }
-  return Math.round(score);
+  if (prefs.wantsExpandable && product.expandable === true) score += 5;
+  return Math.round(Math.max(0, Math.min(100, score)));
 }
 
 function humanUseCase(useCase: UseCaseKey): string {
