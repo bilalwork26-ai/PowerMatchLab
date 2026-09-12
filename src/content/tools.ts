@@ -14,6 +14,9 @@
 
 export type ToolCalculatorKind = "load-list" | "cpap" | "starlink";
 
+/** Same shape as content/guides.ts's GuideSource — a plain string, or a real, verifiable {label, url}. Never invented. */
+export type ToolSource = string | { label: string; url: string };
+
 export interface ToolSection {
   id: string;
   heading: string;
@@ -38,7 +41,7 @@ export interface ToolDefinition {
   sections: ToolSection[];
   commonMistakes: string[];
   faq: ToolFaq[];
-  sources: string[];
+  sources: ToolSource[];
   relatedGuideSlugs: string[];
   relatedBestForSlug?: string;
   lastUpdated: string;
@@ -107,6 +110,11 @@ export const TOOLS: ToolDefinition[] = [
     ],
     sources: [
       "PowerMatchLab's own Power Calculator methodology (same formulas, see About & Methodology)",
+      { label: "ENERGY STAR — Refrigerators", url: "https://www.energystar.gov/products/refrigerators" },
+      {
+        label: "U.S. Department of Energy — \"Your Refrigerator Is Only As Efficient As You\"",
+        url: "https://www.energy.gov/energysaver/articles/your-refrigerator-only-efficient-you",
+      },
     ],
     relatedGuideSlugs: [
       "power-station-for-refrigerator",

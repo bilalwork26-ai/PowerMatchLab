@@ -45,7 +45,8 @@ export type ShareableContentKey =
   | "guide"
   | "best_for"
   | "product"
-  | "compare";
+  | "compare"
+  | "tool";
 
 /** How a share_click was fulfilled — never which specific network, since the native picker doesn't report that. */
 export type ShareMethod = "native_share" | "copy_link";

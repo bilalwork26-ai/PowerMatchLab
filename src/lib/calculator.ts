@@ -44,9 +44,18 @@ export interface DeviceBreakdown extends DeviceInput {
 }
 
 export interface UsageInput {
-  /** Number of days the station must last without recharging. */
+  /**
+   * Number of days the station must last without recharging. Accepts a
+   * fraction below 1 (down to MIN_DAYS, one hour) so a short, sub-day
+   * outage can be entered precisely — e.g. a caller offering an "hours"
+   * input converts hours ÷ 24 before calling calculatePower rather than
+   * always rounding a 6-hour outage up to a full day.
+   */
   days: number;
 }
+
+/** One hour, expressed in days — the smallest autonomy window calculatePower will size for. */
+export const MIN_DAYS = 1 / 24;
 
 export interface CalculatorResult {
   devices: DeviceBreakdown[];
@@ -130,7 +139,7 @@ export function calculatePower(
   assumptionsInput: Partial<CalculatorAssumptions> = {},
 ): CalculatorResult {
   const assumptions = clampAssumptions(assumptionsInput);
-  const days = sanitizeNumber(usage.days, { min: 1, max: 30 }) || 1;
+  const days = sanitizeNumber(usage.days, { min: MIN_DAYS, max: 30 }) || MIN_DAYS;
 
   const devices = devicesInput.map((d) => buildDeviceBreakdown(d, assumptions));
 

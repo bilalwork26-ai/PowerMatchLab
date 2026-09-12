@@ -17,7 +17,8 @@ const STATUS_STYLES: Record<MatchStatus, string> = {
   "Not Suitable": "bg-navy-100 text-navy-600 border-navy-200",
 };
 
-const STATUS_STYLES_DARK: Record<MatchStatus, string> = {
+/** Exported so other status displays (e.g. RuntimeIndexTable) reuse the exact same color mapping rather than redefining it. */
+export const STATUS_STYLES_DARK: Record<MatchStatus, string> = {
   "Best Fit": "bg-navy-800 text-positive-500 border-positive-500/40",
   "Good Fit": "bg-navy-800 text-cyan-300 border-cyan-400/40",
   Oversized: "bg-navy-800 text-violet-300 border-violet-400/40",

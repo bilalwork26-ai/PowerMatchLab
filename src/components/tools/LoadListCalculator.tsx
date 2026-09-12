@@ -1,20 +1,38 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import type { Product } from "@/types/product";
 import type { LoadPreset } from "@/lib/tool-presets";
 import { DEFAULT_ASSUMPTIONS, ASSUMPTION_NOTES } from "@/lib/assumptions";
 import { calculatePower, hasUsableInput, type DeviceInput } from "@/lib/calculator";
 import { recommendProducts, type RecommendationPreferences } from "@/lib/recommend";
-import { applySolarOffset, withSolarAdjustedCapacity, type ToolCalculatorType } from "@/lib/tools-engine";
+import {
+  applySolarOffset,
+  withSolarAdjustedCapacity,
+  deriveWattsAndHoursFromDailyEnergy,
+  kwhToWh,
+  estimateDailySolarWh,
+  estimateAutonomyUnits,
+  type ToolCalculatorType,
+} from "@/lib/tools-engine";
+import {
+  encodeLoadListShareState,
+  decodeLoadListShareState,
+} from "@/lib/tools-share-state";
+import { buildRuntimeIndexCsv, downloadCsv } from "@/lib/csv-export";
 import { fmtWh, fmtWatts } from "@/lib/format";
 import { trackEvent } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
+import { SITE } from "@/lib/site";
 import { Callout } from "@/components/ui/Callout";
+import { ShareBar } from "@/components/ui/ShareBar";
 import { PlusIcon, TrashIcon } from "@/components/ui/icons";
 import { darkInput, darkSelect, nextToolRowId } from "./shared";
 import { ToolPrefCheckbox } from "./ToolPrefCheckbox";
 import { ToolResultsBlock } from "./ToolResultsBlock";
+import { RuntimeIndexTable } from "./RuntimeIndexTable";
+import { PrintSummary } from "./PrintSummary";
 
 export interface LoadListPrefsConfig {
   needs240V?: boolean;
@@ -37,6 +55,18 @@ export interface LoadListCalculatorConfig {
   autonomyUnit: { singular: string; plural: string };
   addExampleLabel: string;
   addCustomLabel: string;
+  toolTitle: string;
+  toolPath: string;
+  /** Lets a row's power be entered as a daily energy figure (Wh/kWh) instead of watts × hours/day — e.g. an EnergyGuide label. Off by default; only the refrigerator tool enables it in this round. */
+  allowDailyEnergyMode?: boolean;
+  /** Shows a collapsible "estimate from panel specs" helper above the daily-solar-Wh field. Off by default. */
+  allowSolarEstimator?: boolean;
+  /** Shows the sortable/filterable Runtime Index table below the grouped recommendation cards. Off by default. */
+  showRuntimeIndexTable?: boolean;
+  /** Shows the "Share this calculation" / CSV download / Print bar and the print-only summary. Off by default. */
+  allowShareAndExport?: boolean;
+  /** Lets the autonomy target be entered in hours instead of whole days — for a short outage that doesn't round sensibly to a full day. Off by default. */
+  allowHoursDuration?: boolean;
 }
 
 function seedDevices(config: LoadListCalculatorConfig): DeviceInput[] {
@@ -61,15 +91,54 @@ export function LoadListCalculator({
   catalog: Product[];
   config: LoadListCalculatorConfig;
 }) {
-  const [devices, setDevices] = useState<DeviceInput[]>(() => seedDevices(config));
-  const [days, setDays] = useState(1);
-  const [dailySolarWh, setDailySolarWh] = useState(0);
-  const [efficiencyPct, setEfficiencyPct] = useState(
-    Math.round(DEFAULT_ASSUMPTIONS.systemEfficiency * 100),
+  const searchParams = useSearchParams();
+  const restoredShareState = useMemo(
+    () => decodeLoadListShareState(searchParams, config.calculatorType, nextToolRowId),
+    // Intentionally read only once on mount (searchParams from the URL the
+    // visitor actually landed on) — re-decoding on every keystroke-driven
+    // searchParams change would fight the visitor's own edits, since this
+    // component never pushes its live state back into the address bar.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
-  const [reservePct, setReservePct] = useState(Math.round(DEFAULT_ASSUMPTIONS.reserveFraction * 100));
-  const [prefs, setPrefs] = useState<RecommendationPreferences>({});
+
+  const [devices, setDevices] = useState<DeviceInput[]>(
+    () => restoredShareState?.devices.length ? restoredShareState.devices : seedDevices(config),
+  );
+  const [days, setDays] = useState(() => restoredShareState?.days ?? 1);
+  const [dailySolarWh, setDailySolarWh] = useState(() => restoredShareState?.dailySolarWh ?? 0);
+  const [efficiencyPct, setEfficiencyPct] = useState(
+    () => restoredShareState?.efficiencyPct ?? Math.round(DEFAULT_ASSUMPTIONS.systemEfficiency * 100),
+  );
+  const [reservePct, setReservePct] = useState(
+    () => restoredShareState?.reservePct ?? Math.round(DEFAULT_ASSUMPTIONS.reserveFraction * 100),
+  );
+  const [prefs, setPrefs] = useState<RecommendationPreferences>(() => restoredShareState?.prefs ?? {});
   const [exampleKey, setExampleKey] = useState("");
+  const [restoredNotice] = useState(() => restoredShareState != null);
+
+  // Daily-energy entry mode (config.allowDailyEnergyMode only) — purely a UI
+  // convenience layered on top of the same DeviceInput[] the engine already
+  // consumes; see deriveWattsAndHoursFromDailyEnergy in tools-engine.ts.
+  const [entryMode, setEntryMode] = useState<"watts" | "daily-energy">("watts");
+  const [dailyEnergyEntries, setDailyEnergyEntries] = useState<
+    Record<string, { raw: string; unit: "Wh" | "kWh" }>
+  >({});
+
+  // Solar panel estimator (config.allowSolarEstimator only) — pre-fills
+  // dailySolarWh; the visitor can still overwrite that field by hand.
+  const [durationUnit, setDurationUnit] = useState<"days" | "hours">(
+    () => (restoredShareState != null && restoredShareState.days < 1 ? "hours" : "days"),
+  );
+  const [hoursRaw, setHoursRaw] = useState(
+    () => (restoredShareState != null && restoredShareState.days < 1
+      ? Math.round(restoredShareState.days * 24)
+      : 24),
+  );
+  const [showSolarEstimator, setShowSolarEstimator] = useState(false);
+  const [panelWatts, setPanelWatts] = useState(100);
+  const [peakSunHours, setPeakSunHours] = useState(4);
+  const [solarRealizationPct, setSolarRealizationPct] = useState(70);
 
   const result = useMemo(
     () =>
@@ -155,10 +224,108 @@ export function LoadListCalculator({
     setExampleKey("");
   };
 
+  /** Daily-energy mode: the visitor edits one "daily energy" figure + unit for a row; watts/hoursPerDay are derived so calculatePower never sees a second input shape. */
+  const updateDailyEnergyRow = (id: string, raw: string, unit: "Wh" | "kWh") => {
+    setDailyEnergyEntries((prev) => ({ ...prev, [id]: { raw, unit } }));
+    const parsed = Number(raw);
+    const dailyWh = Number.isFinite(parsed) && parsed > 0 ? (unit === "kWh" ? kwhToWh(parsed) : parsed) : 0;
+    const { watts, hoursPerDay } = deriveWattsAndHoursFromDailyEnergy(dailyWh);
+    updateRow(id, { watts, hoursPerDay });
+  };
+
+  const applySolarEstimate = () => {
+    const estimated = estimateDailySolarWh({
+      panelWatts,
+      peakSunHours,
+      realizationFraction: solarRealizationPct / 100,
+    });
+    setDailySolarWh(Math.round(estimated));
+  };
+
+  const buildShareUrl = () => {
+    const query = encodeLoadListShareState(
+      { devices, days, dailySolarWh, efficiencyPct, reservePct, prefs },
+      config.calculatorType,
+      config.prefsConfig,
+    );
+    return `${SITE.url}${config.toolPath}?${query}`;
+  };
+
   const autonomyDailyEnergyWh = solar ? solar.netDailyEnergyWh : effectiveResult.dailyEnergyWh;
+  const autonomyByProductId = useMemo(() => {
+    const map = new Map<string, number | null>();
+    for (const rec of recommendations) {
+      map.set(
+        rec.product.id,
+        estimateAutonomyUnits(rec.product.capacity_wh, autonomyDailyEnergyWh, efficiencyPct / 100),
+      );
+    }
+    return map;
+  }, [recommendations, autonomyDailyEnergyWh, efficiencyPct]);
+
+  const formulaText = `= (${result.dailyEnergyWh.toLocaleString("en-US")} Wh/day${
+    solar ? ` − ${solar.solarContributionWh.toLocaleString("en-US")} Wh/day solar` : ""
+  } × ${days} ${days === 1 ? "day" : "days"}) ÷ ${efficiencyPct}% usable × (1 + ${reservePct}% reserve)`;
+
+  const handleCsvDownload = () => {
+    const csv = buildRuntimeIndexCsv(recommendations, autonomyByProductId, {
+      toolTitle: config.toolTitle,
+      generatedAtIso: new Date().toISOString(),
+      siteUrl: `${SITE.url}${config.toolPath}`,
+      formulaText,
+      dailyEnergyWh: result.dailyEnergyWh,
+      recommendedCapacityWh: effectiveResult.recommendedMinimumCapacityWh,
+      requiredContinuousOutputW: effectiveResult.requiredContinuousOutputW,
+      requiredSurgeOutputW: effectiveResult.requiredSurgeOutputW,
+      days,
+      efficiencyPct,
+      reservePct,
+      autonomyUnitPlural: config.autonomyUnit.plural,
+    });
+    downloadCsv(csv, `powermatchlab-${config.calculatorType}-runtime-index.csv`);
+    trackEvent("csv_download", { content_key: "tool" });
+  };
 
   return (
     <div>
+      {restoredNotice ? (
+        <Callout tone="info" dark className="mt-4">
+          Restored a shared calculation from this link. Every value below is
+          editable — change anything to recalculate.
+        </Callout>
+      ) : null}
+
+      <div className="print:hidden">
+      {config.allowDailyEnergyMode ? (
+        <fieldset className="mt-4">
+          <legend className="text-xs font-semibold uppercase tracking-wide text-navy-400">
+            Enter loads as
+          </legend>
+          <div className="mt-1.5 flex flex-wrap gap-2 text-sm">
+            <label className="inline-flex items-center gap-1.5 text-navy-200">
+              <input
+                type="radio"
+                name="entry-mode"
+                checked={entryMode === "watts"}
+                onChange={() => setEntryMode("watts")}
+                className="h-4 w-4 border-navy-600 bg-navy-900 text-cyan-500 focus:ring-cyan-400"
+              />
+              Watts × hours/day
+            </label>
+            <label className="inline-flex items-center gap-1.5 text-navy-200">
+              <input
+                type="radio"
+                name="entry-mode"
+                checked={entryMode === "daily-energy"}
+                onChange={() => setEntryMode("daily-energy")}
+                className="h-4 w-4 border-navy-600 bg-navy-900 text-cyan-500 focus:ring-cyan-400"
+              />
+              Daily energy (Wh or kWh) — e.g. from an EnergyGuide label
+            </label>
+          </div>
+        </fieldset>
+      ) : null}
+
       <div className="mt-4 flex flex-wrap items-center gap-2">
         <label className="w-full min-w-0 text-sm sm:w-auto">
           <span className="sr-only">{config.addExampleLabel}</span>
@@ -192,9 +359,17 @@ export function LoadListCalculator({
           <thead>
             <tr className="border-b border-navy-700 text-left text-xs uppercase tracking-wide text-navy-400">
               <th scope="col" className="py-2 pr-2 font-medium">Load</th>
-              <th scope="col" className="px-2 py-2 font-medium">Power (W)</th>
+              {entryMode === "daily-energy" ? (
+                <th scope="col" className="px-2 py-2 font-medium" colSpan={2}>
+                  Daily energy
+                </th>
+              ) : (
+                <>
+                  <th scope="col" className="px-2 py-2 font-medium">Power (W)</th>
+                  <th scope="col" className="px-2 py-2 font-medium">Hrs/day</th>
+                </>
+              )}
               <th scope="col" className="px-2 py-2 font-medium">{config.quantityLabel}</th>
-              <th scope="col" className="px-2 py-2 font-medium">Hrs/day</th>
               <th scope="col" className="px-2 py-2 font-medium">
                 Surge (W)
                 <span className="block text-[10px] normal-case text-navy-500">optional</span>
@@ -214,6 +389,7 @@ export function LoadListCalculator({
               const wh = Math.round(
                 Math.max(0, row.watts) * Math.max(0, row.quantity) * Math.max(0, row.hoursPerDay),
               );
+              const dailyEntry = dailyEnergyEntries[row.id] ?? { raw: "", unit: "Wh" as const };
               return (
                 <tr key={row.id} className="border-b border-navy-800">
                   <td className="py-2 pr-2">
@@ -226,17 +402,58 @@ export function LoadListCalculator({
                       className={cn("w-full min-w-[140px]", darkInput)}
                     />
                   </td>
-                  <td className="px-2 py-2">
-                    <input
-                      type="number"
-                      min={0}
-                      inputMode="numeric"
-                      value={row.watts || ""}
-                      onChange={(e) => updateRow(row.id, { watts: Number(e.target.value) || 0 })}
-                      aria-label="Running watts"
-                      className={cn("w-20", darkInput)}
-                    />
-                  </td>
+                  {entryMode === "daily-energy" ? (
+                    <td className="px-2 py-2" colSpan={2}>
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          type="number"
+                          min={0}
+                          inputMode="decimal"
+                          value={dailyEntry.raw}
+                          onChange={(e) => updateDailyEnergyRow(row.id, e.target.value, dailyEntry.unit)}
+                          aria-label="Daily energy"
+                          className={cn("w-20", darkInput)}
+                        />
+                        <select
+                          value={dailyEntry.unit}
+                          onChange={(e) =>
+                            updateDailyEnergyRow(row.id, dailyEntry.raw, e.target.value as "Wh" | "kWh")
+                          }
+                          aria-label="Daily energy unit"
+                          className={cn("py-1.5", darkSelect)}
+                        >
+                          <option value="Wh">Wh/day</option>
+                          <option value="kWh">kWh/day</option>
+                        </select>
+                      </div>
+                    </td>
+                  ) : (
+                    <>
+                      <td className="px-2 py-2">
+                        <input
+                          type="number"
+                          min={0}
+                          inputMode="numeric"
+                          value={row.watts || ""}
+                          onChange={(e) => updateRow(row.id, { watts: Number(e.target.value) || 0 })}
+                          aria-label="Running watts"
+                          className={cn("w-20", darkInput)}
+                        />
+                      </td>
+                      <td className="px-2 py-2">
+                        <input
+                          type="number"
+                          min={0}
+                          max={24}
+                          step={0.5}
+                          value={row.hoursPerDay}
+                          onChange={(e) => updateRow(row.id, { hoursPerDay: Number(e.target.value) || 0 })}
+                          aria-label="Hours per day"
+                          className={cn("w-16", darkInput)}
+                        />
+                      </td>
+                    </>
+                  )}
                   <td className="px-2 py-2">
                     <input
                       type="number"
@@ -244,18 +461,6 @@ export function LoadListCalculator({
                       value={row.quantity}
                       onChange={(e) => updateRow(row.id, { quantity: Number(e.target.value) || 0 })}
                       aria-label={config.quantityLabel}
-                      className={cn("w-16", darkInput)}
-                    />
-                  </td>
-                  <td className="px-2 py-2">
-                    <input
-                      type="number"
-                      min={0}
-                      max={24}
-                      step={0.5}
-                      value={row.hoursPerDay}
-                      onChange={(e) => updateRow(row.id, { hoursPerDay: Number(e.target.value) || 0 })}
-                      aria-label="Hours per day"
                       className={cn("w-16", darkInput)}
                     />
                   </td>
@@ -328,21 +533,75 @@ export function LoadListCalculator({
 
       <div className="mt-6 grid gap-6 md:grid-cols-2">
         <div className="glass-panel bg-navy-900/60 p-4">
-          <label className="block text-sm font-medium text-white">
-            {config.daysLabel}
-            <input
-              type="range"
-              min={1}
-              max={config.daysMax}
-              step={1}
-              value={days}
-              onChange={(e) => setDays(Number(e.target.value))}
-              className="mt-2 w-full accent-cyan-400"
-            />
-            <span className="mt-1 block text-sm text-navy-300">
-              {days} {days === 1 ? "day" : "days"}
-            </span>
-          </label>
+          {config.allowHoursDuration ? (
+            <div className="mb-2 flex flex-wrap gap-2 text-xs">
+              <label className="inline-flex items-center gap-1.5 text-navy-200">
+                <input
+                  type="radio"
+                  name="duration-unit"
+                  checked={durationUnit === "days"}
+                  onChange={() => {
+                    setDurationUnit("days");
+                    setDays((d) => Math.max(1, Math.round(d)));
+                  }}
+                  className="h-3.5 w-3.5 border-navy-600 bg-navy-900 text-cyan-500 focus:ring-cyan-400"
+                />
+                Whole days
+              </label>
+              <label className="inline-flex items-center gap-1.5 text-navy-200">
+                <input
+                  type="radio"
+                  name="duration-unit"
+                  checked={durationUnit === "hours"}
+                  onChange={() => {
+                    setDurationUnit("hours");
+                    setDays(Math.min(config.daysMax, Math.max(1 / 24, hoursRaw / 24)));
+                  }}
+                  className="h-3.5 w-3.5 border-navy-600 bg-navy-900 text-cyan-500 focus:ring-cyan-400"
+                />
+                Hours (for a short outage)
+              </label>
+            </div>
+          ) : null}
+          {durationUnit === "hours" && config.allowHoursDuration ? (
+            <label className="block text-sm font-medium text-white">
+              {config.daysLabel.replace("Days", "Hours")}
+              <input
+                type="number"
+                min={1}
+                max={config.daysMax * 24}
+                step={1}
+                value={hoursRaw || ""}
+                onChange={(e) => {
+                  const h = Number(e.target.value) || 0;
+                  setHoursRaw(h);
+                  setDays(Math.min(config.daysMax, Math.max(1 / 24, h / 24)));
+                }}
+                aria-label="Outage duration in hours"
+                className={cn("mt-1 w-full", darkInput)}
+              />
+              <span className="mt-1 block text-xs text-navy-400">
+                {hoursRaw || 0} hour{hoursRaw === 1 ? "" : "s"} ≈ {(days).toFixed(2)} days used in the
+                calculation below.
+              </span>
+            </label>
+          ) : (
+            <label className="block text-sm font-medium text-white">
+              {config.daysLabel}
+              <input
+                type="range"
+                min={1}
+                max={config.daysMax}
+                step={1}
+                value={days}
+                onChange={(e) => setDays(Number(e.target.value))}
+                className="mt-2 w-full accent-cyan-400"
+              />
+              <span className="mt-1 block text-sm text-navy-300">
+                {days} {days === 1 ? "day" : "days"}
+              </span>
+            </label>
+          )}
           {config.solarLabel ? (
             <label className="mt-4 block text-sm font-medium text-white">
               {config.solarLabel}
@@ -359,6 +618,62 @@ export function LoadListCalculator({
                 of your panel&rsquo;s realistic daily output, not a guarantee of sun.
               </span>
             </label>
+          ) : null}
+          {config.solarLabel && config.allowSolarEstimator ? (
+            <details className="mt-3 rounded-lg border border-navy-700 bg-navy-900/60 p-3">
+              <summary className="cursor-pointer text-xs font-semibold text-cyan-300">
+                Don&rsquo;t know your daily solar Wh? Estimate it from panel specs
+              </summary>
+              <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                <label className="text-xs text-navy-300">
+                  Panel wattage
+                  <input
+                    type="number"
+                    min={0}
+                    value={panelWatts || ""}
+                    onChange={(e) => setPanelWatts(Number(e.target.value) || 0)}
+                    className={cn("mt-1 w-full", darkInput)}
+                  />
+                </label>
+                <label className="text-xs text-navy-300">
+                  Peak sun hours/day
+                  <input
+                    type="number"
+                    min={0}
+                    max={24}
+                    step={0.5}
+                    value={peakSunHours || ""}
+                    onChange={(e) => setPeakSunHours(Number(e.target.value) || 0)}
+                    className={cn("mt-1 w-full", darkInput)}
+                  />
+                </label>
+                <label className="text-xs text-navy-300">
+                  Realistic yield: <strong className="text-white">{solarRealizationPct}%</strong>
+                  <input
+                    type="range"
+                    min={40}
+                    max={90}
+                    step={5}
+                    value={solarRealizationPct}
+                    onChange={(e) => setSolarRealizationPct(Number(e.target.value))}
+                    className="mt-2 w-full accent-cyan-400"
+                  />
+                </label>
+              </div>
+              <p className="mt-2 text-[11px] text-navy-400">
+                &ldquo;Peak sun hours&rdquo; is not the same as hours of daylight — it&rsquo;s
+                the equivalent hours at full rated output. Realistic yield accounts for
+                angle, temperature, haze and wiring losses; 60-80% is a common planning
+                range, never the full nameplate wattage.
+              </p>
+              <button
+                type="button"
+                onClick={applySolarEstimate}
+                className="mt-3 rounded-md border border-cyan-400/40 bg-navy-900/60 px-3 py-1.5 text-xs font-medium text-cyan-300 hover:bg-navy-800"
+              >
+                Use this estimate ({Math.round(estimateDailySolarWh({ panelWatts, peakSunHours, realizationFraction: solarRealizationPct / 100 })).toLocaleString("en-US")} Wh/day)
+              </button>
+            </details>
           ) : null}
         </div>
 
@@ -438,15 +753,15 @@ export function LoadListCalculator({
         </fieldset>
       ) : null}
 
+      </div>
+
       <div className="mt-8">
         <ToolResultsBlock
           ready={ready}
           notReadyMessage="Add at least one load with a running-watts value above to get a result."
           headlineLabel="Recommended minimum capacity"
           headlineValueWh={effectiveResult.recommendedMinimumCapacityWh}
-          formulaText={`= (${result.dailyEnergyWh.toLocaleString("en-US")} Wh/day${
-            solar ? ` − ${solar.solarContributionWh.toLocaleString("en-US")} Wh/day solar` : ""
-          } × ${days} ${days === 1 ? "day" : "days"}) ÷ ${efficiencyPct}% usable × (1 + ${reservePct}% reserve)`}
+          formulaText={formulaText}
           stats={[
             { label: "Total daily energy", value: fmtWh(result.dailyEnergyWh) },
             ...(solar ? [{ label: "Daily deficit after solar", value: fmtWh(solar.dailyDeficitWh) }] : []),
@@ -460,6 +775,73 @@ export function LoadListCalculator({
           recommendations={recommendations}
         />
       </div>
+
+      {ready && config.allowShareAndExport ? (
+        <>
+          <div className="mt-6 flex flex-wrap items-center gap-3 print:hidden">
+            <ShareBar
+              url={buildShareUrl}
+              title={config.toolTitle}
+              contentKey="tool"
+            />
+            <button
+              type="button"
+              onClick={handleCsvDownload}
+              className="inline-flex items-center gap-1.5 rounded-md border border-navy-700 px-3 py-1.5 text-xs font-medium text-navy-300 hover:border-navy-500 hover:text-white"
+            >
+              Download Runtime Index (CSV)
+            </button>
+            <button
+              type="button"
+              onClick={() => window.print()}
+              className="inline-flex items-center gap-1.5 rounded-md border border-navy-700 px-3 py-1.5 text-xs font-medium text-navy-300 hover:border-navy-500 hover:text-white"
+            >
+              Print / Save as PDF
+            </button>
+          </div>
+
+          <PrintSummary
+            toolTitle={config.toolTitle}
+            siteUrl={SITE.url}
+            formulaText={formulaText}
+            generatedAt={new Date()}
+            inputsSummary={devices
+              .filter((d) => d.watts > 0)
+              .map(
+                (d) =>
+                  `${d.name || "Load"}: ${d.watts} W × ${d.quantity} × ${d.hoursPerDay} h/day${
+                    d.surgeWatts != null ? `, surge ${d.surgeWatts} W (user-entered)` : ", surge not entered — a conservative multiplier was assumed"
+                  }`,
+              )
+              .concat([
+                `Autonomy target: ${days} ${days === 1 ? "day" : "days"}`,
+                dailySolarWh > 0 ? `Daily solar recharge (user estimate): ${Math.round(dailySolarWh)} Wh/day` : "No solar recharge entered",
+              ])}
+            assumptionsSummary={[
+              `Usable efficiency: ${efficiencyPct}% (PowerMatchLab assumption — ${ASSUMPTION_NOTES.systemEfficiency})`,
+              `Reserve headroom: ${reservePct}% (PowerMatchLab assumption — ${ASSUMPTION_NOTES.reserveFraction})`,
+            ]}
+            resultsSummary={[
+              `Total daily energy: ${fmtWh(result.dailyEnergyWh)}`,
+              `Recommended minimum capacity: ${fmtWh(effectiveResult.recommendedMinimumCapacityWh)}`,
+              `Required continuous output: ${fmtWatts(effectiveResult.requiredContinuousOutputW)}`,
+              `Required surge capability: ${fmtWatts(effectiveResult.requiredSurgeOutputW)}`,
+            ]}
+            productCount={catalog.length}
+          />
+
+          {config.showRuntimeIndexTable ? (
+            <div className="mt-10">
+              <RuntimeIndexTable
+                recommendations={recommendations}
+                autonomyByProductId={autonomyByProductId}
+                autonomyUnit={config.autonomyUnit}
+                catalogCount={catalog.length}
+              />
+            </div>
+          ) : null}
+        </>
+      ) : null}
     </div>
   );
 }

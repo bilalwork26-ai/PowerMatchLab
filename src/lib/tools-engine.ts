@@ -13,16 +13,17 @@
  * documented assumptions — never a measured or guaranteed result.
  */
 
-import type { CalculatorResult } from "./calculator";
+import { MIN_DAYS, type CalculatorResult } from "./calculator";
 
 function sanitizeNonNegative(value: number, max = Number.MAX_SAFE_INTEGER): number {
   if (!Number.isFinite(value) || Number.isNaN(value)) return 0;
   return Math.min(max, Math.max(0, value));
 }
 
+/** Mirrors calculatePower's own days clamp exactly (MIN_DAYS, one hour, through 30) so a solar-adjusted result never disagrees with the unadjusted one over a sub-day autonomy window. */
 function sanitizeDays(value: number): number {
-  if (!Number.isFinite(value) || Number.isNaN(value)) return 1;
-  return Math.min(30, Math.max(1, value));
+  if (!Number.isFinite(value) || Number.isNaN(value)) return MIN_DAYS;
+  return Math.min(30, Math.max(MIN_DAYS, value));
 }
 
 export interface SolarAdjustedResult {
@@ -117,6 +118,62 @@ export function estimateAutonomyUnits(
   if (!Number.isFinite(efficiency) || efficiency <= 0) return null;
   const usableWh = capacityWh * efficiency;
   return usableWh / dailyEnergyWh;
+}
+
+/**
+ * Converts a directly-known daily energy figure (e.g. read from an
+ * EnergyGuide label, or measured with a 24-hour plug-in energy meter) into
+ * the `watts` / `hoursPerDay` pair `calculator.ts` already expects — WITHOUT
+ * adding a second code path to the calculation engine itself. Modeling it as
+ * a flat 24-hour average (`watts = dailyEnergyWh / 24`, `hoursPerDay = 24`)
+ * reproduces the exact same `dailyEnergyWh` the engine would compute
+ * (`watts × hoursPerDay = dailyEnergyWh`), so every downstream formula
+ * (capacity, reserve, solar offset) is untouched and already covered by the
+ * existing calculator.ts test suite.
+ *
+ * `kWh` is converted to `Wh` (×1000) before this — see {@link kwhToWh}.
+ */
+export function deriveWattsAndHoursFromDailyEnergy(dailyEnergyWh: number): {
+  watts: number;
+  hoursPerDay: number;
+} {
+  const safeWh = Number.isFinite(dailyEnergyWh) && dailyEnergyWh > 0 ? dailyEnergyWh : 0;
+  return { watts: safeWh / 24, hoursPerDay: 24 };
+}
+
+/** Exact, unrounded kWh → Wh conversion (×1000) — the only unit conversion this feature needs. */
+export function kwhToWh(kwh: number): number {
+  if (!Number.isFinite(kwh) || kwh <= 0) return 0;
+  return kwh * 1000;
+}
+
+export interface SolarEstimateInput {
+  /** Rated solar panel wattage (nameplate, at standard test conditions). */
+  panelWatts: number;
+  /** "Peak sun hours" per day — not clock hours of daylight, see the tool copy for the distinction. */
+  peakSunHours: number;
+  /**
+   * Fraction of the panel's rated output actually realized in the field
+   * (angle, temperature, haze, wiring/charge-controller losses). A
+   * PowerMatchLab-documented planning assumption, not a manufacturer figure
+   * — see ASSUMPTION_NOTES-style copy at the call site.
+   */
+  realizationFraction: number;
+}
+
+/**
+ * Rough daily solar Wh estimate from panel specs — purely a convenience to
+ * PRE-FILL the existing single "daily solar recharge (Wh)" field that
+ * `applySolarOffset` already consumes; it does not introduce a second solar
+ * model. The visitor can always overwrite the resulting number by hand.
+ */
+export function estimateDailySolarWh(input: SolarEstimateInput): number {
+  const panelWatts = sanitizeNonNegative(input.panelWatts, 100_000);
+  const peakSunHours = sanitizeNonNegative(input.peakSunHours, 24);
+  const realizationFraction = Number.isFinite(input.realizationFraction)
+    ? Math.min(1, Math.max(0, input.realizationFraction))
+    : 0.7;
+  return panelWatts * peakSunHours * realizationFraction;
 }
 
 /** Closed enum for the `calculator_type` analytics parameter — see analytics.ts. */

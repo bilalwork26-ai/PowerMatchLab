@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { TOOLS, getTool } from "@/content/tools";
@@ -11,6 +12,7 @@ import { JsonLd } from "@/components/ui/JsonLd";
 import { LoadListCalculator, type LoadListCalculatorConfig } from "@/components/tools/LoadListCalculator";
 import { CpapCalculator } from "@/components/tools/CpapCalculator";
 import { StarlinkCalculator } from "@/components/tools/StarlinkCalculator";
+import { ToolCalculatorSkeleton } from "@/components/tools/ToolCalculatorSkeleton";
 import {
   REFRIGERATOR_PRESETS,
   RV_DEVICE_PRESETS,
@@ -31,6 +33,13 @@ const LOAD_LIST_CONFIGS: Record<string, LoadListCalculatorConfig> = {
     autonomyUnit: { singular: "day", plural: "days" },
     addExampleLabel: "Add example refrigerator/freezer",
     addCustomLabel: "Add custom unit",
+    toolTitle: "Refrigerator & Freezer Runtime Calculator",
+    toolPath: "/tools/refrigerator-runtime-calculator",
+    allowDailyEnergyMode: true,
+    allowSolarEstimator: true,
+    showRuntimeIndexTable: true,
+    allowShareAndExport: true,
+    allowHoursDuration: true,
   },
   "rv-power-calculator": {
     calculatorType: "rv_power",
@@ -45,6 +54,8 @@ const LOAD_LIST_CONFIGS: Record<string, LoadListCalculatorConfig> = {
     autonomyUnit: { singular: "day", plural: "days" },
     addExampleLabel: "Add example RV device",
     addCustomLabel: "Add custom device",
+    toolTitle: "RV & Van Life Power Calculator",
+    toolPath: "/tools/rv-power-calculator",
   },
   "home-backup-calculator": {
     calculatorType: "home_backup",
@@ -59,6 +70,8 @@ const LOAD_LIST_CONFIGS: Record<string, LoadListCalculatorConfig> = {
     autonomyUnit: { singular: "day", plural: "days" },
     addExampleLabel: "Add essential home load",
     addCustomLabel: "Add custom load",
+    toolTitle: "Home Backup Power Calculator",
+    toolPath: "/tools/home-backup-calculator",
   },
 };
 
@@ -114,15 +127,21 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
         <div className="container-page grid gap-10 lg:grid-cols-[1fr_280px]">
           <div className="min-w-0">
             <p className="text-sm text-navy-300">{tool.forWhom}</p>
+            <p className="mt-1 text-xs text-navy-400">
+              Compared dynamically against all {catalog.length} products currently in the
+              PowerMatchLab catalog — never a fixed list.
+            </p>
 
             <div className="mt-6 rounded-xl border border-navy-700 bg-navy-900/40 p-4 sm:p-6">
-              {tool.calculatorKind === "load-list" ? (
-                <LoadListCalculator catalog={catalog} config={LOAD_LIST_CONFIGS[tool.slug]} />
-              ) : tool.calculatorKind === "cpap" ? (
-                <CpapCalculator catalog={catalog} />
-              ) : (
-                <StarlinkCalculator catalog={catalog} />
-              )}
+              <Suspense fallback={<ToolCalculatorSkeleton />}>
+                {tool.calculatorKind === "load-list" ? (
+                  <LoadListCalculator catalog={catalog} config={LOAD_LIST_CONFIGS[tool.slug]} />
+                ) : tool.calculatorKind === "cpap" ? (
+                  <CpapCalculator catalog={catalog} />
+                ) : (
+                  <StarlinkCalculator catalog={catalog} />
+                )}
+              </Suspense>
             </div>
 
             <article className="prose-pml mt-10 max-w-none">
@@ -205,9 +224,26 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
               <div className="not-prose mt-8 rounded-lg border border-navy-700 bg-navy-900/60 p-4 text-xs text-navy-300">
                 <p className="font-semibold text-white">Sources</p>
                 <ul className="mt-1 list-disc pl-5">
-                  {tool.sources.map((s) => (
-                    <li key={s}>{s}</li>
-                  ))}
+                  {tool.sources.map((s) => {
+                    const label = typeof s === "string" ? s : s.label;
+                    const url = typeof s === "string" ? undefined : s.url;
+                    return (
+                      <li key={label}>
+                        {url ? (
+                          <a
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline hover:text-white"
+                          >
+                            {label}
+                          </a>
+                        ) : (
+                          label
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
                 <p className="mt-3">
                   Last updated{" "}
