@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 import { SITE } from "@/lib/site";
+import { BILAL_SIALI } from "@/lib/authors";
 import { PageHero } from "@/components/layout/PageHero";
 import { JsonLd } from "@/components/ui/JsonLd";
 
@@ -31,6 +32,14 @@ export default function ContactPage() {
       />
       <div className="bg-navy-950 py-10">
         <div className="container-page prose-pml max-w-3xl">
+          <p className="not-prose -mt-2 mb-6 text-sm text-navy-300">
+            PowerMatchLab was created and is maintained by{" "}
+            <Link href={BILAL_SIALI.path} className="underline hover:text-cyan-300">
+              {BILAL_SIALI.name}
+            </Link>{" "}
+            to help people size portable power stations without guessing.
+          </p>
+
           <h2>Email</h2>
           <p>
             <a
