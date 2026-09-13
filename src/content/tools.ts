@@ -44,6 +44,12 @@ export interface ToolDefinition {
   sources: ToolSource[];
   relatedGuideSlugs: string[];
   relatedBestForSlug?: string;
+  /**
+   * Slug of an editorial model comparison (see content/comparisons.ts) to
+   * surface as a "Direct comparison" link. Optional — most tools don't need
+   * this section.
+   */
+  relatedComparisonSlug?: string;
   lastUpdated: string;
 }
 
@@ -122,6 +128,8 @@ export const TOOLS: ToolDefinition[] = [
       "best-indoor-generator-for-refrigerator",
     ],
     relatedBestForSlug: "best-for-refrigerator-backup",
+    relatedComparisonSlug:
+      "anker-solix-c1000-gen-2-vs-ecoflow-delta-3-classic-vs-jackery-explorer-1000-v2",
     lastUpdated: "2026-09-11",
   },
   {

@@ -150,7 +150,16 @@ export function RuntimeIndexTable({
         </p>
       </div>
 
-      <div className="mt-3 overflow-x-auto rounded-lg border border-navy-700">
+      {/*
+        `relative` makes this the containing block for the sr-only "Actions"
+        header span below — without it, that absolutely-positioned span's
+        static position is computed from the table's full intrinsic width
+        (up to 760px) and escapes to the document root, widening
+        document.documentElement's scrollWidth on narrow viewports even
+        though the overflow-x-hidden safety net keeps nothing visibly cut
+        off. See the matching fix in LoadListCalculator.tsx.
+      */}
+      <div className="relative mt-3 overflow-x-auto rounded-lg border border-navy-700">
         <table className={`w-full text-left text-sm ${showAdvanced ? "min-w-[760px]" : "min-w-[520px]"}`}>
           <caption className="sr-only">
             Runtime Index: every catalog product compared against your current calculation, sortable by column.

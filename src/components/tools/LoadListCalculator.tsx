@@ -527,7 +527,17 @@ export function LoadListCalculator({
         </button>
       </div>
 
-      <div className="mt-4 overflow-x-auto">
+      {/*
+        `relative` makes this the containing block for the sr-only "Remove"
+        header span below. Without it, that absolutely-positioned span's
+        static position is computed from the table's full 720px intrinsic
+        width and escapes to the document root instead of this scrollable
+        box — invisible, but it still widens document.documentElement's
+        scrollWidth on narrow viewports even though nothing is visibly cut
+        off (the page-level overflow-x-hidden safety net masks it as "no
+        scrollbar", same failure mode as the compare-page table fix).
+      */}
+      <div className="relative mt-4 overflow-x-auto">
         <table className="w-full min-w-[720px] text-sm">
           <thead>
             <tr className="border-b border-navy-700 text-left text-xs uppercase tracking-wide text-navy-400">

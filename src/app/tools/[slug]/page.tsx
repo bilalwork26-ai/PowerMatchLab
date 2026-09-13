@@ -5,8 +5,11 @@ import Link from "next/link";
 import { TOOLS, getTool } from "@/content/tools";
 import { getGuide } from "@/content/guides";
 import { getBestFor } from "@/content/best-for";
+import { getComparison } from "@/content/comparisons";
 import { getAllProducts } from "@/data/products";
 import { pageMetadata, breadcrumbJsonLd, articleJsonLd, type Crumb } from "@/lib/seo";
+import { BILAL_SIALI } from "@/lib/authors";
+import { fmtDate } from "@/lib/format";
 import { PageHero } from "@/components/layout/PageHero";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { LoadListCalculator, type LoadListCalculatorConfig } from "@/components/tools/LoadListCalculator";
@@ -101,6 +104,9 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     .map((s) => getGuide(s))
     .filter((g): g is NonNullable<typeof g> => g !== undefined);
   const relatedBestFor = tool.relatedBestForSlug ? getBestFor(tool.relatedBestForSlug) : undefined;
+  const relatedComparison = tool.relatedComparisonSlug
+    ? getComparison(tool.relatedComparisonSlug)
+    : undefined;
 
   const crumbs: Crumb[] = [
     { name: "Home", path: "/" },
@@ -118,6 +124,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
             description: tool.metaDescription,
             path: `/tools/${tool.slug}`,
             datePublished: tool.lastUpdated,
+            author: { name: BILAL_SIALI.name, path: BILAL_SIALI.path },
           }),
         ]}
       />
@@ -127,6 +134,13 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
         <div className="container-page grid gap-10 lg:grid-cols-[1fr_280px]">
           <div className="min-w-0">
             <p className="text-sm text-navy-300">{tool.forWhom}</p>
+            <p className="mt-1 text-xs text-navy-400">
+              By{" "}
+              <Link href={BILAL_SIALI.path} className="underline hover:text-cyan-300">
+                {BILAL_SIALI.name}
+              </Link>{" "}
+              · Last updated {fmtDate(tool.lastUpdated)}
+            </p>
             <p className="mt-1 text-xs text-navy-400">
               Compared dynamically against all {catalog.length} products currently in the
               PowerMatchLab catalog — never a fixed list.
@@ -277,6 +291,16 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
                   <li>
                     <Link href={`/${relatedBestFor.slug}`} className="text-cyan-300 hover:underline">
                       → {relatedBestFor.title}
+                    </Link>
+                  </li>
+                ) : null}
+                {relatedComparison ? (
+                  <li>
+                    <Link
+                      href={`/compare/${relatedComparison.slug}`}
+                      className="text-cyan-300 hover:underline"
+                    >
+                      → {relatedComparison.h1}
                     </Link>
                   </li>
                 ) : null}
