@@ -470,7 +470,7 @@ export function CompareView({ catalog, scores }: Props) {
                         Leads on {wins} comparable {wins === 1 ? "spec" : "specs"} in
                         this selection.
                         {sc?.overall != null
-                          ? ` PowerMatch Score ${sc.overall}/100 (${sc.band}).`
+                          ? ` PowerMatch Score ${sc.overall}/100 (${sc.band}) — an editorial figure relative to this catalog, ${sc.scoredCount}/${sc.totalDimensions} dimensions scored.`
                           : " PowerMatch Score not published."}
                       </p>
                       <p className="mt-1.5 text-xs text-navy-400">

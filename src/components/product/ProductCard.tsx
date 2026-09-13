@@ -61,7 +61,14 @@ export function ProductCard({
               <Badge tone="neutral" dark={dark}>{product.battery_chemistry}</Badge>
             ) : null}
             {score?.overall != null ? (
-              <Badge tone="brand" dark={dark}>Score {score.overall}/100</Badge>
+              <Link
+                href={`/products/${product.id}#details`}
+                className="rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400"
+                title={`Editorial score relative to this catalog · ${score.scoredCount} of ${score.totalDimensions} dimensions scored`}
+                aria-label={`PowerMatch Score ${score.overall} out of 100 (${score.band}) — an editorial assessment relative to the products in this catalog, based on ${score.scoredCount} of ${score.totalDimensions} scored dimensions. Not a lab test. See the full breakdown.`}
+              >
+                <Badge tone="brand" dark={dark}>Score {score.overall}/100</Badge>
+              </Link>
             ) : null}
           </div>
         </div>
