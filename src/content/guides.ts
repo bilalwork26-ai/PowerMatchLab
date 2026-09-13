@@ -578,6 +578,7 @@ export const GUIDES: Guide[] = [
     ],
     relatedBestForSlug: "best-for-refrigerator-backup",
     studioLinkLabel: "Try the Home Backup scenario in Power Setup Studio",
+    relatedComparisonSlug: "anker-solix-c1000-gen-2-vs-ecoflow-delta-3-classic-vs-jackery-explorer-1000-v2",
     usMarketNotice: true,
     faq: [
       {
@@ -960,6 +961,7 @@ export const GUIDES: Guide[] = [
     ],
     relatedBestForSlug: "best-for-camping",
     studioLinkLabel: "Try the Camping scenario in Power Setup Studio",
+    relatedComparisonSlug: "goal-zero-yeti-300-vs-goal-zero-yeti-700",
     faq: [
       {
         question: "Do I need solar panels for camping, or is a bigger battery enough?",

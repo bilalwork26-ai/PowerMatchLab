@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
-import { getAllProducts } from "@/data/products";
+import { getAllProducts, getProductsByIds } from "@/data/products";
 import { scoreCatalog, type ProductScore } from "@/lib/score";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 import { COMPARISONS } from "@/content/comparisons";
-import { groupComparisonsForIndex } from "@/lib/comparisons";
+import { groupComparisonsByCategory } from "@/lib/comparisons";
 import { PageHero } from "@/components/layout/PageHero";
 import { CompareView } from "@/components/compare/CompareView";
 import { CompareSkeleton } from "@/components/compare/CompareSkeleton";
 import { Callout } from "@/components/ui/Callout";
 import { JsonLd } from "@/components/ui/JsonLd";
+import { ProductIllustration } from "@/components/ui/ProductIllustration";
 
 export const metadata: Metadata = pageMetadata({
   title: "Compare Power Stations Side by Side (Free Tool)",
@@ -24,7 +25,7 @@ export default function ComparePage() {
   const scores: Record<string, ProductScore> = Object.fromEntries(
     scoreCatalog(catalog),
   );
-  const comparisonGroups = groupComparisonsForIndex(COMPARISONS);
+  const comparisonGroups = groupComparisonsByCategory(COMPARISONS);
 
   return (
     <>
@@ -60,31 +61,49 @@ export default function ComparePage() {
           <div className="container-page">
             <Callout tone="info" dark>
               Prefer a focused, editorial write-up instead of building your own
-              selection? Browse the direct comparisons below, grouped by
-              capacity class.
+              selection? Browse the direct comparisons below, organized by the
+              kind of decision each one resolves.
             </Callout>
-            <div className="mt-6 space-y-8">
+            <div className="mt-6 space-y-10">
               {comparisonGroups.map((g) => (
-                <section key={g.tierLabel}>
-                  <h2 className="text-base font-bold text-white">{g.tierLabel}</h2>
+                <section key={g.category}>
+                  <h2 className="text-base font-bold text-white">{g.label}</h2>
+                  <p className="mt-1 max-w-2xl text-sm text-navy-300">{g.blurb}</p>
                   <ul className="mt-3 grid gap-3 sm:grid-cols-2">
-                    {g.entries.map((e) => (
-                      <li key={e.comparison.slug}>
-                        <Link
-                          href={`/compare/${e.comparison.slug}`}
-                          className="block h-full rounded-xl border border-navy-700 bg-gradient-to-b from-navy-800 to-navy-900 p-4 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-glow-cyan"
-                        >
-                          <p className="text-sm font-semibold text-cyan-300">
-                            {e.comparison.h1}
-                          </p>
-                          {e.useCaseLabel ? (
-                            <p className="mt-1 text-xs text-navy-400">
-                              {e.useCaseLabel}
+                    {g.entries.map((e) => {
+                      const entryProducts = getProductsByIds(e.comparison.productIds);
+                      return (
+                        <li key={e.comparison.slug}>
+                          <Link
+                            href={`/compare/${e.comparison.slug}`}
+                            className="block h-full rounded-xl border border-navy-700 bg-gradient-to-b from-navy-800 to-navy-900 p-4 transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-glow-cyan"
+                          >
+                            <div className="flex items-center gap-2">
+                              {entryProducts.map((p) => (
+                                <ProductIllustration
+                                  key={p.id}
+                                  product={p}
+                                  size={36}
+                                  tone="dark"
+                                  showCaption={false}
+                                />
+                              ))}
+                            </div>
+                            <p className="mt-2 text-sm font-semibold text-cyan-300">
+                              {e.comparison.h1}
                             </p>
-                          ) : null}
-                        </Link>
-                      </li>
-                    ))}
+                            <p className="mt-1 text-xs text-navy-300">
+                              {e.comparison.metaDescription}
+                            </p>
+                            {e.useCaseLabel ? (
+                              <p className="mt-2 text-xs font-medium uppercase tracking-wide text-navy-400">
+                                {e.useCaseLabel}
+                              </p>
+                            ) : null}
+                          </Link>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </section>
               ))}
