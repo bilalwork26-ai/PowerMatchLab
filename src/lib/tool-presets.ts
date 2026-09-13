@@ -110,6 +110,63 @@ export const RV_DEVICE_PRESETS: LoadPreset[] = [
 ];
 
 // ---------------------------------------------------------------------------
+// Tool 6: RV rooftop air conditioner
+// ---------------------------------------------------------------------------
+/**
+ * Commonly-published running/starting figures for each BTU class, drawn from
+ * manufacturer spec sheets and RV-AC technical references (see the tool's own
+ * `sources` list in content/tools.ts for the specific citations). Actual
+ * running and starting watts vary by brand, compressor design, ambient
+ * temperature and installed accessories (e.g. a soft-start device) — these
+ * are starting points only, never a substitute for the nameplate or spec
+ * sheet of the visitor's own unit. Starting watts here reflect a unit WITHOUT
+ * a soft starter; PowerMatchLab never assumes a fixed percentage reduction
+ * for one — see the "peak after soft start" field in the calculator itself.
+ */
+export const RV_AC_PRESETS: LoadPreset[] = [
+  {
+    key: "rv-ac-5000btu",
+    name: "5,000 BTU (small window/portable-style unit)",
+    runningWatts: 500,
+    surgeWatts: 900,
+    hoursPerDay: 6,
+    note: "Commonly cited around 4-4.5A running (~500W at 115V) and a 6-9A starting surge (~700-1,050W) for this class — check your unit's own nameplate.",
+  },
+  {
+    key: "rv-ac-8000btu",
+    name: "8,000 BTU (compact rooftop/portable unit)",
+    runningWatts: 900,
+    surgeWatts: 2200,
+    hoursPerDay: 6,
+    note: "Running watts for this class are commonly published in the 730-1,000W range depending on efficiency (EER); starting surge is commonly cited at roughly 2-3x running watts.",
+  },
+  {
+    key: "rv-ac-13500btu-typical",
+    name: "13,500 BTU — typical short use (moderate duty cycle)",
+    runningWatts: 1400,
+    surgeWatts: 3200,
+    hoursPerDay: 2,
+    note: "Illustrative short-use example, not a published figure: roughly 4 hours of desired cooling at a moderate ~50% compressor duty cycle (mild ambient temperature, reasonable insulation) ≈ 2 equivalent hours/day. Real duty cycle varies a lot with climate, insulation and thermostat setting — use the calculator's own duty-cycle helper below the load table to compute equivalent hours from your own two numbers, or enter your own measured/published daily energy figure if you have one.",
+  },
+  {
+    key: "rv-ac-13500btu",
+    name: "13,500 BTU — demanding: near-continuous duty cycle (6h/day)",
+    runningWatts: 1400,
+    surgeWatts: 3200,
+    hoursPerDay: 6,
+    note: "Commonly published in the 1,300-1,800W running / 2,800-3,500W starting range for this class — the single most common rooftop RV AC size. This 6-equivalent-hours/day duty cycle is a deliberately demanding, worst-case planning scenario (hot climate, poor insulation, or a thermostat set very low) — many catalog products correctly show as Not Suitable for it on capacity alone. Confirm your specific model's nameplate or spec sheet.",
+  },
+  {
+    key: "rv-ac-15000btu",
+    name: "15,000 BTU (larger/high-capacity rooftop unit)",
+    runningWatts: 1500,
+    surgeWatts: 3600,
+    hoursPerDay: 6,
+    note: "Commonly published around 1,445-1,600W running and roughly 3,300-4,000W starting for this class — model-specific figures vary; confirm against your unit's nameplate or spec sheet.",
+  },
+];
+
+// ---------------------------------------------------------------------------
 // Tool 4: Starlink & connectivity
 // ---------------------------------------------------------------------------
 export interface StarlinkProfile {

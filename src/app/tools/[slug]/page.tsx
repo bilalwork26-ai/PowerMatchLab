@@ -19,6 +19,7 @@ import { ToolCalculatorSkeleton } from "@/components/tools/ToolCalculatorSkeleto
 import {
   REFRIGERATOR_PRESETS,
   RV_DEVICE_PRESETS,
+  RV_AC_PRESETS,
   HOME_BACKUP_PRESETS,
 } from "@/lib/tool-presets";
 
@@ -59,6 +60,25 @@ const LOAD_LIST_CONFIGS: Record<string, LoadListCalculatorConfig> = {
     addCustomLabel: "Add custom device",
     toolTitle: "RV & Van Life Power Calculator",
     toolPath: "/tools/rv-power-calculator",
+  },
+  "rv-air-conditioner-runtime-calculator": {
+    calculatorType: "rv_ac_runtime",
+    presets: RV_AC_PRESETS,
+    seedKeys: ["rv-ac-13500btu-typical"],
+    daysLabel: "Days without shore power / recharge",
+    daysMax: 7,
+    quantityLabel: "Qty",
+    showSimultaneousToggle: true,
+    solarLabel: "Daily solar recharge (Wh, optional)",
+    prefsConfig: { needsTT30: true, wantsExpandable: true, prioritisePortability: true },
+    autonomyUnit: { singular: "day", plural: "days" },
+    addExampleLabel: "Add example AC (by BTU)",
+    addCustomLabel: "Add custom AC or load",
+    toolTitle: "RV Air Conditioner Runtime & Surge Calculator",
+    toolPath: "/tools/rv-air-conditioner-runtime-calculator",
+    allowSolarEstimator: true,
+    showRuntimeIndexTable: true,
+    allowDutyCycleEstimator: true,
   },
   "home-backup-calculator": {
     calculatorType: "home_backup",

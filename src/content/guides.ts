@@ -1209,6 +1209,7 @@ export const GUIDES: Guide[] = [
       "solar-input-and-charging-times-explained",
       "watts-vs-watt-hours",
       "power-stations-for-remote-work-and-van-life",
+      "can-a-portable-power-station-run-an-rv-air-conditioner",
     ],
     relatedBestForSlug: "best-for-rv",
     relatedComparisonSlug: "anker-solix-c2000-gen-2-vs-jackery-explorer-2000-v2",
@@ -1247,6 +1248,115 @@ export const GUIDES: Guide[] = [
       "Manufacturer-published specifications, attributed by brand in products.json",
     ],
     lastUpdated: "2026-09-03",
+  },
+  {
+    slug: "can-a-portable-power-station-run-an-rv-air-conditioner",
+    relatedToolSlug: "rv-air-conditioner-runtime-calculator",
+    group: "runtime",
+    title: "Can a Portable Power Station Run an RV Air Conditioner?",
+    metaDescription:
+      "The real blocker is usually startup surge, not battery capacity: what it actually takes for a power station to start and sustain a rooftop RV air conditioner, and when a soft-start device changes the picture.",
+    intro: [
+      "Short answer: sometimes, and the thing that decides it is almost never the number RV shoppers check first. A rooftop air conditioner's compressor draws a brief, large startup spike — often called surge, peak, or LRA (locked-rotor amps) — well above its steady running watts. A power station needs a verified surge rating that clears that spike before battery capacity (Wh) even becomes relevant.",
+      "This is why a unit that comfortably runs lights, a 12V fridge, a laptop and a router can still fail to even switch the AC on. This guide walks through what actually determines a real answer for your specific AC and power station, then hands you off to the dedicated calculator to run the numbers for your exact hardware — it doesn't repeat that calculator's own step-by-step math here.",
+    ],
+    keyTakeaways: [
+      "Startup surge, not stored energy, is the first and most common reason a power station can't run a rooftop RV AC.",
+      "Your AC's documented starting spec (nameplate, spec sheet, or a soft-start device's own published figure) and the station's verified surge rating are the two numbers that actually decide it — not the AC's BTU rating alone.",
+      "A soft-start device lowers peak starting draw, but by a model-specific amount its manufacturer publishes — never assume a fixed percentage.",
+      "Clearing the surge check only answers \"can it start\" — how long it can then run depends separately on battery capacity and your real-world duty cycle.",
+      "Even a large, capable station typically covers a rooftop AC for a limited number of hours per charge, not all day, without solar or shore power.",
+    ],
+    sections: [
+      {
+        id: "why-the-hard-case",
+        heading: "Why a rooftop AC is the hardest RV load to power",
+        body: [
+          "Most RV loads — lights, a 12V fridge, electronics, even a microwave — are well within what a mid-size power station's surge rating covers. A rooftop AC's compressor motor is different: its locked-rotor startup current is a genuine electrical spike, commonly several times the unit's steady running draw, for roughly a second as the motor spins up.",
+          "That spike, not the AC's day-to-day energy use, is why this specific appliance trips up more RV power-station purchases than almost anything else in the catalog.",
+        ],
+      },
+      {
+        id: "two-numbers-that-decide-it",
+        heading: "The two numbers that actually decide it",
+        body: [
+          "Your air conditioner's own documented starting spec — from its nameplate, its manufacturer's spec sheet, or (if one is installed) a soft-start device's published reduced figure for that exact combination — is one half of the check. The power station's own verified surge/peak output rating is the other half. If the station's number clears the AC's number, it can start it; if the station's surge rating is unverified, that's a real unknown, not a soft maybe.",
+          "The AC's BTU rating alone doesn't answer this — two units with the same BTU rating from different manufacturers can have meaningfully different starting current, since it depends on the specific compressor, not the cooling capacity number stamped on the box.",
+        ],
+      },
+      {
+        id: "soft-start-devices",
+        heading: "Where a soft-start device fits in",
+        body: [
+          "A soft-start device installed on the AC ramps the compressor motor's current up gradually instead of one large inrush spike, which is the standard fix RVers reach for when a station's surge rating falls short of the AC's unmodified starting spec. Soft-start manufacturers publish their own tested reduction figures for their specific device paired with specific compressors — for example, Micro-Air publishes a 65-75% starting-current reduction for its EasyStart product line.",
+          "That published figure is specific to that manufacturer's device and the compressor it was tested against — it is not a universal percentage that applies to any AC or any soft starter. If you have one installed, use its documented reduced number, not an assumption, when checking it against a power station's surge rating.",
+        ],
+      },
+      {
+        id: "starting-vs-sustaining",
+        heading: "Starting the AC and running it for hours are two different questions",
+        body: [
+          "Clearing the surge check tells you the station can switch the compressor on — it says nothing about how long it can then keep running. That second question is a capacity (Wh) and duty-cycle question: how many watt-hours the compressor actually uses per hour of real operation, given your climate, insulation and thermostat setting, divided into the station's usable capacity.",
+          "It's a common mix-up to confirm a station starts the AC and assume that settles the purchase — for any real trip, both checks matter, and they're independent of each other.",
+        ],
+      },
+      {
+        id: "realistic-expectations",
+        heading: "What a realistic runtime actually looks like",
+        body: [
+          "A rooftop AC is one of the most energy-intensive things an RV traveler can run off a power station. Using a commonly-published example for a 13,500 BTU unit (roughly 1,400 W running) against a real, currently-cataloged 4,096 Wh station whose verified 8,000 W surge rating clears the commonly-cited 2,800-3,500 W starting range for that AC class: 4,096 Wh × 0.85 usable ÷ 1,400 W ≈ 2.5 hours of continuous, full-power compressor runtime per charge.",
+          "Real-world coverage stretches further than that because the compressor cycles rather than running continuously — but the arithmetic above is the honest planning baseline before cycling, climate and insulation extend it. Expect a rooftop AC to be a multi-hour, not all-day, load on a single charge unless it's paired with solar, shore power, or a very large expandable platform.",
+        ],
+      },
+    ],
+    relatedProductIds: [
+      "ecoflow-delta-pro-3",
+      "anker-solix-f3800",
+      "ecoflow-delta-pro-ultra",
+    ],
+    relatedGuideSlugs: ["power-station-for-rv", "power-stations-for-remote-work-and-van-life"],
+    relatedBestForSlug: "best-for-rv",
+    relatedComparisonSlug: "ecoflow-delta-pro-3-vs-anker-solix-f3800",
+    showEstimateFactorsDisclosure: true,
+    usMarketNotice: true,
+    faq: [
+      {
+        question: "What's the single biggest reason a power station fails to run an RV AC?",
+        answer:
+          "Startup surge, not battery capacity. The compressor's brief starting spike needs a verified surge rating from the power station that clears it — many otherwise-capable stations fall short here even though they have plenty of stored energy.",
+      },
+      {
+        question: "Do I need a soft-start device?",
+        answer:
+          "Only if your power station's verified surge rating doesn't clear your AC's own documented starting spec. Check both numbers first — a soft starter is a fix for a specific, confirmed gap, not something to add by default.",
+      },
+      {
+        question: "Can I run a rooftop AC on solar alone?",
+        answer:
+          "Realistically, not for sustained use from a typical portable panel setup — a rooftop AC's energy demand is high enough that solar functions as a partial offset to extend runtime, not a standalone source, without a much larger fixed array than most RV travelers carry.",
+      },
+      {
+        question: "Is there one power station that can run any RV AC out of the box?",
+        answer:
+          "No single answer covers every AC — it depends on your specific unit's documented starting spec against that station's own verified surge rating. Use the RV Air Conditioner Runtime & Surge Calculator with your AC's real numbers to check specific catalog products rather than relying on a general rule.",
+      },
+    ],
+    sources: [
+      {
+        label: "ENERGY STAR — Room Air Conditioners (EER, efficiency and cycling basics)",
+        url: "https://www.energystar.gov/products/room_air_conditioners",
+      },
+      {
+        label: "Micro-Air — EasyStart Breeze soft starter (published starting-current reduction)",
+        url: "https://www.microair.net/products/easystart-breeze-soft-starter",
+      },
+      {
+        label: "Dometic — Brisk II Evolution 13,500 BTU specification sheet",
+        url: "https://www.dometic.com/externalassets/dometic-brisk-ii-evolution-13-5k_64599.pdf",
+      },
+      "Manufacturer-published specifications, attributed by brand in products.json",
+    ],
+    lastUpdated: "2026-09-13",
   },
   {
     slug: "power-station-for-power-outage",
