@@ -12,7 +12,7 @@ import type { Product } from "@/types/product";
  * product's identity/specs are verified; it does NOT mean the CTA may
  * link anywhere — only a real Associates link does that. If
  * `amazon_affiliate_url` is null, there is no purchase link, full stop,
- * for all 40 catalog products alike.
+ * for every catalog product alike.
  *
  * tests/amazon-cta-affiliate-only.test.ts enforces this: it fails if any
  * consumer ever surfaces amazon_product_url as a clickable CTA href.
