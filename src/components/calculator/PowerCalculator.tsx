@@ -86,6 +86,11 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
   });
   const [step, setStep] = useState(1);
   const [exampleKey, setExampleKey] = useState("");
+  // True only for the untouched, pre-loaded fridge/lights/phone rows this
+  // component seeds on mount. Flips to false the moment the visitor edits,
+  // removes or adds a device — never shown as if it were still the original
+  // example once real data is in play. resetAll() restores it to true.
+  const [isDefaultExample, setIsDefaultExample] = useState(true);
 
   const result = useMemo(
     () =>
@@ -131,11 +136,16 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
   );
 
   // --- device row helpers ---------------------------------------------------
-  const updateRow = (id: string, patch: Partial<DeviceInput>) =>
+  const updateRow = (id: string, patch: Partial<DeviceInput>) => {
+    setIsDefaultExample(false);
     setDevices((rows) => rows.map((r) => (r.id === id ? { ...r, ...patch } : r)));
-  const removeRow = (id: string) =>
+  };
+  const removeRow = (id: string) => {
+    setIsDefaultExample(false);
     setDevices((rows) => rows.filter((r) => r.id !== id));
-  const addCustom = () =>
+  };
+  const addCustom = () => {
+    setIsDefaultExample(false);
     setDevices((rows) => [
       ...rows,
       {
@@ -147,9 +157,11 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
         surgeWatts: null,
       },
     ]);
+  };
   const addExample = (key: string) => {
     const ex = getApplianceExample(key);
     if (!ex) return;
+    setIsDefaultExample(false);
     setDevices((rows) => [
       ...rows,
       {
@@ -164,6 +176,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
     setExampleKey("");
   };
   const resetAll = () => {
+    setIsDefaultExample(true);
     setDevices(seededDevices());
     setDays(DEFAULT_ASSUMPTIONS.defaultDays);
     setEfficiencyPct(Math.round(DEFAULT_ASSUMPTIONS.systemEfficiency * 100));
@@ -296,6 +309,15 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
             gives the most accurate numbers.
           </p>
 
+          {isDefaultExample ? (
+            <Callout tone="neutral" dark className="mt-3">
+              <strong className="text-white">Example setup</strong> — the fridge,
+              lights and phone below are a starting demo, not a personalized
+              recommendation. Replace these devices with yours, or edit any field
+              directly, to get a result for your own setup.
+            </Callout>
+          ) : null}
+
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <label className="text-sm">
               <span className="sr-only">Add an example appliance</span>
@@ -335,7 +357,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
                   <th scope="col" className="px-2 py-2 font-medium">
                     Surge (W)
                     <span className="block text-[10px] normal-case text-navy-500">
-                      optional
+                      optional — blank uses a {DEFAULT_ASSUMPTIONS.assumedSurgeMultiplier}&times; fallback
                     </span>
                   </th>
                   <th scope="col" className="px-2 py-2 font-medium">Wh/day</th>
@@ -562,6 +584,12 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
               </label>
               <p className="text-[11px] text-navy-400">
                 {ASSUMPTION_NOTES.reserveFraction}
+              </p>
+              <p className="mt-3 text-sm text-navy-200">
+                Surge fallback: <strong className="text-white">{DEFAULT_ASSUMPTIONS.assumedSurgeMultiplier}&times;</strong> running watts
+              </p>
+              <p className="text-[11px] text-navy-400">
+                {ASSUMPTION_NOTES.assumedSurgeMultiplier}
               </p>
             </div>
           </div>
