@@ -372,10 +372,19 @@ function evaluateProduct(
   const capacityRatio = consideredCapacityWh != null ? capacityComfort : null;
   const outputRatio = product.rated_output_w != null ? outputComfort : null;
 
+  // A load whose startup surge genuinely exceeds its continuous draw (a
+  // compressor, a motor) needs a CONFIRMED surge rating before a unit can be
+  // called compatible — an unverified one is a real unknown, not a soft
+  // footnote, for exactly this kind of load. Never let capacity/output alone
+  // earn a Best/Good Fit label while the one spec that actually determines
+  // "will it even start" is unconfirmed.
+  const surgeUnverifiedButRelevant =
+    meetsSurge === null && result.requiredSurgeOutputW > result.requiredContinuousOutputW;
+
   let status: MatchStatus;
   if (hardFailCapacityOrOutput || hardFailPrefs) {
     status = "Not Suitable";
-  } else if (capacityRatio == null || outputRatio == null) {
+  } else if (capacityRatio == null || outputRatio == null || surgeUnverifiedButRelevant) {
     // Missing the data needed to confirm compatibility AND proportionality.
     status = "Possible Match";
   } else {
