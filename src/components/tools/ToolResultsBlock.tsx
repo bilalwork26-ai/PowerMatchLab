@@ -118,6 +118,18 @@ export function ToolResultsBlock({
         >
           How this is calculated
         </Link>
+        <Link
+          href="/editorial-policy"
+          className="rounded-md bg-navy-800 px-2.5 py-1 font-medium text-navy-200 hover:bg-navy-700"
+        >
+          Editorial policy
+        </Link>
+        <Link
+          href="/affiliate-disclosure"
+          className="rounded-md bg-navy-800 px-2.5 py-1 font-medium text-navy-200 hover:bg-navy-700"
+        >
+          Affiliate disclosure
+        </Link>
       </div>
 
       <div className="mt-8">

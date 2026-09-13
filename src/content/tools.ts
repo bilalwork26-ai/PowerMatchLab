@@ -14,6 +14,9 @@
 
 export type ToolCalculatorKind = "load-list" | "cpap" | "starlink";
 
+/** Same shape as content/guides.ts's GuideSource — a plain string, or a real, verifiable {label, url}. Never invented. */
+export type ToolSource = string | { label: string; url: string };
+
 export interface ToolSection {
   id: string;
   heading: string;
@@ -38,9 +41,15 @@ export interface ToolDefinition {
   sections: ToolSection[];
   commonMistakes: string[];
   faq: ToolFaq[];
-  sources: string[];
+  sources: ToolSource[];
   relatedGuideSlugs: string[];
   relatedBestForSlug?: string;
+  /**
+   * Slug of an editorial model comparison (see content/comparisons.ts) to
+   * surface as a "Direct comparison" link. Optional — most tools don't need
+   * this section.
+   */
+  relatedComparisonSlug?: string;
   lastUpdated: string;
 }
 
@@ -107,6 +116,11 @@ export const TOOLS: ToolDefinition[] = [
     ],
     sources: [
       "PowerMatchLab's own Power Calculator methodology (same formulas, see About & Methodology)",
+      { label: "ENERGY STAR — Refrigerators", url: "https://www.energystar.gov/products/refrigerators" },
+      {
+        label: "U.S. Department of Energy — \"Your Refrigerator Is Only As Efficient As You\"",
+        url: "https://www.energy.gov/energysaver/articles/your-refrigerator-only-efficient-you",
+      },
     ],
     relatedGuideSlugs: [
       "power-station-for-refrigerator",
@@ -114,6 +128,8 @@ export const TOOLS: ToolDefinition[] = [
       "best-indoor-generator-for-refrigerator",
     ],
     relatedBestForSlug: "best-for-refrigerator-backup",
+    relatedComparisonSlug:
+      "anker-solix-c1000-gen-2-vs-ecoflow-delta-3-classic-vs-jackery-explorer-1000-v2",
     lastUpdated: "2026-09-11",
   },
   {

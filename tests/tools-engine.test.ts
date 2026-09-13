@@ -175,7 +175,7 @@ describe("tools-engine.ts: applySolarOffset", () => {
     }
   });
 
-  it("sanitizes negative, zero, NaN and out-of-range days to the [1, 30] window", () => {
+  it("sanitizes negative, zero, NaN and out-of-range days to the [MIN_DAYS, 30] window", () => {
     for (const badDays of [0, -5, NaN, 100]) {
       const adjusted = applySolarOffset(base, 100, badDays);
       expect(Number.isFinite(adjusted.netTotalEnergyDemandWh)).toBe(true);

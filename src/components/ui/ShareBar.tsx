@@ -21,8 +21,15 @@ export function ShareBar({
   csvLabel = "Download CSV",
   className,
 }: {
-  /** Absolute URL of the current page. */
-  url: string;
+  /**
+   * Absolute URL of the current page. A function is resolved at click time
+   * instead of render time — needed by calculators whose shareable URL
+   * encodes live input state (see LoadListCalculator's "Share this
+   * calculation"), which can change on every keystroke and would be
+   * wasteful (and, for a page with heavy state, stale) to recompute on
+   * every render just in case the visitor clicks share.
+   */
+  url: string | (() => string);
   title: string;
   contentKey: ShareableContentKey;
   /** When set, shows a third "download" link — e.g. the research report's CSV route. */
@@ -32,10 +39,11 @@ export function ShareBar({
 }) {
   const [copied, setCopied] = useState(false);
   const canNativeShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
+  const resolveUrl = () => (typeof url === "function" ? url() : url);
 
   const copyLink = async () => {
     try {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(resolveUrl());
       setCopied(true);
       trackEvent("share_click", { content_key: contentKey, method: "copy_link" });
       setTimeout(() => setCopied(false), 2000);
@@ -46,7 +54,7 @@ export function ShareBar({
 
   const nativeShare = async () => {
     try {
-      await navigator.share({ title, url });
+      await navigator.share({ title, url: resolveUrl() });
       trackEvent("share_click", { content_key: contentKey, method: "native_share" });
     } catch {
       /* user cancelled the share sheet, or it's unsupported after all — no-op, not an error */

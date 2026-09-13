@@ -4,6 +4,8 @@ import { join } from "node:path";
 import { TOOLS, getTool } from "@/content/tools";
 import { GUIDES, getGuide } from "@/content/guides";
 import { BEST_FOR, getBestFor } from "@/content/best-for";
+import { COMPARISONS, getComparison } from "@/content/comparisons";
+import { BILAL_SIALI } from "@/lib/authors";
 import { PRIMARY_NAV } from "@/lib/site";
 
 const ROOT = process.cwd();
@@ -231,5 +233,123 @@ describe("Accessibility basics: every interactive input in the shared tool UI ha
       const offenders = checkAccessibleNames(src);
       expect(offenders, `${file}: unlabelled controls: ${offenders.join(" | ")}`).toEqual([]);
     }
+  });
+});
+
+/**
+ * 2026-09-13 integration: the shared tool template (src/app/tools/[slug]/page.tsx)
+ * now carries a visible Bilal Siali byline and JSON-LD Person authorship,
+ * matching the pattern already established on guides and /compare/[slug].
+ * These 5 editorial tool pages (refrigerator/CPAP/RV/home-backup/Starlink)
+ * are content pages with sections, FAQ and sources — not a bare interactive
+ * picker like /tools or /compare, which correctly stay unattributed.
+ */
+describe("Tool pages: visible Bilal Siali byline (matches guides/compare pattern)", () => {
+  const templateSrc = read("src/app/tools/[slug]/page.tsx");
+
+  it("imports the canonical author object rather than duplicating author fields", () => {
+    expect(templateSrc).toContain('from "@/lib/authors"');
+    expect(templateSrc).not.toContain('"Bilal Siali"');
+  });
+
+  it("renders 'By Bilal Siali' sourced from BILAL_SIALI, linked to the canonical author path", () => {
+    expect(templateSrc).toContain("By{\" \"}");
+    expect(templateSrc).toContain("{BILAL_SIALI.name}");
+    expect(templateSrc).toContain("href={BILAL_SIALI.path}");
+  });
+
+  it("the byline appears exactly once in the shared template", () => {
+    const matches = templateSrc.match(/href=\{BILAL_SIALI\.path\}/g) ?? [];
+    expect(matches).toHaveLength(1);
+  });
+
+  it("reuses the tool's own real lastUpdated date — no invented or 'today' date", () => {
+    expect(templateSrc).toContain("fmtDate(tool.lastUpdated)");
+    expect(templateSrc).not.toContain("new Date()");
+    expect(templateSrc).not.toContain("Date.now()");
+  });
+
+  it("passes the same author into the route's articleJsonLd (Person, not the default Organization)", () => {
+    expect(templateSrc).toContain("author: { name: BILAL_SIALI.name, path: BILAL_SIALI.path }");
+  });
+
+  it("the interactive /tools hub still carries no byline (it is a picker, not an article)", () => {
+    const hubSrc = read("src/app/tools/page.tsx");
+    expect(hubSrc).not.toContain("BILAL_SIALI");
+  });
+
+  it("every tool's own lastUpdated field is a real ISO date (no invented 'reviewed today')", () => {
+    for (const t of TOOLS) {
+      expect(t.lastUpdated, `${t.slug} missing lastUpdated`).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    }
+  });
+});
+
+describe("Tool pages: optional related-comparison link resolves to a real, approved comparison", () => {
+  it("every relatedComparisonSlug (when set) resolves to a real comparison", () => {
+    for (const t of TOOLS) {
+      if (t.relatedComparisonSlug === undefined) continue;
+      expect(
+        getComparison(t.relatedComparisonSlug),
+        `${t.slug} links to nonexistent comparison "${t.relatedComparisonSlug}"`,
+      ).toBeDefined();
+    }
+  });
+
+  it("the refrigerator tool links a refrigerator-relevant comparison", () => {
+    const tool = getTool("refrigerator-runtime-calculator")!;
+    expect(tool.relatedComparisonSlug).toBeDefined();
+    const comparison = getComparison(tool.relatedComparisonSlug!)!;
+    expect(comparison.relatedBestForSlugs).toContain("best-for-refrigerator-backup");
+  });
+
+  it("the template renders the related-comparison link only when the field is set", () => {
+    const templateSrc = read("src/app/tools/[slug]/page.tsx");
+    expect(templateSrc).toContain("relatedComparison");
+    expect(templateSrc).toContain("/compare/${relatedComparison.slug}");
+  });
+
+  it("does not duplicate any comparison's editorial fields into content/tools.ts (slug reference only)", () => {
+    const src = read("src/content/tools.ts");
+    for (const c of COMPARISONS) {
+      expect(src).not.toContain(c.h1);
+    }
+  });
+});
+
+/**
+ * Real mobile-overflow regression found during the 2026-09-13 integration
+ * audit, pre-existing in PR #44's own Runtime Index feature (confirmed via
+ * `git diff` against the original commit — untouched by the main-branch
+ * merge). Root cause: a sr-only <span> (Tailwind's `position: absolute`
+ * visually-hidden technique) sits in the LAST <th> of a wide table. Its
+ * absolute "static position" is computed from the table's full intrinsic
+ * width (up to 760px), and with no positioned ancestor between it and the
+ * document root, it escapes the table's own overflow-x-auto scroll box —
+ * invisible, but it still widens document.documentElement.scrollWidth on a
+ * narrow viewport, the same failure mode the compare-page spec table was
+ * fixed for previously. The page-level overflow-x-hidden safety net in
+ * layout.tsx masks it as "no visible scrollbar" without containing it, so
+ * `document.body.scrollWidth` alone would have missed this — only
+ * `document.documentElement.scrollWidth` catches it.
+ * Fix: `relative` on the overflow-x-auto wrapper makes it the containing
+ * block for that sr-only span, keeping it inside the same scroll box.
+ */
+describe("Tool pages: wide-table sr-only span no longer escapes its scroll container (mobile overflow fix)", () => {
+  it("LoadListCalculator's load-list table wrapper is a positioned containing block", () => {
+    const src = read("src/components/tools/LoadListCalculator.tsx");
+    expect(src).toContain('className="relative mt-4 overflow-x-auto"');
+  });
+
+  it("RuntimeIndexTable's results table wrapper is a positioned containing block", () => {
+    const src = read("src/components/tools/RuntimeIndexTable.tsx");
+    expect(src).toContain('className="relative mt-3 overflow-x-auto rounded-lg border border-navy-700"');
+  });
+
+  it("both wrappers still scroll horizontally rather than being clipped or reflowed", () => {
+    const loadListSrc = read("src/components/tools/LoadListCalculator.tsx");
+    const runtimeIndexSrc = read("src/components/tools/RuntimeIndexTable.tsx");
+    expect(loadListSrc).toContain("overflow-x-auto");
+    expect(runtimeIndexSrc).toContain("overflow-x-auto");
   });
 });

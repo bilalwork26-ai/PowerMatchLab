@@ -44,8 +44,37 @@ export interface DeviceBreakdown extends DeviceInput {
 }
 
 export interface UsageInput {
-  /** Number of days the station must last without recharging. */
+  /**
+   * Number of days the station must last without recharging. Accepts a
+   * fraction below 1 (down to MIN_DAYS, one hour) so a short, sub-day
+   * outage can be entered precisely — e.g. a caller offering an "hours"
+   * input converts hours ÷ 24 before calling calculatePower rather than
+   * always rounding a 6-hour outage up to a full day.
+   */
   days: number;
+}
+
+/** One hour, expressed in days — the smallest autonomy window calculatePower will size for. */
+export const MIN_DAYS = 1 / 24;
+
+/**
+ * Sanitizes an autonomy-duration input, in days, for calculatePower and its
+ * callers (applySolarOffset, the shareable-URL codec).
+ *
+ * A valid POSITIVE value is clamped into [MIN_DAYS, 30] — a sub-hour value
+ * (e.g. 0.001) is rounded UP to one hour rather than rejected, since it's a
+ * real (if very short) outage the visitor is trying to size for.
+ *
+ * Zero, negative, NaN or Infinite values are a different case: they are not
+ * "an extremely short but real" duration, they are missing/invalid input.
+ * Falling back to MIN_DAYS (one hour) for those would silently undersize a
+ * recommendation to a fraction of what a caller passing bad data actually
+ * intended — before MIN_DAYS existed, this engine's safe default for
+ * invalid input was one full day, and this keeps that same safe default.
+ */
+export function sanitizeAutonomyDays(value: number): number {
+  if (!Number.isFinite(value) || value <= 0) return 1;
+  return Math.min(30, Math.max(MIN_DAYS, value));
 }
 
 export interface CalculatorResult {
@@ -130,7 +159,7 @@ export function calculatePower(
   assumptionsInput: Partial<CalculatorAssumptions> = {},
 ): CalculatorResult {
   const assumptions = clampAssumptions(assumptionsInput);
-  const days = sanitizeNumber(usage.days, { min: 1, max: 30 }) || 1;
+  const days = sanitizeAutonomyDays(usage.days);
 
   const devices = devicesInput.map((d) => buildDeviceBreakdown(d, assumptions));
 

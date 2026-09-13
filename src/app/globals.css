@@ -232,3 +232,22 @@
   stroke-dasharray: 0.7 16;
   animation: dash-flow 4.5s linear infinite;
 }
+
+/* ---------------------------------------------------------------------
+   Print view (Runtime Index "Print / Save as PDF" — see PrintSummary.tsx).
+   Sitewide chrome the printed page has no use for; anything that should
+   print (the PrintSummary block, the Runtime Index table) is marked with
+   Tailwind's `print:` variant instead and is unaffected by this list.
+   ------------------------------------------------------------------- */
+@media print {
+  header,
+  footer,
+  nav[aria-label="Bottom navigation"],
+  .skip-link {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+}
