@@ -195,17 +195,19 @@ describe("every catalog product's illustration path resolves to a real, valid fi
 });
 
 /**
- * Regression coverage for the 2026-09-11 editorial-illustration integration:
- * the 17 products that briefly used a generated "ILLUSTRATIVE PLACEHOLDER"
- * card now have a real, brand/model-specific illustration supplied by the
- * site owner. These tests fail loudly if a placeholder ever reappears —
- * for any product, not just these 17 — or if the editorial set drifts from
- * what was actually delivered.
+ * Regression coverage for the editorial-illustration integrations: the 17
+ * products from the 2026-09-11 batch that briefly used a generated
+ * "ILLUSTRATIVE PLACEHOLDER" card, plus the 10 products added on
+ * 2026-09-12 (package "powermatchlab-10-product-images"), all have a real,
+ * brand/model-specific illustration supplied by the site owner. These
+ * tests fail loudly if a placeholder ever reappears — for any product, not
+ * just these 27 — or if the editorial set drifts from what was actually
+ * delivered.
  */
-describe("editorial illustrations replace every placeholder (2026-09-11 integration)", () => {
+describe("editorial illustrations replace every placeholder (2026-09-11 + 2026-09-12 integrations)", () => {
   const products = getAllProducts();
 
-  const EXPECTED_EDITORIAL_IDS = [
+  const BATCH_2026_09_11_IDS = [
     "anker-solix-c800x",
     "bluetti-ac70",
     "bluetti-apex-300",
@@ -225,6 +227,21 @@ describe("editorial illustrations replace every placeholder (2026-09-11 integrat
     "mango-power-e",
   ];
 
+  const BATCH_2026_09_12_IDS = [
+    "bluetti-elite-200-v2",
+    "ecoflow-river-3",
+    "jackery-homepower-3000",
+    "ecoflow-delta-3-max",
+    "ecoflow-delta-3-max-plus",
+    "ecoflow-delta-3-ultra-plus",
+    "bluetti-elite-400",
+    "goal-zero-yeti-300",
+    "anker-solix-f2000",
+    "jackery-homepower-3600-plus",
+  ];
+
+  const EXPECTED_EDITORIAL_IDS = [...BATCH_2026_09_11_IDS, ...BATCH_2026_09_12_IDS];
+
   it("no product in the current catalog is flagged as a placeholder", () => {
     for (const product of products) {
       expect(
@@ -241,7 +258,7 @@ describe("editorial illustrations replace every placeholder (2026-09-11 integrat
     }
   });
 
-  it("exactly the 17 expected products are flagged as editorial illustrations, each with the right alt text and caption", () => {
+  it("exactly the 27 expected products are flagged as editorial illustrations, each with the right alt text and caption", () => {
     for (const id of EXPECTED_EDITORIAL_IDS) {
       const product = getProductById(id);
       expect(product, `${id} should exist in the catalog`).toBeDefined();
@@ -281,17 +298,18 @@ describe("editorial illustrations replace every placeholder (2026-09-11 integrat
 });
 
 /**
- * Regression coverage for the 2026-09-11 transparency fix: the 17 editorial
- * illustrations originally arrived as opaque RGB PNGs with a visible light
- * studio background baked in, which rendered as a light rectangular box
- * inside PowerMatchLab's dark product cards. Every one of the 17 files was
- * reprocessed to carry a real alpha channel (matching the palette-based
- * transparency the site's original V1/V2 renders already use) with the
- * light background removed. These tests decode each file's actual pixel
- * data — not just its declared color type — so a future edit that
- * flattens one of these files back onto an opaque background fails loudly.
+ * Regression coverage for the transparency treatment of every editorial
+ * illustration batch: each arrived as an opaque RGB PNG with a visible
+ * studio background baked in, which would render as a light or pale-gray
+ * rectangular box inside PowerMatchLab's dark product cards. Every file
+ * (the 2026-09-11 batch of 17, and the 2026-09-12 batch of 10) was
+ * reprocessed to carry a real alpha channel with the studio background —
+ * including interior gaps like handle loops and wheel spokes — removed.
+ * These tests decode each file's actual pixel data — not just its
+ * declared color type — so a future edit that flattens one of these files
+ * back onto an opaque background fails loudly.
  */
-describe("editorial illustrations use real transparency, not a flattened background (2026-09-11 fix)", () => {
+describe("editorial illustrations use real transparency, not a flattened background (2026-09-11 + 2026-09-12)", () => {
   const EXPECTED_EDITORIAL_IDS = [
     "anker-solix-c800x",
     "bluetti-ac70",
@@ -310,6 +328,16 @@ describe("editorial illustrations use real transparency, not a flattened backgro
     "jackery-explorer-500-v2",
     "jackery-explorer-5000-plus",
     "mango-power-e",
+    "bluetti-elite-200-v2",
+    "ecoflow-river-3",
+    "jackery-homepower-3000",
+    "ecoflow-delta-3-max",
+    "ecoflow-delta-3-max-plus",
+    "ecoflow-delta-3-ultra-plus",
+    "bluetti-elite-400",
+    "goal-zero-yeti-300",
+    "anker-solix-f2000",
+    "jackery-homepower-3600-plus",
   ];
 
   for (const id of EXPECTED_EDITORIAL_IDS) {

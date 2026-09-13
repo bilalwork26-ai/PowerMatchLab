@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 import { SITE } from "@/lib/site";
+import { BILAL_SIALI } from "@/lib/authors";
 import { PageHero } from "@/components/layout/PageHero";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { Callout } from "@/components/ui/Callout";
@@ -46,6 +47,17 @@ export default function MethodologyPage() {
           as an Amazon Associate I earn from qualifying purchases made through
           our links, at no cost to you. We do not accept payment for placement,
           ratings or reviews.
+        </p>
+
+        <h2>Who runs PowerMatchLab</h2>
+        <p>
+          PowerMatchLab is run by{" "}
+          <Link href={BILAL_SIALI.path}>{BILAL_SIALI.name}</Link>, founder and
+          editor. He researches manufacturer-published specifications and
+          oversees the development of the transparent tools on this site.
+          PowerMatchLab does not perform laboratory testing, and information
+          that cannot be confirmed is identified as{" "}
+          <strong>&ldquo;Not verified&rdquo;</strong> rather than estimated.
         </p>
 
         <h2>Three kinds of statement</h2>

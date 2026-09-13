@@ -179,13 +179,45 @@ const EXPECTED_V3_V4_AFFILIATE_LINKS: Record<string, string> = {
   "ecoflow-delta-3-plus": "https://amzn.to/4xoFPhU",
 };
 
+/**
+ * The 10-product catalog expansion (2026-09-12, package
+ * "powermatchlab-10-product-images"): a duplicate check against the
+ * existing 39-product catalog (name/brand/model/ASIN/affiliate-link) found
+ * no collisions, so all 10 were added with real, site-owner-resolved
+ * affiliate links from the start — there is no "pending" phase for this
+ * batch, unlike V4's WebSearch-sourced candidates.
+ */
+const V5_AFFILIATE_LINKS: Record<string, string> = {
+  "bluetti-elite-200-v2": "https://amzn.to/3UG1l4f",
+  "ecoflow-river-3": "https://amzn.to/4h2mNYG",
+  "jackery-homepower-3000": "https://amzn.to/4hrQUsP",
+  "ecoflow-delta-3-max": "https://amzn.to/3T1Zeab",
+  "ecoflow-delta-3-max-plus": "https://amzn.to/3UOGM5E",
+  "ecoflow-delta-3-ultra-plus": "https://amzn.to/4Abs3BI",
+  "bluetti-elite-400": "https://amzn.to/3USiUhp",
+  "goal-zero-yeti-300": "https://amzn.to/4AaFmTc",
+  "anker-solix-f2000": "https://amzn.to/4yueyeU",
+  "jackery-homepower-3600-plus": "https://amzn.to/3SLBnvA",
+};
+const V5_IDS = Object.keys(V5_AFFILIATE_LINKS);
+
 describe("catalog data integrity", () => {
-  it("loads the full 39-product catalog (10 V1 + 12 V2 + 4 V3 + 13 V4, after growatt-vita-550's removal)", () => {
+  it("loads the full 49-product catalog (10 V1 + 12 V2 + 4 V3 + 13 V4 + 10 V5, after growatt-vita-550's removal)", () => {
     expect(products).toHaveLength(
-      V1_IDS.length + V2_IDS.length + V3_IDS.length + V4_IDS.length,
+      V1_IDS.length + V2_IDS.length + V3_IDS.length + V4_IDS.length + V5_IDS.length,
     );
-    expect(products).toHaveLength(39);
+    expect(products).toHaveLength(49);
     expect(V4_IDS).toHaveLength(13);
+    expect(V5_IDS).toHaveLength(10);
+  });
+
+  it("gives every V5 product exactly its assigned, site-owner-resolved affiliate link", () => {
+    for (const [id, url] of Object.entries(V5_AFFILIATE_LINKS)) {
+      const product = getProductById(id);
+      expect(product, `V5 product "${id}" should exist`).toBeDefined();
+      expect(product!.amazon_affiliate_url).toBe(url);
+      expect(product!.amazon_verification_status).toBe("confirmed");
+    }
   });
 
   it("growatt-vita-550 no longer exists anywhere in the catalog", () => {
@@ -244,14 +276,14 @@ describe("catalog data integrity", () => {
     }
   });
 
-  it("every V1/V2/V3/V4 product declares amazon_verification_status explicitly", () => {
+  it("every V1/V2/V3/V4/V5 product declares amazon_verification_status explicitly", () => {
     for (const p of products) {
       expect(
         ["pending", "confirmed", "rejected"],
         `"${p.id}" has an unexpected amazon_verification_status`,
       ).toContain(p.amazon_verification_status);
     }
-    for (const id of [...V1_IDS, ...V2_IDS, ...V3_IDS, ...V4_CONFIRMED_IDS]) {
+    for (const id of [...V1_IDS, ...V2_IDS, ...V3_IDS, ...V4_CONFIRMED_IDS, ...V5_IDS]) {
       expect(getProductById(id)!.amazon_verification_status).toBe("confirmed");
     }
     for (const id of V4_PENDING_IDS) {

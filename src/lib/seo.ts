@@ -165,6 +165,8 @@ export function articleJsonLd(input: {
   path: string;
   datePublished?: string;
   dateModified?: string;
+  /** A real named author. Omit to keep the previous Organization-only author. */
+  author?: { name: string; path: string };
 }) {
   return {
     "@context": "https://schema.org",
@@ -172,9 +174,38 @@ export function articleJsonLd(input: {
     headline: input.headline,
     description: input.description,
     mainEntityOfPage: absoluteUrl(input.path),
-    author: { "@type": "Organization", name: SITE.name },
+    author: input.author
+      ? { "@type": "Person", name: input.author.name, url: absoluteUrl(input.author.path) }
+      : { "@type": "Organization", name: SITE.name },
     publisher: { "@type": "Organization", name: SITE.name },
     datePublished: input.datePublished,
     dateModified: input.dateModified ?? input.datePublished,
+  };
+}
+
+/**
+ * schema.org Person markup for a named author page. Only truthful,
+ * conservative properties — no `sameAs` (no verified public profiles are on
+ * file), no credentials, no awards, no physical-testing claim.
+ */
+export function personJsonLd(input: {
+  name: string;
+  path: string;
+  email?: string;
+  jobTitle?: string;
+  worksFor?: string;
+  knowsAbout?: string[];
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: input.name,
+    url: absoluteUrl(input.path),
+    ...(input.email ? { email: `mailto:${input.email}` } : {}),
+    ...(input.jobTitle ? { jobTitle: input.jobTitle } : {}),
+    ...(input.worksFor
+      ? { worksFor: { "@type": "Organization", name: input.worksFor } }
+      : {}),
+    ...(input.knowsAbout?.length ? { knowsAbout: input.knowsAbout } : {}),
   };
 }

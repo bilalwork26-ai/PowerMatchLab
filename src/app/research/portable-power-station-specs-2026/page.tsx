@@ -4,6 +4,7 @@ import { getAllProducts } from "@/data/products";
 import { computeCatalogStats } from "@/lib/catalog-stats";
 import { pageMetadata, breadcrumbJsonLd, datasetJsonLd, absoluteUrl } from "@/lib/seo";
 import { fmtDate } from "@/lib/format";
+import { BILAL_SIALI } from "@/lib/authors";
 import { PageHero } from "@/components/layout/PageHero";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { Callout } from "@/components/ui/Callout";
@@ -12,8 +13,10 @@ import { ShareBar } from "@/components/ui/ShareBar";
 const PATH = "/research/portable-power-station-specs-2026";
 const CSV_PATH = `${PATH}/catalog.csv`;
 const TITLE = "Portable Power Station Specifications, 2026: A Catalog Dataset Report";
+/** Computed once at module load so the description/copy never drifts from the real catalog size. */
+const PRODUCT_COUNT = getAllProducts().length;
 const DESCRIPTION =
-  "A transparent, programmatically-generated report on PowerMatchLab's own 39-product catalog: capacity, output and weight distributions, battery chemistry mix, unknown-field rates, methodology, and a free CSV download.";
+  `A transparent, programmatically-generated report on PowerMatchLab's own ${PRODUCT_COUNT}-product catalog: capacity, output and weight distributions, battery chemistry mix, unknown-field rates, methodology, and a free CSV download.`;
 
 export const metadata: Metadata = pageMetadata({
   title: TITLE,
@@ -70,7 +73,7 @@ export default function ResearchReportPage() {
       />
       <PageHero
         title="Portable Power Station Specifications, 2026"
-        lead="A transparent report on PowerMatchLab's own catalog dataset — not a market study, not a sales ranking. Every number below is computed live from the same 39-product dataset the rest of the site runs on."
+        lead={`A transparent report on PowerMatchLab's own catalog dataset — not a market study, not a sales ranking. Every number below is computed live from the same ${PRODUCT_COUNT}-product dataset the rest of the site runs on.`}
         crumbs={[
           { name: "Home", path: "/" },
           { name: "Research", path: PATH },
@@ -79,13 +82,21 @@ export default function ResearchReportPage() {
 
       <div className="bg-navy-950 py-10 text-white">
         <div className="container-page prose-pml max-w-3xl">
+          <p className="not-prose -mt-2 mb-4 text-xs text-navy-400">
+            Compiled and maintained by{" "}
+            <Link href={BILAL_SIALI.path} className="underline hover:text-cyan-300">
+              {BILAL_SIALI.name}
+            </Link>{" "}
+            · Data current through {fmtDate(stats.dataCurrentThrough)}
+          </p>
+
           <Callout tone="warn" dark title="What this is, and what it isn't">
             This is a summary of specifications PowerMatchLab has collected editorially
             from manufacturer-published sources for the products currently in its own
             catalog — not an independent market study, not a measurement of sales or
             popularity, and not a laboratory test. A number being common in this dataset
             says nothing about how common it is in the wider market; it only describes
-            these 39 products. See{" "}
+            these {PRODUCT_COUNT} products. See{" "}
             <Link href="/about-methodology">About &amp; Methodology</Link> for how each
             figure in the underlying catalog is sourced and verified.
           </Callout>
@@ -284,7 +295,7 @@ export default function ResearchReportPage() {
           <h2>Limitations</h2>
           <ul>
             <li>
-              This describes PowerMatchLab&rsquo;s own 39-product catalog only — it is not
+              This describes PowerMatchLab&rsquo;s own {PRODUCT_COUNT}-product catalog only — it is not
               a survey of the wider portable power station market, and no claim here
               should be read as one.
             </li>
