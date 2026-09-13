@@ -3,6 +3,7 @@ import Image from "next/image";
 import type { Product } from "@/types/product";
 import type { ProductScore } from "@/lib/score";
 import { getAllProducts } from "@/data/products";
+import { hasEssentialSpecsForFeaturing } from "@/lib/featured-eligibility";
 import { ProductCard } from "@/components/product/ProductCard";
 import { BEST_FOR_NAV } from "@/lib/site";
 import {
@@ -265,7 +266,13 @@ export function TopProducts({
 }: {
   items: { product: Product; score: ProductScore }[];
 }) {
-  const featured = items.slice(0, 4);
+  // Ranked by score, but the homepage spotlight only ever features products
+  // with capacity, continuous output AND weight all verified — a product
+  // missing one of those basics never appears here, regardless of how it
+  // scores on the dimensions that ARE known. It stays fully visible (with
+  // its real score and "Not verified" fields) on /products and its own page.
+  const eligible = items.filter(({ product }) => hasEssentialSpecsForFeaturing(product));
+  const featured = (eligible.length > 0 ? eligible : items).slice(0, 4);
   return (
     <section className="bg-navy-900 py-9 text-white">
       <div className="container-page">
