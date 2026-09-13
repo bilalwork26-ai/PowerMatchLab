@@ -153,13 +153,24 @@ describe("RV AC formulas: reuses the shared calculatePower engine exactly", () =
 // 2. Limits: days cap, presets are all editable examples, never presented as universal
 // ---------------------------------------------------------------------------
 describe("RV AC limits and presets", () => {
-  it("declares exactly 4 BTU-class examples: 5,000 / 8,000 / 13,500 / 15,000", () => {
+  it("declares 4 BTU-class examples (5,000 / 8,000 / 13,500 / 15,000) plus a typical-vs-demanding pair for the most common 13,500 BTU size", () => {
     expect(RV_AC_PRESETS.map((p) => p.key)).toEqual([
       "rv-ac-5000btu",
       "rv-ac-8000btu",
+      "rv-ac-13500btu-typical",
       "rv-ac-13500btu",
       "rv-ac-15000btu",
     ]);
+  });
+
+  it("the typical (moderate duty cycle) and demanding (near-continuous) 13,500 BTU presets share identical running/surge watts — only the duty cycle differs, never the AC's own electrical figures", () => {
+    const typical = RV_AC_PRESETS.find((p) => p.key === "rv-ac-13500btu-typical")!;
+    const demanding = RV_AC_PRESETS.find((p) => p.key === "rv-ac-13500btu")!;
+    expect(typical.runningWatts).toBe(demanding.runningWatts);
+    expect(typical.surgeWatts).toBe(demanding.surgeWatts);
+    expect(typical.hoursPerDay).toBeLessThan(demanding.hoursPerDay);
+    expect(demanding.name).toMatch(/demanding/i);
+    expect(typical.name).toMatch(/typical/i);
   });
 
   it("every preset has a positive running/surge wattage with surge above running (the AC's defining characteristic)", () => {
@@ -172,7 +183,7 @@ describe("RV AC limits and presets", () => {
   it("every preset's note is a sourced, class-level figure, and at least one explicitly points to checking the unit's own nameplate/spec sheet", () => {
     for (const p of RV_AC_PRESETS) {
       expect(p.note, p.key).toBeTruthy();
-      expect(p.note, p.key).toMatch(/class|range|running|starting/i);
+      expect(p.note, p.key).toMatch(/class|range|running|starting|duty cycle/i);
     }
     expect(RV_AC_PRESETS.some((p) => /nameplate|spec sheet/i.test(p.note ?? ""))).toBe(true);
   });
@@ -280,54 +291,118 @@ describe("RV AC compatibility: unverified surge is never shown as a confirmed ma
 });
 
 // ---------------------------------------------------------------------------
-// 4. Real catalog sanity: at least one confirmed Best/Good Fit and one
-//    unconfirmed-surge product exist for a common preset (13,500 BTU)
+// 4. Real catalog sanity: the default (typical) scenario shows an honest mix
+//    of compatible/incompatible products; the demanding scenario remains
+//    available and can legitimately show zero base products as sufficient.
 // ---------------------------------------------------------------------------
-describe("RV AC against the real catalog (13,500 BTU preset)", () => {
-  const preset = RV_AC_PRESETS.find((p) => p.key === "rv-ac-13500btu")!;
-  // 2 equivalent hours/day (a moderate duty cycle) at this BTU class, one day
-  // without recharge — the preset's own default 6h/day full-day total exceeds
-  // every catalog product's capacity, which is itself the honest, expected
-  // finding for a rooftop AC (see the guide's "realistic expectations"
-  // section) rather than a bug to work around here.
-  const result = calculatePower(
-    [
-      {
-        id: "ac",
-        name: preset.name,
-        watts: preset.runningWatts,
-        quantity: 1,
-        hoursPerDay: 2,
-        surgeWatts: preset.surgeWatts,
-        simultaneous: true,
-      },
-    ],
-    { days: 1 },
-  );
-  const recs = recommendProducts(result, catalog);
-
-  it("at least one real catalog product resolves to Best Fit or Good Fit for a moderate duty cycle at the most common RV AC size", () => {
-    expect(recs.some((r) => r.status === "Best Fit" || r.status === "Good Fit")).toBe(true);
-  });
-
-  it("a full 6h/day duty cycle for a single day exceeds every current catalog product's standalone capacity — surfaced as Not Suitable, never hidden", () => {
-    const fullDay = calculatePower(
-      [{ id: "ac", name: preset.name, watts: preset.runningWatts, quantity: 1, hoursPerDay: preset.hoursPerDay, surgeWatts: preset.surgeWatts, simultaneous: true }],
+describe("RV AC against the real catalog: typical (default) vs. demanding presets", () => {
+  function resultFor(preset: (typeof RV_AC_PRESETS)[number]) {
+    return calculatePower(
+      [
+        {
+          id: "ac",
+          name: preset.name,
+          watts: preset.runningWatts,
+          quantity: 1,
+          hoursPerDay: preset.hoursPerDay,
+          surgeWatts: preset.surgeWatts,
+          simultaneous: true,
+        },
+      ],
       { days: 1 },
     );
-    const fullDayRecs = recommendProducts(fullDay, catalog);
-    expect(fullDayRecs.every((r) => r.status === "Not Suitable")).toBe(true);
+  }
+
+  const typicalPreset = RV_AC_PRESETS.find((p) => p.key === "rv-ac-13500btu-typical")!;
+  const demandingPreset = RV_AC_PRESETS.find((p) => p.key === "rv-ac-13500btu")!;
+  const typicalRecs = recommendProducts(resultFor(typicalPreset), catalog);
+  const demandingRecs = recommendProducts(resultFor(demandingPreset), catalog);
+
+  it("the typical (default seed) preset produces an honest MIX: at least one Best/Good Fit AND at least one Not Suitable, using its real, unreduced running/surge watts", () => {
+    expect(typicalRecs.some((r) => r.status === "Best Fit" || r.status === "Good Fit")).toBe(true);
+    expect(typicalRecs.some((r) => r.status === "Not Suitable")).toBe(true);
   });
 
-  it("no catalog product with a null surge_output_w is ever classified Best Fit or Good Fit for this load", () => {
-    const unverified = recs.filter((r) => r.product.surge_output_w === null);
-    for (const r of unverified) {
-      expect(["Best Fit", "Good Fit"]).not.toContain(r.status);
+  it("the typical preset's compatible products carry a working Amazon CTA path (a real, non-null id) — the initial view has something to act on", () => {
+    const compatible = typicalRecs.filter((r) => r.status === "Best Fit" || r.status === "Good Fit");
+    for (const r of compatible) {
+      expect(r.product.id).toBeTruthy();
+    }
+  });
+
+  it("the demanding (near-continuous) preset's full 6h/day duty cycle for a single day legitimately exceeds every current catalog product's standalone capacity — surfaced as Not Suitable with the exact reason, never hidden and never artificially avoided", () => {
+    expect(demandingRecs.every((r) => r.status === "Not Suitable")).toBe(true);
+    const [top] = demandingRecs;
+    expect(top.limitations.join(" ") + top.reasons.join(" ")).toMatch(/capacity/i);
+  });
+
+  it("no catalog product with a null surge_output_w is ever classified Best Fit or Good Fit under either scenario", () => {
+    for (const recs of [typicalRecs, demandingRecs]) {
+      const unverified = recs.filter((r) => r.product.surge_output_w === null);
+      for (const r of unverified) {
+        expect(["Best Fit", "Good Fit"]).not.toContain(r.status);
+      }
     }
   });
 
   it("the 49-product catalog is unmodified by this feature", () => {
     expect(catalog.length).toBe(49);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 4b. The tool seeds with the typical (moderate) scenario, not the demanding one
+// ---------------------------------------------------------------------------
+describe("RV AC tool seeds with the typical scenario, not the demanding one", () => {
+  it("the LOAD_LIST_CONFIGS entry's seedKeys points at the typical preset", () => {
+    const src = read("src/app/tools/[slug]/page.tsx");
+    const configBlock = src.slice(
+      src.indexOf('"rv-air-conditioner-runtime-calculator": {'),
+      src.indexOf("\n  },", src.indexOf('"rv-air-conditioner-runtime-calculator": {')),
+    );
+    expect(configBlock).toContain('seedKeys: ["rv-ac-13500btu-typical"]');
+    expect(configBlock).toContain("allowDutyCycleEstimator: true");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 4c. The duty-cycle helper: distinguishes desired hours, duty cycle %, and
+//     equivalent hours, explains the multiplication, and only ever pre-fills
+//     the existing hoursPerDay field (no parallel calculation path).
+// ---------------------------------------------------------------------------
+describe("RV AC duty-cycle helper (LoadListCalculator, config.allowDutyCycleEstimator)", () => {
+  const src = read("src/components/tools/LoadListCalculator.tsx");
+
+  it("is gated behind the allowDutyCycleEstimator config flag, off by default for the other 5 tools", () => {
+    expect(src).toContain("allowDutyCycleEstimator?: boolean");
+    expect(src).toContain("config.allowDutyCycleEstimator");
+  });
+
+  it("computes equivalent hours as desired hours × duty cycle percentage — the exact multiplication the UI must explain", () => {
+    expect(src).toMatch(/desiredCoolingHours \* \(dutyCyclePct \/ 100\)/);
+  });
+
+  it("the UI copy names all three distinct concepts: hours wanted, duty cycle percentage, and equivalent hours", () => {
+    const helperBlock = src.slice(
+      src.indexOf("Not sure about HRS/DAY"),
+      src.indexOf("Use this estimate ("),
+    );
+    expect(helperBlock).toMatch(/hours you.{0,10}d like it running/i);
+    expect(helperBlock).toMatch(/duty cycle/i);
+    expect(helperBlock).toMatch(/equivalent hours/i);
+    expect(helperBlock).toMatch(/Equivalent hours = hours you want it running/i);
+  });
+
+  it("applying the estimate only ever calls the existing updateRow(id, { hoursPerDay }) — never a second, parallel energy path", () => {
+    const applyFnBlock = src.slice(
+      src.indexOf("const applyDutyCycleEstimate"),
+      src.indexOf("const buildShareUrl"),
+    );
+    expect(applyFnBlock).toContain("updateRow(dutyCycleTargetId, { hoursPerDay: equivalentDutyCycleHours })");
+  });
+
+  it("a stale or missing target row falls back to the first device row, never to nothing", () => {
+    expect(src).toMatch(/devices\[0\]\?\.id \?\? ""/);
   });
 });
 

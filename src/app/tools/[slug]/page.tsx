@@ -64,7 +64,7 @@ const LOAD_LIST_CONFIGS: Record<string, LoadListCalculatorConfig> = {
   "rv-air-conditioner-runtime-calculator": {
     calculatorType: "rv_ac_runtime",
     presets: RV_AC_PRESETS,
-    seedKeys: ["rv-ac-13500btu"],
+    seedKeys: ["rv-ac-13500btu-typical"],
     daysLabel: "Days without shore power / recharge",
     daysMax: 7,
     quantityLabel: "Qty",
@@ -78,6 +78,7 @@ const LOAD_LIST_CONFIGS: Record<string, LoadListCalculatorConfig> = {
     toolPath: "/tools/rv-air-conditioner-runtime-calculator",
     allowSolarEstimator: true,
     showRuntimeIndexTable: true,
+    allowDutyCycleEstimator: true,
   },
   "home-backup-calculator": {
     calculatorType: "home_backup",

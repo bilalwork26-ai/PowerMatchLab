@@ -69,6 +69,16 @@ export interface LoadListCalculatorConfig {
   allowShareAndExport?: boolean;
   /** Lets the autonomy target be entered in hours instead of whole days — for a short outage that doesn't round sensibly to a full day. Off by default. */
   allowHoursDuration?: boolean;
+  /**
+   * Shows a collapsible "estimate equivalent hours from a duty cycle" helper
+   * below the load table, for a compressor-style load (e.g. an RV air
+   * conditioner) whose HRS/DAY figure should represent equivalent full-power
+   * running time, not the clock-hours the visitor wants it switched on. Off
+   * by default. Mirrors allowSolarEstimator: it only ever pre-fills the
+   * existing per-row hoursPerDay field on the row the visitor picks — it
+   * never introduces a second, parallel energy calculation.
+   */
+  allowDutyCycleEstimator?: boolean;
 }
 
 function seedDevices(config: LoadListCalculatorConfig): DeviceInput[] {
@@ -167,6 +177,16 @@ export function LoadListCalculator({
   const [solarSource, setSolarSource] = useState<"manual" | "panel-spec">(
     () => restoredShareState?.solar.source ?? "manual",
   );
+
+  // Duty-cycle helper (config.allowDutyCycleEstimator only) — pre-fills one
+  // row's hoursPerDay from two separate, clearly distinct numbers: the hours
+  // the visitor wants the appliance running, and the percentage of that time
+  // the compressor is actually drawing full power. Purely a convenience on
+  // top of the same hoursPerDay field every row already has.
+  const [showDutyCycleEstimator, setShowDutyCycleEstimator] = useState(false);
+  const [dutyCycleTargetRowId, setDutyCycleTargetRowId] = useState("");
+  const [desiredCoolingHours, setDesiredCoolingHours] = useState(4);
+  const [dutyCyclePct, setDutyCyclePct] = useState(50);
 
   // Resolved client-side only (see PrintSummary's generatedAt prop doc) so
   // the printed report never mismatches between a statically-built server
@@ -322,6 +342,18 @@ export function LoadListCalculator({
     });
     setDailySolarWh(Math.round(estimated));
     setSolarSource("panel-spec");
+  };
+
+  // A stale target (a row that has since been removed, or no selection yet)
+  // always falls back to the first row — never silently targets nothing.
+  const dutyCycleTargetId =
+    dutyCycleTargetRowId && devices.some((d) => d.id === dutyCycleTargetRowId)
+      ? dutyCycleTargetRowId
+      : (devices[0]?.id ?? "");
+  const equivalentDutyCycleHours = Math.round(desiredCoolingHours * (dutyCyclePct / 100) * 10) / 10;
+  const applyDutyCycleEstimate = () => {
+    if (!dutyCycleTargetId) return;
+    updateRow(dutyCycleTargetId, { hoursPerDay: equivalentDutyCycleHours });
   };
 
   const buildShareUrl = () => {
@@ -716,6 +748,82 @@ export function LoadListCalculator({
           time as the others (it still counts fully toward daily energy, just not
           toward the simultaneous continuous/surge power requirement).
         </p>
+      ) : null}
+
+      {config.allowDutyCycleEstimator && devices.length > 0 ? (
+        <details
+          open={showDutyCycleEstimator}
+          onToggle={(e) => setShowDutyCycleEstimator(e.currentTarget.open)}
+          className="mt-3 rounded-lg border border-navy-700 bg-navy-900/60 p-3"
+        >
+          <summary className="cursor-pointer text-xs font-semibold text-cyan-300">
+            Not sure about HRS/DAY? Estimate equivalent hours from a duty cycle
+          </summary>
+          <p className="mt-2 text-[11px] text-navy-400">
+            Three different numbers matter here, and they are not the same thing:
+            how many <strong className="text-navy-300">hours you&rsquo;d like it running</strong> (below),
+            what <strong className="text-navy-300">percentage of that time</strong> the compressor is
+            actually drawing full power rather than cycled off (its duty cycle — varies with climate,
+            insulation and thermostat setting), and the resulting{" "}
+            <strong className="text-navy-300">equivalent hours/day</strong> — the HRS/DAY figure the
+            calculation below actually uses. Equivalent hours = hours you want it running &times;
+            duty cycle.
+          </p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-3">
+            <label className="text-xs text-navy-300">
+              Apply to
+              <select
+                value={dutyCycleTargetId}
+                onChange={(e) => setDutyCycleTargetRowId(e.target.value)}
+                className={cn("mt-1 w-full", darkSelect)}
+              >
+                {devices.map((d) => (
+                  <option key={d.id} value={d.id}>
+                    {d.name || "Untitled load"}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="text-xs text-navy-300">
+              Hours you&rsquo;d like it running
+              <input
+                type="number"
+                min={0}
+                max={24}
+                step={0.5}
+                value={desiredCoolingHours || ""}
+                onChange={(e) => setDesiredCoolingHours(Number(e.target.value) || 0)}
+                className={cn("mt-1 w-full", darkInput)}
+              />
+            </label>
+            <label className="text-xs text-navy-300">
+              Compressor duty cycle: <strong className="text-white">{dutyCyclePct}%</strong>
+              <input
+                type="range"
+                min={10}
+                max={100}
+                step={5}
+                value={dutyCyclePct}
+                onChange={(e) => setDutyCyclePct(Number(e.target.value))}
+                className="mt-2 w-full accent-cyan-400"
+              />
+            </label>
+          </div>
+          <p className="mt-2 text-[11px] text-navy-400">
+            A low duty cycle (roughly 30-50%) is typical in mild weather with reasonable
+            insulation; a high duty cycle (70-100%, near-continuous) reflects hot climates,
+            poor insulation, direct sun or a low thermostat setting. There is no universal
+            figure — this is a planning estimate you set for your own situation, not a
+            manufacturer specification.
+          </p>
+          <button
+            type="button"
+            onClick={applyDutyCycleEstimate}
+            className="mt-3 rounded-md border border-cyan-400/40 bg-navy-900/60 px-3 py-1.5 text-xs font-medium text-cyan-300 hover:bg-navy-800"
+          >
+            Use this estimate ({equivalentDutyCycleHours.toLocaleString("en-US")} equivalent hours/day)
+          </button>
+        </details>
       ) : null}
 
       {invalidRows.length ? (

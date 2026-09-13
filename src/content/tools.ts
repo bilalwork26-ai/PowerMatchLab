@@ -277,7 +277,7 @@ export const TOOLS: ToolDefinition[] = [
     forWhom:
       "RV owners and travelers who need to know whether a specific power station can actually start and sustain a rooftop or window air conditioner — not just run smaller electronics — with or without a soft-start device installed.",
     formula:
-      "Daily energy (Wh) = AC running watts × equivalent hours/day the compressor actually cycles, plus any other loads marked as running the same day. Required continuous output (W) = sum of every load marked as running at the same time as the AC. Required surge (W) = that continuous sum + the AC's documented startup peak — its nameplate/spec-sheet figure, or its reduced peak after a soft-start device if you have that number. Recommended minimum capacity (Wh) = (daily energy × days) ÷ usable efficiency × (1 + reserve fraction).",
+      "Equivalent hours/day = hours you want the AC running × its compressor duty cycle (the percentage of that time it's actually drawing full power, not cycled off) — use the calculator's own duty-cycle helper below the load table to compute this from those two numbers rather than guessing a single hours figure directly. Daily energy (Wh) = AC running watts × that equivalent hours/day figure, plus any other loads marked as running the same day. Required continuous output (W) = sum of every load marked as running at the same time as the AC. Required surge (W) = that continuous sum + the AC's documented startup peak — its nameplate/spec-sheet figure, or its reduced peak after a soft-start device if you have that number. Recommended minimum capacity (Wh) = (daily energy × days) ÷ usable efficiency × (1 + reserve fraction).",
     sections: [
       {
         id: "btu-is-not-watts",
@@ -300,6 +300,7 @@ export const TOOLS: ToolDefinition[] = [
         heading: "Why the compressor isn't running 100% of the time",
         body: [
           "A conventional single-speed AC compressor works like an on/off switch: full power when the thermostat calls for cooling, off once the set temperature is reached, cycling repeatedly rather than running continuously. \"Equivalent hours/day\" in this calculator means the hours the compressor would need to run at full running watts to use the same total energy it actually uses over a day — not the number of clock-hours the AC is switched on.",
+          "Three separate numbers describe this, and the calculator's duty-cycle helper keeps them distinct rather than collapsing them into one guess: the hours you'd like the AC running, the duty cycle (what percentage of those hours the compressor is actually at full power), and the resulting equivalent hours/day — hours wanted × duty cycle — which is the figure that actually drives the daily-energy math above.",
           "Some newer RV AC units use a variable-speed (inverter) compressor instead, which modulates its speed to match the cooling load rather than cycling fully on and off — real-world energy use for those units follows a different pattern than the on/off assumption here, so lean on your own measured or manufacturer-published daily energy figure if you have one.",
         ],
       },
@@ -346,6 +347,11 @@ export const TOOLS: ToolDefinition[] = [
         question: "When should I consult an electrician or RV technician?",
         answer:
           "Before installing or wiring a soft-start device, before relying on any non-standard electrical setup to power the AC circuit, or any time you're unsure of the AC's actual electrical specifications — incorrect wiring or a mismatched soft starter can damage equipment or void a warranty. This calculator only helps you size and compare products; it isn't a substitute for a qualified installation.",
+      },
+      {
+        question: "Why does the example start with only a couple of hours instead of a full day of AC use?",
+        answer:
+          "The starting example represents a moderate, typical-use duty cycle (a few hours of desired cooling at roughly a 50% duty cycle in mild conditions), not a worst case — it's meant to show an honest mix of compatible and incompatible products rather than defaulting to a scenario so demanding that nothing qualifies. A separate, clearly labeled \"demanding: near-continuous duty cycle\" example is also available in the load list, where it's normal and expected for even large catalog stations to show as Not Suitable on capacity alone — that's the calculator being honest about a genuinely hard case, not a bug.",
       },
     ],
     sources: [
