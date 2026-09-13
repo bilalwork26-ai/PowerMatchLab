@@ -14,6 +14,7 @@ import {
   capacityParity,
 } from "@/lib/comparisons";
 import { fmtDate, fmtHours, NOT_VERIFIED } from "@/lib/format";
+import { BILAL_SIALI } from "@/lib/authors";
 import { cn } from "@/lib/cn";
 import { PageHero } from "@/components/layout/PageHero";
 import { Callout } from "@/components/ui/Callout";
@@ -110,15 +111,19 @@ export function ModelComparisonPage({
             <p className="text-[15px] leading-7 text-navy-200">{comparison.intro}</p>
 
             <p className="mt-3 text-xs text-navy-400">
-              These picks are focused on the U.S. market. Before buying, confirm
-              plug type, voltage (120V), warranty terms, and regional
-              availability on the Amazon listing.
+              By{" "}
+              <Link href={BILAL_SIALI.path} className="underline hover:text-cyan-300">
+                {BILAL_SIALI.name}
+              </Link>{" "}
+              · Last checked{" "}
+              {lastChecked ? fmtDate(lastChecked) : "Not verified"} — see each
+              product&rsquo;s Specifications tab for full provenance.
             </p>
 
             <p className="mt-2 text-xs text-navy-400">
-              Last checked{" "}
-              {lastChecked ? fmtDate(lastChecked) : "Not verified"} — see each
-              product&rsquo;s Specifications tab for full provenance.
+              These picks are focused on the U.S. market. Before buying, confirm
+              plug type, voltage (120V), warranty terms, and regional
+              availability on the Amazon listing.
             </p>
 
             {/* Quick summary */}

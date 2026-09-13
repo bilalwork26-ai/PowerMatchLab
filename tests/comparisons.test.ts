@@ -958,3 +958,78 @@ describe("comparisons: 2026-09 expansion — products.json is never modified by 
     expect(hash).toMatch(/^[a-f0-9]{64}$/);
   });
 });
+
+/**
+ * 2026-09-13 follow-up: the shared ModelComparisonPage.tsx template — used
+ * by every /compare/[slug] route, 2-or-3-product alike — now renders a
+ * visible "By Bilal Siali · Last checked <date>" line next to the intro,
+ * matching the byline already visible on guides. Previously Bilal Siali was
+ * only named in the page's JSON-LD, not in the page's visible content.
+ */
+describe("comparison pages: visible Bilal Siali byline (matches JSON-LD authorship)", () => {
+  const templateSrc = readFileSync(
+    join(process.cwd(), "src/components/compare/ModelComparisonPage.tsx"),
+    "utf8",
+  );
+
+  it("imports the canonical author object rather than duplicating author fields", () => {
+    expect(templateSrc).toContain('from "@/lib/authors"');
+    expect(templateSrc).not.toContain('"Bilal Siali"'); // must come from the import, not a retyped literal
+  });
+
+  it("renders 'By Bilal Siali' sourced from BILAL_SIALI, linked to the canonical author path", () => {
+    expect(templateSrc).toContain("By{\" \"}");
+    expect(templateSrc).toContain("{BILAL_SIALI.name}");
+    expect(templateSrc).toContain("href={BILAL_SIALI.path}");
+  });
+
+  it("the byline appears exactly once in the shared template (so exactly once per rendered page)", () => {
+    const matches = templateSrc.match(/href=\{BILAL_SIALI\.path\}/g) ?? [];
+    expect(matches).toHaveLength(1);
+  });
+
+  it("reuses the real, already-computed lastChecked date next to the byline — no invented or 'reviewed today' date", () => {
+    // The byline sits in the same paragraph as the existing, data-derived
+    // `lastChecked` (from earliestLastChecked(products)) — not a new date.
+    expect(templateSrc).toMatch(
+      /By\{" "\}[\s\S]{0,120}BILAL_SIALI\.name[\s\S]{0,120}Last checked\{" "\}[\s\S]{0,60}lastChecked/,
+    );
+    expect(templateSrc).not.toContain("new Date()");
+    expect(templateSrc).not.toContain("Date.now()");
+  });
+
+  it("since this is one shared template for all comparisons, every 2-and-3-product comparison gets the byline automatically", () => {
+    // Sanity: the template takes a variable-length products array (not a
+    // fixed 2-tuple), so the byline isn't gated behind product count.
+    expect(templateSrc).toContain("products: Product[]");
+  });
+
+  it("does not add the byline to the interactive /compare tool (that route is not an editorial article)", () => {
+    const compareToolSrc = readFileSync(join(process.cwd(), "src/app/compare/page.tsx"), "utf8");
+    expect(compareToolSrc).not.toContain("BILAL_SIALI");
+    const compareViewSrc = readFileSync(
+      join(process.cwd(), "src/components/compare/CompareView.tsx"),
+      "utf8",
+    );
+    expect(compareViewSrc).not.toContain("BILAL_SIALI");
+  });
+
+  it("the route's JSON-LD author is still a Person matching this same visible byline (no drift between the two)", () => {
+    const routeSrc = readFileSync(join(process.cwd(), "src/app/compare/[slug]/page.tsx"), "utf8");
+    expect(routeSrc).toContain("author: { name: BILAL_SIALI.name, path: BILAL_SIALI.path }");
+  });
+
+  it("did not touch canonical/breadcrumb/JSON-LD wiring in the route (only the template gained the byline)", () => {
+    const routeSrc = readFileSync(join(process.cwd(), "src/app/compare/[slug]/page.tsx"), "utf8");
+    expect(routeSrc).toContain("breadcrumbJsonLd(crumbs)");
+    expect(routeSrc).toContain("path: `/compare/${comparison.slug}`");
+  });
+
+  it("every approved comparison still resolves and pairs with a real, non-empty product list (byline change didn't break data wiring)", () => {
+    for (const c of COMPARISONS) {
+      const products = getProductsByIds(c.productIds);
+      expect(products.length).toBeGreaterThanOrEqual(2);
+      expect(products.length).toBeLessThanOrEqual(3);
+    }
+  });
+});
