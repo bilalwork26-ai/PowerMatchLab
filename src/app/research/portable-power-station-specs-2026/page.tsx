@@ -260,9 +260,9 @@ export default function ResearchReportPage() {
 
           <h2>Download the dataset</h2>
           <p>
-            The full CSV underlying every number above — same 39 rows, manufacturer
-            specification columns only. No affiliate links, no Amazon URLs, no ASINs,
-            and no internal editorial notes are included in this file.
+            The full CSV underlying every number above — same {PRODUCT_COUNT} rows,
+            manufacturer specification columns only. No affiliate links, no Amazon URLs,
+            no ASINs, and no internal editorial notes are included in this file.
           </p>
           <div className="not-prose my-4 rounded-xl border border-navy-700 bg-navy-900/60 p-4">
             <ShareBar url={url} title={TITLE} contentKey="research_report" csvHref={CSV_PATH} csvLabel="Download CSV" />
