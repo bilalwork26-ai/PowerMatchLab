@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getAllProducts } from "@/data/products";
 import { pageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 import { PageHero } from "@/components/layout/PageHero";
@@ -52,7 +53,29 @@ export default function PowerCalculatorPage() {
       />
       <PowerCalculator catalog={catalog} />
 
-      <section className="bg-navy-950 pb-16 pt-2 text-white">
+      <div className="bg-navy-950 pt-2 text-white">
+        <div className="container-page rounded-xl border border-navy-700 bg-gradient-to-r from-navy-800 to-navy-900 p-4 text-sm">
+          <p>
+            <Link
+              href="/tools/rv-air-conditioner-runtime-calculator"
+              className="font-semibold text-cyan-300 hover:underline"
+            >
+              Trying to run an RV air conditioner? →
+            </Link>{" "}
+            <span className="text-navy-300">
+              Startup surge, not stored energy, is usually the real blocker. Use the
+              dedicated RV Air Conditioner Runtime &amp; Surge Calculator to check it
+              against your specific unit — or see the{" "}
+              <Link href="/tools" className="underline hover:text-white">
+                other specialized calculators
+              </Link>{" "}
+              for CPAP, refrigerators, and home backup.
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <section className="bg-navy-950 pb-16 pt-6 text-white">
         <div className="container-page">
           <h2 className="text-lg font-bold text-white">Power Calculator FAQ</h2>
           <div className="mt-4 space-y-3">

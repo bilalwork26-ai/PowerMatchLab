@@ -266,6 +266,116 @@ export const TOOLS: ToolDefinition[] = [
     lastUpdated: "2026-09-11",
   },
   {
+    slug: "rv-air-conditioner-runtime-calculator",
+    title: "RV Air Conditioner Runtime & Surge Calculator",
+    shortTitle: "RV Air Conditioner",
+    metaDescription:
+      "Check whether a power station can start and run your RV rooftop air conditioner, calculate its daily energy use, and see which catalog products actually meet the surge and capacity requirements.",
+    calculatorKind: "load-list",
+    shortAnswer:
+      "Enter your air conditioner's continuous running watts and, if you know it, its startup/surge peak (from the nameplate, spec sheet, or a soft-start device's documentation) — never a guessed percentage. The calculator sums that against any other RV loads running at the same time, applies your usable-efficiency and reserve settings, and shows exactly which catalog products meet both the surge and capacity requirement, and why the others don't.",
+    forWhom:
+      "RV owners and travelers who need to know whether a specific power station can actually start and sustain a rooftop or window air conditioner — not just run smaller electronics — with or without a soft-start device installed.",
+    formula:
+      "Daily energy (Wh) = AC running watts × equivalent hours/day the compressor actually cycles, plus any other loads marked as running the same day. Required continuous output (W) = sum of every load marked as running at the same time as the AC. Required surge (W) = that continuous sum + the AC's documented startup peak — its nameplate/spec-sheet figure, or its reduced peak after a soft-start device if you have that number. Recommended minimum capacity (Wh) = (daily energy × days) ÷ usable efficiency × (1 + reserve fraction).",
+    sections: [
+      {
+        id: "btu-is-not-watts",
+        heading: "BTU tells you cooling power, not electrical draw",
+        body: [
+          "BTU/hour measures how much heat an air conditioner removes, not how many watts it draws from the wall — the two are related only through the unit's efficiency (EER: cooling BTU/hour ÷ electrical watts), which varies by model. A 13,500 BTU unit at EER 9 and a 13,500 BTU unit at EER 11 draw meaningfully different running watts for the identical cooling output.",
+          "This is why entering your AC's actual electrical rating (from its nameplate or spec sheet) always beats estimating from the BTU number alone — the presets below are commonly-published examples for each BTU class, not a fixed conversion.",
+        ],
+      },
+      {
+        id: "continuous-surge-energy",
+        heading: "Three different numbers: continuous watts, surge watts, and energy",
+        body: [
+          "Continuous (running) watts is the steady draw once the compressor motor is up to speed. Surge (or starting/peak) watts is the brief, much higher spike the instant the compressor motor starts — often called LRA, locked-rotor amps, on a nameplate. Energy (Wh) is running watts accumulated over actual hours of operation.",
+          "A power station needs enough surge rating to start the compressor at all, enough continuous output to keep it running, and enough capacity (Wh) for the total runtime you need — three separate checks, not one. A unit can pass any one of these and still fail the others.",
+        ],
+      },
+      {
+        id: "why-not-100-percent",
+        heading: "Why the compressor isn't running 100% of the time",
+        body: [
+          "A conventional single-speed AC compressor works like an on/off switch: full power when the thermostat calls for cooling, off once the set temperature is reached, cycling repeatedly rather than running continuously. \"Equivalent hours/day\" in this calculator means the hours the compressor would need to run at full running watts to use the same total energy it actually uses over a day — not the number of clock-hours the AC is switched on.",
+          "Some newer RV AC units use a variable-speed (inverter) compressor instead, which modulates its speed to match the cooling load rather than cycling fully on and off — real-world energy use for those units follows a different pattern than the on/off assumption here, so lean on your own measured or manufacturer-published daily energy figure if you have one.",
+        ],
+      },
+      {
+        id: "what-changes-real-runtime",
+        heading: "What actually changes how long the compressor runs",
+        body: [
+          "Outside temperature and humidity, the RV's insulation quality, how sunny or shaded the parking spot is, and the thermostat setting all change how much of each hour the compressor actually runs to hold temperature. A poorly insulated rig in 100°F sun runs its AC far more of each hour than a well-insulated one in mild shade — the same BTU-rated unit can use meaningfully more or less real energy per day depending entirely on these conditions, not the AC itself.",
+        ],
+      },
+      {
+        id: "soft-start-explained",
+        heading: "What a soft-start device changes — and what it doesn't",
+        body: [
+          "A soft-start device (installed on the AC itself) ramps the compressor motor's current up gradually instead of one large locked-rotor inrush spike, which lowers the PEAK startup draw a power station or generator needs to supply. Soft-start manufacturers publish their own tested reduction figures for their specific device and compressor combinations — for example, Micro-Air publishes a 65-75% starting-current reduction for its EasyStart product line (see sources below).",
+          "PowerMatchLab never applies an automatic percentage reduction for a soft starter, because the real number depends on the specific device and AC model. If you have one installed, enter its documented reduced starting figure directly in the Surge (W) field — leave it blank if you don't have that number rather than guessing.",
+        ],
+      },
+    ],
+    commonMistakes: [
+      "Assuming the AC's BTU rating alone tells you its starting surge — check the nameplate, spec sheet, or a soft-start vendor's documented figure for your specific unit.",
+      "Entering 24 equivalent hours/day instead of a realistic duty cycle for your climate, insulation and thermostat setting, which can overstate daily energy by several times.",
+      "Assuming a soft starter reduces peak draw by some fixed, universal percentage rather than using its actual documented figure for your device.",
+      "Confirming a station can start the AC (surge) but not checking whether its capacity (Wh) actually covers the hours of runtime needed, or the reverse.",
+      "Forgetting other RV loads running at the same time as the AC when checking the continuous/surge requirement — mark them as coinciding, or as not, based on your real usage.",
+    ],
+    faq: [
+      {
+        question: "Will a portable power station really start my RV's rooftop air conditioner?",
+        answer:
+          "Only if the station's verified surge rating clearly covers the AC's documented startup peak — many stations cannot without either a very high surge rating or a soft-start device installed on the AC. Check both figures before assuming it will work; this calculator marks a product as unconfirmed rather than compatible whenever the surge comparison can't actually be made.",
+      },
+      {
+        question: "Does a soft starter guarantee my power station can start the AC?",
+        answer:
+          "No. It reduces the AC's peak starting draw, but the resulting reduced figure still needs to be at or below the power station's own verified surge rating — enter the soft-start device's documented number here rather than assuming a reduction.",
+      },
+      {
+        question: "Why are these results estimates rather than a guarantee?",
+        answer:
+          "This tool calculates from the numbers you enter and manufacturer-published specifications — PowerMatchLab does not physically test air conditioners, soft-start devices, or power stations in a lab. Real performance depends on your exact hardware, wiring, installation and climate conditions.",
+      },
+      {
+        question: "When should I consult an electrician or RV technician?",
+        answer:
+          "Before installing or wiring a soft-start device, before relying on any non-standard electrical setup to power the AC circuit, or any time you're unsure of the AC's actual electrical specifications — incorrect wiring or a mismatched soft starter can damage equipment or void a warranty. This calculator only helps you size and compare products; it isn't a substitute for a qualified installation.",
+      },
+    ],
+    sources: [
+      "PowerMatchLab's own Power Calculator methodology (same formulas, see About & Methodology)",
+      {
+        label: "ENERGY STAR — Room Air Conditioners (EER, efficiency and cycling basics)",
+        url: "https://www.energystar.gov/products/room_air_conditioners",
+      },
+      {
+        label: "Micro-Air — EasyStart Breeze soft starter (published starting-current reduction)",
+        url: "https://www.microair.net/products/easystart-breeze-soft-starter",
+      },
+      {
+        label: "Dometic — Brisk II Evolution 13,500 BTU specification sheet",
+        url: "https://www.dometic.com/externalassets/dometic-brisk-ii-evolution-13-5k_64599.pdf",
+      },
+      {
+        label: "Coleman-Mach — Signature Series Mach 8 Plus specifications",
+        url: "https://coleman-mach.com/products/air-conditioners/signature-series-mach-8-plus/",
+      },
+    ],
+    relatedGuideSlugs: [
+      "power-station-for-rv",
+      "can-a-portable-power-station-run-an-rv-air-conditioner",
+    ],
+    relatedBestForSlug: "best-for-rv",
+    relatedComparisonSlug: "ecoflow-delta-pro-3-vs-anker-solix-f3800",
+    lastUpdated: "2026-09-13",
+  },
+  {
     slug: "starlink-runtime-calculator",
     title: "Starlink Runtime Calculator",
     shortTitle: "Starlink & Connectivity",

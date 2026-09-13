@@ -31,6 +31,7 @@ const EXPECTED_SLUGS = [
   "refrigerator-runtime-calculator",
   "cpap-battery-calculator",
   "rv-power-calculator",
+  "rv-air-conditioner-runtime-calculator",
   "starlink-runtime-calculator",
   "home-backup-calculator",
 ];

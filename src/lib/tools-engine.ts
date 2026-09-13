@@ -238,5 +238,6 @@ export type ToolCalculatorType =
   | "refrigerator_runtime"
   | "cpap_battery"
   | "rv_power"
+  | "rv_ac_runtime"
   | "starlink_runtime"
   | "home_backup";
