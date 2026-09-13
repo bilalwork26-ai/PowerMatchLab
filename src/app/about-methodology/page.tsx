@@ -226,7 +226,11 @@ export default function MethodologyPage() {
           with the others we list”, not “how good is this in absolute terms”. Each
           dimension is scored only when the underlying data exists for that
           product. If fewer than {MIN_DIMENSIONS_FOR_OVERALL} dimensions can be
-          scored, no overall number is published.
+          scored, no overall number is published. A score of 100 means a product
+          leads the catalog on every dimension that could be scored for it — it
+          does not mean the product is objectively flawless, that every one of its
+          specification fields has been independently verified, or that it
+          outperforms products outside this catalog.
         </p>
         <table>
           <thead>

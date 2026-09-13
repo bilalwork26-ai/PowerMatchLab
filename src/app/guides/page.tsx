@@ -29,7 +29,7 @@ export default function GuidesPage() {
       />
       <PageHero
         title="Guides"
-        lead="Understand the concept, size it with the calculator, compare the shortlist, then decide. No thin, mass-generated SEO — each guide is written to actually answer the question."
+        lead="Understand the concept, size it with the calculator, compare the shortlist, then decide. Each guide is built to answer a specific question with transparent assumptions, worked examples, and source-backed specifications."
         crumbs={[
           { name: "Home", path: "/" },
           { name: "Guides", path: "/guides" },

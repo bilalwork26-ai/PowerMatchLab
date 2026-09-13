@@ -76,7 +76,7 @@ export const SITE = {
   name: "PowerMatchLab",
   tagline: "Compare. Calculate. Choose smarter.",
   description:
-    "PowerMatchLab is an independent decision-support site for portable power stations. Calculate what you actually need, compare models side by side, and follow a verified link to Amazon.",
+    "PowerMatchLab is an independent decision-support site for portable power stations. Calculate what you actually need, compare models side by side, and follow a checked Amazon listing.",
   /** Canonical base URL. See `resolveSiteUrl` above for the fallback rules. */
   url: resolveSiteUrl(),
   locale: "en_US",

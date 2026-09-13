@@ -49,7 +49,7 @@ export async function generateMetadata({
     // Kept under ~150 chars for every product name in the catalog (checked
     // against the longest current name) so Google's snippet doesn't cut it
     // mid-sentence on mobile, where every confirmed click so far originates.
-    description: `${name}: manufacturer specs, an editorial PowerMatch Score, estimated runtime examples, pros and cons, and a verified link to Amazon.`,
+    description: `${name}: manufacturer specs, an editorial PowerMatch Score, estimated runtime examples, pros and cons, and a checked Amazon listing.`,
     path: `/products/${product.id}`,
   });
 }

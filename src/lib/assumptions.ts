@@ -50,7 +50,7 @@ export const ASSUMPTION_NOTES: Record<keyof CalculatorAssumptions, string> = {
   defaultHoursPerDay: "Starting hours-per-day value for a newly added device.",
   defaultDays: "Starting number of days of autonomy for a new calculation.",
   assumedSurgeMultiplier:
-    "Fallback startup-surge multiple applied only when you do not enter a real surge value.",
+    "Fallback startup-surge multiple applied only when you leave a device's Surge (W) field blank — never a substitute for a real figure. Motors, compressors, pumps, refrigerators and air conditioners can have startup peaks well above or below this 2x estimate; check the device's nameplate or manual and enter its real surge watts whenever you can.",
 };
 
 export function clampAssumptions(input: Partial<CalculatorAssumptions>): CalculatorAssumptions {
