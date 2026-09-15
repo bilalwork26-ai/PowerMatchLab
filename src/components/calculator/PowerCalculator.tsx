@@ -18,6 +18,7 @@ import {
 } from "@/lib/calculator";
 import {
   groupRecommendations,
+  pickRecommendationHighlights,
   recommendProducts,
   type RecommendationPreferences,
 } from "@/lib/recommend";
@@ -68,7 +69,10 @@ const darkInput =
   "rounded-md border border-navy-700 bg-navy-900/60 px-2 py-1.5 text-white outline-none transition-shadow duration-200 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20";
 
 export function PowerCalculator({ catalog }: { catalog: Product[] }) {
-  const [devices, setDevices] = useState<DeviceInput[]>(seededDevices);
+  // Starts empty — no pre-loaded devices, no result shown until the visitor
+  // adds at least one real device (or explicitly loads the labeled example
+  // via loadExampleSetup below). See hasUsableInput()/`ready` for the gate.
+  const [devices, setDevices] = useState<DeviceInput[]>([]);
   const [days, setDays] = useState(DEFAULT_ASSUMPTIONS.defaultDays);
   const [efficiencyPct, setEfficiencyPct] = useState(
     Math.round(DEFAULT_ASSUMPTIONS.systemEfficiency * 100),
@@ -86,11 +90,20 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
   });
   const [step, setStep] = useState(1);
   const [exampleKey, setExampleKey] = useState("");
-  // True only for the untouched, pre-loaded fridge/lights/phone rows this
-  // component seeds on mount. Flips to false the moment the visitor edits,
+  // True only for the untouched fridge/lights/phone rows loaded via
+  // loadExampleSetup() below. Flips to false the moment the visitor edits,
   // removes or adds a device — never shown as if it were still the original
-  // example once real data is in play. resetAll() restores it to true.
-  const [isDefaultExample, setIsDefaultExample] = useState(true);
+  // example once real data is in play. Starts false: the calculator itself
+  // starts empty, not pre-loaded with the example.
+  const [isDefaultExample, setIsDefaultExample] = useState(false);
+  // Advanced settings (usable efficiency, reserve headroom, surge fallback)
+  // are collapsed by default — most visitors never need to touch them.
+  const [advancedSettingsOpen, setAdvancedSettingsOpen] = useState(false);
+  // Recommendations: only the top 3 primary (Best/Good Fit) matches show by
+  // default; "View all compatible models" reveals the rest of that same
+  // group. Reset whenever the primary set changes size so a fresh
+  // calculation doesn't stay stuck expanded from a previous, larger result.
+  const [showAllPrimary, setShowAllPrimary] = useState(false);
 
   const result = useMemo(
     () =>
@@ -109,6 +122,13 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
     if (!hasUsableInput(devices)) return [];
     return recommendProducts(result, catalog, prefs);
   }, [result, catalog, prefs, devices]);
+
+  // A fresh calculation should never stay expanded from a previous, larger
+  // result — collapse back to the top-3 view whenever the recommendation
+  // set itself changes (new devices, assumptions, or preferences).
+  useEffect(() => {
+    setShowAllPrimary(false);
+  }, [recommendations]);
 
   const ready = hasUsableInput(devices);
 
@@ -175,9 +195,14 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
     ]);
     setExampleKey("");
   };
-  const resetAll = () => {
+  /** The ONLY way the fridge/lights/phone example is ever loaded — an explicit visitor action, never the initial state. */
+  const loadExampleSetup = () => {
     setIsDefaultExample(true);
     setDevices(seededDevices());
+  };
+  const resetAll = () => {
+    setIsDefaultExample(false);
+    setDevices([]);
     setDays(DEFAULT_ASSUMPTIONS.defaultDays);
     setEfficiencyPct(Math.round(DEFAULT_ASSUMPTIONS.systemEfficiency * 100));
     setReservePct(Math.round(DEFAULT_ASSUMPTIONS.reserveFraction * 100));
@@ -193,6 +218,9 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
   };
 
   const { primary, oversized, possible, notSuitable } = groupRecommendations(recommendations);
+  const highlights = useMemo(() => pickRecommendationHighlights(primary), [primary]);
+  const visiblePrimary = showAllPrimary ? primary : primary.slice(0, 3);
+  const hiddenPrimaryCount = primary.length - visiblePrimary.length;
 
   return (
     <div className="bg-navy-950 py-8 text-white">
@@ -238,15 +266,20 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
           <p className="text-xs font-semibold uppercase tracking-wide text-navy-400">
             Quick summary
           </p>
+          {!ready ? (
+            <p className="mt-2 text-sm text-navy-300">
+              Add at least one device to see your numbers here.
+            </p>
+          ) : null}
           <dl className="mt-2 space-y-1.5 text-sm">
             <div className="flex justify-between">
               <dt className="text-navy-400">Total daily energy</dt>
-              <dd className="font-semibold text-white">{fmtWh(result.dailyEnergyWh)}</dd>
+              <dd className="font-semibold text-white">{ready ? fmtWh(result.dailyEnergyWh) : "—"}</dd>
             </div>
             <div className="flex justify-between">
               <dt className="text-navy-400">Peak / continuous</dt>
               <dd className="font-semibold text-white">
-                {fmtWatts(result.requiredContinuousOutputW)}
+                {ready ? fmtWatts(result.requiredContinuousOutputW) : "—"}
               </dd>
             </div>
             <div className="flex justify-between">
@@ -304,9 +337,9 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
             Step 1 of 3 · Add Your Devices
           </h2>
           <p className="mt-1 text-sm text-navy-300">
-            The example wattages below are starting points, not universal values —
-            edit every field to match your actual devices. A plug-in energy meter
-            gives the most accurate numbers.
+            {devices.length === 0
+              ? "Add your own devices below, or try a labeled example setup to see how the calculator works."
+              : "The example wattages below are starting points, not universal values — edit every field to match your actual devices. A plug-in energy meter gives the most accurate numbers."}
           </p>
 
           {isDefaultExample ? (
@@ -344,6 +377,15 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
             >
               <PlusIcon width={15} height={15} /> Add custom device
             </button>
+            {devices.length === 0 ? (
+              <button
+                type="button"
+                onClick={loadExampleSetup}
+                className="inline-flex items-center gap-1.5 rounded-md bg-navy-800 px-3 py-2 text-sm font-medium text-navy-200 hover:bg-navy-700"
+              >
+                Try an example setup
+              </button>
+            ) : null}
           </div>
 
           <div className="mt-4 overflow-x-auto">
@@ -469,7 +511,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
                 {devices.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="py-6 text-center text-navy-400">
-                      No devices yet. Add an example or a custom device to begin.
+                      No devices yet. Add a custom device, an example appliance, or try the example setup above to begin.
                     </td>
                   </tr>
                 ) : null}
@@ -553,8 +595,13 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
               </p>
             </div>
 
-            <div className="glass-panel bg-navy-900/60 p-4">
-              <p className="text-sm font-medium text-white">Calculation assumptions</p>
+            <details className="glass-panel bg-navy-900/60 p-4" open={advancedSettingsOpen} onToggle={(e) => setAdvancedSettingsOpen(e.currentTarget.open)}>
+              <summary className="cursor-pointer text-sm font-medium text-white">
+                Advanced settings
+                <span className="ml-1.5 font-normal text-navy-400">
+                  (usable efficiency, reserve headroom, surge fallback)
+                </span>
+              </summary>
               <label className="mt-3 block text-sm text-navy-200">
                 Usable efficiency: <strong className="text-white">{efficiencyPct}%</strong>
                 <input
@@ -591,7 +638,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
               <p className="text-[11px] text-navy-400">
                 {ASSUMPTION_NOTES.assumedSurgeMultiplier}
               </p>
-            </div>
+            </details>
           </div>
 
           <fieldset className="glass-panel mt-6 bg-navy-900/60 p-4">
@@ -736,11 +783,28 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
                 </p>
 
                 {primary.length ? (
-                  <div className="mt-4 grid gap-4 md:grid-cols-2">
-                    {primary.map((rec) => (
-                      <RecommendationCard key={rec.product.id} rec={rec} tone="dark" />
-                    ))}
-                  </div>
+                  <>
+                    <div className="mt-4 grid gap-4 md:grid-cols-2">
+                      {visiblePrimary.map((rec) => (
+                        <RecommendationCard
+                          key={rec.product.id}
+                          rec={rec}
+                          tone="dark"
+                          badge={highlights[rec.product.id]}
+                          location="power_calculator"
+                        />
+                      ))}
+                    </div>
+                    {hiddenPrimaryCount > 0 ? (
+                      <button
+                        type="button"
+                        onClick={() => setShowAllPrimary(true)}
+                        className="mt-4 rounded-lg border border-navy-700 px-4 py-2 text-sm font-semibold text-navy-200 hover:bg-navy-800"
+                      >
+                        View all compatible models ({primary.length})
+                      </button>
+                    ) : null}
+                  </>
                 ) : (
                   <Callout tone="warn" dark live className="mt-4">
                     No product in the current catalog is a proportionate match for
@@ -762,7 +826,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
                     </p>
                     <div className="mt-3 grid gap-4 md:grid-cols-2">
                       {oversized.map((rec) => (
-                        <RecommendationCard key={rec.product.id} rec={rec} tone="dark" />
+                        <RecommendationCard key={rec.product.id} rec={rec} tone="dark" location="power_calculator" />
                       ))}
                     </div>
                   </details>
@@ -775,7 +839,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
                     </summary>
                     <div className="mt-3 grid gap-4 md:grid-cols-2">
                       {possible.map((rec) => (
-                        <RecommendationCard key={rec.product.id} rec={rec} tone="dark" />
+                        <RecommendationCard key={rec.product.id} rec={rec} tone="dark" location="power_calculator" />
                       ))}
                     </div>
                   </details>
@@ -788,7 +852,7 @@ export function PowerCalculator({ catalog }: { catalog: Product[] }) {
                     </summary>
                     <div className="mt-3 grid gap-4 md:grid-cols-2">
                       {notSuitable.map((rec) => (
-                        <RecommendationCard key={rec.product.id} rec={rec} tone="dark" />
+                        <RecommendationCard key={rec.product.id} rec={rec} tone="dark" location="power_calculator" />
                       ))}
                     </div>
                   </details>

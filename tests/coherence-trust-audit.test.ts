@@ -183,16 +183,20 @@ describe("Bloque 4: Power Calculator labels its seeded example and explains the 
     expect(src).toMatch(/\{isDefaultExample \? \(/);
   });
 
-  it("every device-list mutation (edit, remove, add custom, add example) turns the example label off; only resetAll turns it back on", () => {
+  it("every device-list mutation (edit, remove, add custom, add example) turns the example label off; only the explicit loadExampleSetup turns it on, and resetAll clears back to the true empty default", () => {
     const updateRowBlock = src.slice(src.indexOf("const updateRow = "), src.indexOf("const removeRow = "));
     const removeRowBlock = src.slice(src.indexOf("const removeRow = "), src.indexOf("const addCustom = "));
     const addCustomBlock = src.slice(src.indexOf("const addCustom = "), src.indexOf("const addExample = "));
-    const addExampleBlock = src.slice(src.indexOf("const addExample = "), src.indexOf("const resetAll = "));
+    const addExampleBlock = src.slice(src.indexOf("const addExample = "), src.indexOf("const loadExampleSetup = "));
+    const loadExampleBlock = src.slice(src.indexOf("const loadExampleSetup = "), src.indexOf("const resetAll = "));
     const resetAllBlock = src.slice(src.indexOf("const resetAll = "), src.indexOf("const resetAll = ") + 300);
     for (const block of [updateRowBlock, removeRowBlock, addCustomBlock, addExampleBlock]) {
       expect(block).toContain("setIsDefaultExample(false)");
     }
-    expect(resetAllBlock).toContain("setIsDefaultExample(true)");
+    expect(loadExampleBlock).toContain("setIsDefaultExample(true)");
+    expect(loadExampleBlock).toContain("setDevices(seededDevices())");
+    expect(resetAllBlock).toContain("setIsDefaultExample(false)");
+    expect(resetAllBlock).toContain("setDevices([])");
   });
 
   it("does not break share/URL-param handling: PowerCalculator has no searchParams-driven share-state restoration to interfere with", () => {
