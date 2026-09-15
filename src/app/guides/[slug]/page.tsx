@@ -133,6 +133,25 @@ export default async function GuidePage({
             </p>
           ))}
 
+          {guide.group === "runtime" || guide.group === "use-cases" ? (
+            <div className="not-prose my-6 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-cyan-700/40 bg-navy-900/60 p-4">
+              <p className="text-sm text-navy-200">
+                Ready to put a number on this for your own setup?
+              </p>
+              <TrackedLink
+                href={relatedTool ? `/tools/${relatedTool.slug}` : "/power-calculator"}
+                event="guide_cta_click"
+                eventParams={{
+                  guide_slug: guide.slug,
+                  cta: relatedTool ? "related_tool_top" : "power_calculator_top",
+                }}
+                className="w-full shrink-0 rounded-lg bg-brand-600 px-4 py-2 text-center text-sm font-semibold text-white transition-[background-color,box-shadow,transform] duration-200 hover:-translate-y-px hover:bg-brand-700 hover:shadow-glow-brand sm:w-auto"
+              >
+                {relatedTool ? `Calculate your ${relatedTool.shortTitle} power needs` : "Calculate your power needs"} →
+              </TrackedLink>
+            </div>
+          ) : null}
+
           {guide.keyTakeaways?.length ? (
             <div className="not-prose my-6 rounded-lg border border-cyan-700/40 bg-navy-900/60 p-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-cyan-300">
