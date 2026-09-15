@@ -55,6 +55,7 @@ const productObjectSchema = z.object({
   cons: z.array(z.string().min(1)),
 
   official_source: nullableString,
+  official_source_url: z.string().url().nullable(),
   last_verified: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "last_verified must be an ISO date")

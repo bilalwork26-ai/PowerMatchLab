@@ -75,6 +75,7 @@ function baseProduct(overrides: Partial<Product> = {}): Product {
     pros: [],
     cons: [],
     official_source: null,
+    official_source_url: null,
     last_verified: null,
     amazon_asin: null,
     amazon_product_url: null,

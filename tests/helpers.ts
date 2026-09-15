@@ -40,6 +40,7 @@ export function makeProduct(over: Partial<Product> = {}): Product {
     pros: ["Pro"],
     cons: ["Con"],
     official_source: "TestBrand",
+    official_source_url: null,
     last_verified: "2026-09-01",
     amazon_asin: "B000TEST",
     amazon_product_url: "https://www.amazon.com/dp/B000TEST",

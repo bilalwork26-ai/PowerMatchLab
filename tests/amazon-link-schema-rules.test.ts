@@ -41,6 +41,7 @@ const BASE = {
   pros: ["pro"],
   cons: ["con"],
   official_source: "Test Manufacturer",
+  official_source_url: null,
   last_verified: "2026-01-01",
   amazon_asin: "B0TEST1234",
   amazon_verification_status: "confirmed" as const,

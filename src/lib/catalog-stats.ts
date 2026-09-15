@@ -168,6 +168,7 @@ export const CSV_COLUMNS: { key: keyof Product; header: string }[] = [
   { key: "warranty", header: "warranty" },
   { key: "idle_consumption_w", header: "idle_consumption_w" },
   { key: "official_source", header: "official_source" },
+  { key: "official_source_url", header: "official_source_url" },
   { key: "last_verified", header: "last_verified" },
 ];
 

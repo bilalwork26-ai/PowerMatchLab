@@ -69,6 +69,13 @@ export interface Product {
   cons: string[];
 
   official_source: string | null;
+  /**
+   * Direct URL to the official manufacturer product/spec page this record
+   * was verified against — never an Amazon URL, a reseller, or a review
+   * site. Null when a specific, unambiguous official URL has not been
+   * confirmed for this exact model/variant; the site never invents one.
+   */
+  official_source_url: string | null;
   /** ISO date (YYYY-MM-DD) the record was last checked against the source. */
   last_verified: string | null;
 
