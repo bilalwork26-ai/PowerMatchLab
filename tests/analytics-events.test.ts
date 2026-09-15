@@ -197,7 +197,8 @@ describe("GA4 request timing: gtag.js itself is never requested before consent i
   it("GoogleAnalytics performs no consent check of its own — being mounted at all is the only gate, and only AnalyticsConsent mounts it", () => {
     const gaSrc = read("src/components/analytics/GoogleAnalytics.tsx");
     expect(gaSrc).not.toContain("getStoredConsent");
-    const mounters = srcFiles.filter((f) => srcContents.get(f)!.includes("<GoogleAnalytics"));
+    // Exact-tag match (not a prefix match) so <GoogleAnalyticsPageview /> doesn't false-positive here.
+    const mounters = srcFiles.filter((f) => /<GoogleAnalytics(?![A-Za-z])/.test(srcContents.get(f)!));
     expect(mounters).toEqual([join(SRC_DIR, "components/analytics/AnalyticsConsent.tsx")]);
   });
 });

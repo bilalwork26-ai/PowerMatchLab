@@ -136,23 +136,38 @@ describe("GA4: env-var gated, no hardcoded Measurement ID", () => {
   });
 });
 
-describe("GA4: exactly one page_view strategy (no double-counting)", () => {
-  it("GoogleAnalytics never dispatches a page_view itself — only the config call", () => {
+describe("GA4: exactly one page_view strategy — manual dispatch, config's own auto page_view disabled", () => {
+  it("GoogleAnalytics disables gtag's automatic page_view and never dispatches one itself", () => {
     const src = read("src/components/analytics/GoogleAnalytics.tsx");
     expect(src).not.toMatch(/gtag\(['"]event['"],\s*['"]page_view['"]/);
-    expect(src).not.toContain("usePathname");
-    expect(src).not.toContain("useSearchParams");
     expect(src).toContain("gtag('config'");
+    expect(src).toContain("send_page_view: false");
   });
 
-  it("no file sends a manual page_view event anywhere under src/", () => {
-    const offenders = srcFiles.filter((f) => /['"]page_view['"]/.test(srcContents.get(f)!));
-    expect(offenders, `manual page_view dispatch found in: ${offenders.join(", ")}`).toEqual([]);
+  it("exactly one file dispatches page_view, and it's the dedicated tracker component", () => {
+    const offenders = srcFiles.filter(
+      (f) =>
+        f !== join(SRC_DIR, "components/analytics/GoogleAnalyticsPageview.tsx") &&
+        /['"]page_view['"]/.test(srcContents.get(f)!),
+    );
+    expect(offenders, `manual page_view dispatch found outside the tracker in: ${offenders.join(", ")}`).toEqual([]);
+    const trackerSrc = read("src/components/analytics/GoogleAnalyticsPageview.tsx");
+    expect(trackerSrc).toMatch(/gtag\(['"]event['"],\s*['"]page_view['"]/);
   });
 
-  it("send_page_view:false is not set (that pattern belongs to a manual-tracking strategy this site no longer uses)", () => {
-    const src = read("src/components/analytics/GoogleAnalytics.tsx");
-    expect(src).not.toContain("send_page_view");
+  it("the tracker fires on both the initial pathname and every Next.js App Router navigation, wrapped in Suspense", () => {
+    const src = read("src/components/analytics/GoogleAnalyticsPageview.tsx");
+    expect(src).toContain("usePathname");
+    expect(src).toContain("useSearchParams");
+    expect(src).toContain("[pathname, searchParams]");
+    expect(src).toContain("Suspense");
+  });
+
+  it("GoogleAnalytics mounts the tracker so every acceptance gets it, and no consent check is duplicated in the tracker itself", () => {
+    const gaSrc = read("src/components/analytics/GoogleAnalytics.tsx");
+    expect(gaSrc).toContain("<GoogleAnalyticsPageview />");
+    const trackerSrc = read("src/components/analytics/GoogleAnalyticsPageview.tsx");
+    expect(trackerSrc).not.toContain("getStoredConsent");
   });
 });
 
