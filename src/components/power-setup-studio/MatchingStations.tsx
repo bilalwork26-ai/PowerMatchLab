@@ -54,7 +54,7 @@ export function MatchingStations({
           });
           return (
             <div key={rec.product.id}>
-              <RecommendationCard rec={rec} tone="dark" />
+              <RecommendationCard rec={rec} tone="dark" location="power_setup_studio" />
               {autonomyHours != null ? (
                 <p className="mt-1.5 rounded-md bg-navy-900/60 px-2.5 py-1.5 text-[11px] text-navy-300">
                   Estimated autonomy at the current simulated battery level and net

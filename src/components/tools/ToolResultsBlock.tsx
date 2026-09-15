@@ -156,6 +156,7 @@ export function ToolResultsBlock({
                 rec={rec}
                 tone="dark"
                 extraStat={withAutonomy(rec)}
+                location="tool_results"
               />
             ))}
           </div>
@@ -186,6 +187,7 @@ export function ToolResultsBlock({
                   rec={rec}
                   tone="dark"
                   extraStat={withAutonomy(rec)}
+                  location="tool_results"
                 />
               ))}
             </div>
@@ -204,6 +206,7 @@ export function ToolResultsBlock({
                   rec={rec}
                   tone="dark"
                   extraStat={withAutonomy(rec)}
+                  location="tool_results"
                 />
               ))}
             </div>
@@ -217,7 +220,7 @@ export function ToolResultsBlock({
             </summary>
             <div className="mt-3 grid gap-4 md:grid-cols-2">
               {notSuitable.map((rec) => (
-                <RecommendationCard key={rec.product.id} rec={rec} tone="dark" />
+                <RecommendationCard key={rec.product.id} rec={rec} tone="dark" location="tool_results" />
               ))}
             </div>
           </details>

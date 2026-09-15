@@ -171,6 +171,62 @@ export function groupRecommendations(recs: Recommendation[]): RecommendationGrou
   };
 }
 
+export type RecommendationHighlightLabel =
+  | "Best overall match"
+  | "Best portable option"
+  | "Best higher-capacity option";
+
+/**
+ * Picks up to three distinct, verifiable highlight labels from an already-
+ * sorted `primary` group (Best/Good Fit only — never Oversized/Possible/Not
+ * Suitable). The overall pick is always primary[0] (the group is already
+ * ordered by fit, with PowerMatch Score only a minor tie-breaker — see
+ * computeFitScore). "Best portable" and "Best higher-capacity" are only
+ * added when a DIFFERENT product genuinely leads on that verified field
+ * (lowest weight_kg, highest capacity_wh respectively) — never invented,
+ * never applied to fewer than 2 distinct qualifying products.
+ */
+export function pickRecommendationHighlights(
+  primary: Recommendation[],
+): Partial<Record<string, RecommendationHighlightLabel>> {
+  if (primary.length === 0) return {};
+  const highlights: Partial<Record<string, RecommendationHighlightLabel>> = {
+    [primary[0].product.id]: "Best overall match",
+  };
+  const used = new Set([primary[0].product.id]);
+  const overall = primary[0].product;
+
+  const withWeight = primary.filter((r) => r.product.weight_kg != null);
+  if (withWeight.length > 0) {
+    const lightest = withWeight.reduce((a, b) =>
+      b.product.weight_kg! < a.product.weight_kg! ? b : a,
+    );
+    if (
+      !used.has(lightest.product.id) &&
+      (overall.weight_kg == null || lightest.product.weight_kg! < overall.weight_kg)
+    ) {
+      highlights[lightest.product.id] = "Best portable option";
+      used.add(lightest.product.id);
+    }
+  }
+
+  const withCapacity = primary.filter((r) => r.product.capacity_wh != null);
+  if (withCapacity.length > 0) {
+    const biggest = withCapacity.reduce((a, b) =>
+      b.product.capacity_wh! > a.product.capacity_wh! ? b : a,
+    );
+    if (
+      !used.has(biggest.product.id) &&
+      (overall.capacity_wh == null || biggest.product.capacity_wh! > overall.capacity_wh)
+    ) {
+      highlights[biggest.product.id] = "Best higher-capacity option";
+      used.add(biggest.product.id);
+    }
+  }
+
+  return highlights;
+}
+
 function evaluateProduct(
   product: Product,
   result: CalculatorResult,

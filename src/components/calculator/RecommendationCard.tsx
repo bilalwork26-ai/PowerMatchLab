@@ -1,13 +1,21 @@
+"use client";
+
 import Link from "next/link";
 import type { Recommendation, MatchStatus } from "@/lib/recommend";
 import { productDisplayName } from "@/data/products";
 import { fmtWh, fmtWatts, fmtKg } from "@/lib/format";
+import { trackEvent, type RecommendationClickLocation } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 import { ProductIllustration } from "@/components/ui/ProductIllustration";
 import { ScoreCircle } from "@/components/ui/ScoreCircle";
 import { AmazonCta } from "@/components/product/AmazonCta";
 import { CompareToggleButton } from "@/components/product/CompareToggleButton";
 import { CheckIcon, InfoIcon, XIcon } from "@/components/ui/icons";
+
+/** Snake_case, enum-friendly normalisation of a MatchStatus for GA4 params — never the raw spaced label. */
+function normalizedStatus(status: MatchStatus): string {
+  return status.toLowerCase().replace(/ /g, "_");
+}
 
 const STATUS_STYLES: Record<MatchStatus, string> = {
   "Best Fit": "bg-positive-50 text-positive-700 border-positive-200",
@@ -45,6 +53,8 @@ export function RecommendationCard({
   rec,
   tone = "light",
   extraStat,
+  badge,
+  location,
 }: {
   rec: Recommendation;
   tone?: "light" | "dark";
@@ -55,10 +65,25 @@ export function RecommendationCard({
    * this product's own capacity, never a manufacturer claim.
    */
   extraStat?: { label: string; value: string };
+  /**
+   * Optional highlight label (e.g. "Best overall match", "Best portable
+   * option") — purely presentational, computed by the caller from already-
+   * verified fields (see pickRecommendationHighlights in lib/recommend.ts).
+   * Off by default; no existing caller is required to pass it.
+   */
+  badge?: string;
+  /** Which recommendation surface this card is rendered on — required so every recommendation_click carries a real, closed-enum location. */
+  location: RecommendationClickLocation;
 }) {
   const { product, status, reasons, limitations, powerMatchScore } = rec;
   const dark = tone === "dark";
   const caption = statusCaption(rec);
+  const trackClick = () =>
+    trackEvent("recommendation_click", {
+      product_id: product.id,
+      location,
+      status: normalizedStatus(status),
+    });
   return (
     <article
       className={cn(
@@ -68,6 +93,11 @@ export function RecommendationCard({
           : "card",
       )}
     >
+      {badge ? (
+        <p className={cn("mb-2 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold", dark ? "bg-cyan-400/10 text-cyan-300" : "bg-brand-50 text-brand-700")}>
+          {badge}
+        </p>
+      ) : null}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex gap-3">
           <ProductIllustration product={product} size={64} tone={tone} />
@@ -78,6 +108,7 @@ export function RecommendationCard({
             <h3 className={cn("text-base font-semibold", dark && "text-white")}>
               <Link
                 href={`/products/${product.id}`}
+                onClick={trackClick}
                 className={dark ? "hover:text-cyan-300" : "hover:text-brand-700"}
               >
                 {product.model}

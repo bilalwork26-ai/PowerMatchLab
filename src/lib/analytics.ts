@@ -37,7 +37,20 @@ export type AnalyticsEvent =
   | "view_product"
   | "guide_cta_click"
   | "share_click"
-  | "csv_download";
+  | "csv_download"
+  | "recommendation_click";
+
+/**
+ * Which recommendation surface a click happened on — an internal enum, so
+ * recommendation_click can answer "which surface converts" without ever
+ * carrying free text. Shared by RecommendationCard's three current callers:
+ * the general Power Calculator, the six /tools/[slug] calculators, and
+ * Power Setup Studio.
+ */
+export type RecommendationClickLocation =
+  | "power_calculator"
+  | "tool_results"
+  | "power_setup_studio";
 
 /** Which shareable content block a share/copy/download action happened on — an internal enum, never a URL. */
 export type ShareableContentKey =
