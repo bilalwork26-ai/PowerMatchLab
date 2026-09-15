@@ -29,7 +29,16 @@ export function AnalyticsConsent() {
   const [choice, setChoice] = useState<ConsentChoice | null | "unset">("unset");
 
   useEffect(() => {
-    setChoice(getStoredConsent());
+    const stored = getStoredConsent();
+    // dataLayer starts empty on every fresh page load/reload — the only
+    // consent signal guaranteed present is the 'denied' default from
+    // layout.tsx's beforeInteractive script. A returning visitor's stored
+    // "accepted" choice must be re-applied here, BEFORE setChoice mounts
+    // GoogleAnalytics below, or gtag.js configures and sends page_view
+    // while still believing consent is denied (visible in production as
+    // gcs=G100 on the collect request even though localStorage is correct).
+    if (stored === "accepted") applyConsentUpdate("accepted");
+    setChoice(stored);
     const reopen = () => setChoice(null);
     window.addEventListener(REOPEN_CONSENT_EVENT, reopen);
     return () => window.removeEventListener(REOPEN_CONSENT_EVENT, reopen);

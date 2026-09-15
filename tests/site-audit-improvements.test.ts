@@ -241,6 +241,23 @@ describe("Consent Mode v2: denied by default, GA4 never loads before acceptance"
     expect(src).toContain("Consent Mode");
     expect(src).not.toMatch(/without a banner|no banner (is )?(needed|required)/i);
   });
+
+  it("a returning visitor's already-accepted consent is re-applied on mount, before GoogleAnalytics can render — every fresh page load starts with an empty dataLayer, so a stored choice from a previous session must be re-sent or gtag still believes consent is denied", () => {
+    const src = read("src/components/analytics/AnalyticsConsent.tsx");
+    const effectMatch = src.match(/useEffect\(\(\) => \{([\s\S]*?)\}, \[\]\);/);
+    expect(effectMatch, "could not find the mount effect in AnalyticsConsent.tsx").not.toBeNull();
+    const effectBody = effectMatch![1];
+    expect(effectBody).toContain("applyConsentUpdate");
+    // The re-applied update must happen before setChoice (which mounts
+    // GoogleAnalytics) — not after, or GoogleAnalytics could still race it.
+    const applyIdx = effectBody.indexOf("applyConsentUpdate");
+    const setChoiceIdx = effectBody.indexOf("setChoice(stored)");
+    expect(applyIdx).toBeGreaterThan(-1);
+    expect(setChoiceIdx).toBeGreaterThan(-1);
+    expect(applyIdx).toBeLessThan(setChoiceIdx);
+    // Only re-applied for "accepted" — a rejected visitor must stay silent.
+    expect(effectBody).toMatch(/stored === "accepted"/);
+  });
 });
 
 describe("GA4 copy: never claims Google Analytics is active when it isn't", () => {
