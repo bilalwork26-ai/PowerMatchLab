@@ -229,11 +229,13 @@ describe("Consent Mode v2: denied by default, GA4 never loads before acceptance"
 });
 
 describe("GA4 copy: never claims Google Analytics is active when it isn't", () => {
-  it("the consent banner branches its claim on GA_ENABLED (computed from GA_MEASUREMENT_ID), not a fixed string", () => {
+  it("the consent banner branches its claim on GA_ENABLED (computed from GA_MEASUREMENT_ID), not a fixed string, and its short 'GA not active' copy never claims analytics is running", () => {
     const src = read("src/components/analytics/AnalyticsConsent.tsx");
     expect(src).toContain("const GA_ENABLED = Boolean(GA_MEASUREMENT_ID)");
     expect(src).toMatch(/\{GA_ENABLED\s*\?/);
-    expect(src).toContain("Google Analytics is not currently active on this deployment");
+    const falseBranch = src.slice(src.indexOf('? "We use'), src.indexOf('Nothing loads'));
+    expect(falseBranch).toMatch(/no analytics run/i);
+    expect(falseBranch).not.toMatch(/we (track|use) (google )?analytics/i);
   });
 
   it("the privacy policy computes gaEnabled from the same GA_MEASUREMENT_ID and branches the GA4 section on it", () => {

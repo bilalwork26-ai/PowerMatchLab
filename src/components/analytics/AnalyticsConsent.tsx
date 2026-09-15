@@ -48,18 +48,18 @@ export function AnalyticsConsent() {
         <div
           role="region"
           aria-label="Cookie preferences"
-          className="fixed inset-x-0 bottom-0 z-50 border-t border-cyan-400/20 bg-navy-950/95 p-4 text-white shadow-[0_-4px_20px_rgba(0,0,0,0.4)] backdrop-blur"
+          className="fixed inset-x-0 bottom-0 z-50 border-t border-cyan-400/20 bg-navy-950/95 p-3 text-white shadow-[0_-4px_20px_rgba(0,0,0,0.4)] backdrop-blur"
         >
-          <div className="container-page flex flex-wrap items-center justify-between gap-4">
-            <p className="max-w-2xl text-sm text-navy-200">
+          <div className="container-page flex flex-wrap items-center justify-between gap-3">
+            <p className="max-w-xl text-sm text-navy-200">
               {GA_ENABLED
-                ? "We use Google Analytics to understand how visitors use this site, and Google AdSense for site-ownership verification. Both stay off until you accept —"
-                : "This site uses Google AdSense for site-ownership verification. Google Analytics is not currently active on this deployment. Your choice below still controls the advertising-related signals Google receives —"}{" "}
-              see our{" "}
+                ? "We use a few cookies for analytics and ad verification."
+                : "We use one cookie for ad verification — no analytics run yet."}{" "}
+              Nothing loads until you choose.{" "}
               <Link href="/privacy-policy" className="underline hover:text-white">
                 Privacy Policy
-              </Link>{" "}
-              for exactly what each one does.
+              </Link>
+              .
             </p>
             <div className="flex shrink-0 gap-2">
               <button
