@@ -123,9 +123,9 @@ export function itemListJsonLd(items: { name: string; path: string }[]) {
 
 /**
  * schema.org Dataset markup for the catalog research report. No
- * `citation`/`creator` claims beyond the site itself, no license invented
- * (none is on file), and the only `distribution` is the real CSV route —
- * never a fabricated download count or external mirror.
+ * `citation`/`creator` claims beyond the site itself, and the only
+ * `distribution` is the real CSV route — never a fabricated download count
+ * or external mirror. `license` is CC BY 4.0.
  */
 export function datasetJsonLd(input: {
   name: string;
@@ -141,6 +141,7 @@ export function datasetJsonLd(input: {
     name: input.name,
     description: input.description,
     url: absoluteUrl(input.path),
+    license: "https://creativecommons.org/licenses/by/4.0/",
     ...(input.dateModified ? { dateModified: input.dateModified } : {}),
     creator: { "@type": "Organization", name: SITE.name, url: SITE.url },
     variableMeasured: [
