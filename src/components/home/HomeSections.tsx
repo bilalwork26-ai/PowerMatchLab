@@ -405,6 +405,137 @@ export function UseCaseCards() {
   );
 }
 
+/**
+ * Long-form, crawlable prose explaining the site — not duplicated anywhere
+ * else on the home page (the Hero's HOW_IT_WORKS strip is three short visual
+ * steps; this is the full written version, in paragraphs search engines can
+ * read as real content). Every claim here matches /about-methodology and
+ * /affiliate-disclosure word for word in substance — no lab testing, no
+ * invented figures, no claim this page doesn't already make elsewhere.
+ */
+export function AboutSection() {
+  return (
+    <section className="bg-navy-950 py-12 text-white">
+      <div className="container-page prose-pml max-w-3xl">
+        <h2>What PowerMatchLab Is</h2>
+        <p>
+          PowerMatchLab is an independent, reader-supported comparison and
+          decision-support site for portable power stations, built for the US
+          market. We don&rsquo;t manufacture or sell power stations ourselves
+          — we help you work out what you actually need, compare real models
+          side by side, and point you to a checked Amazon listing when
+          you&rsquo;re ready to buy.
+        </p>
+
+        <h3>How it works</h3>
+        <p>
+          Start with the Power Calculator: tell it what you want to run and
+          for how long, and it works out the energy (Wh) and power (W) your
+          setup needs using a documented formula you can inspect and adjust.
+          From there, it shows which stations in our catalog can actually
+          deliver that — never a product that&rsquo;s undersized for your
+          numbers. You can also skip straight to the Compare tool and line up
+          to four models side by side, or browse the full catalog filtered by
+          capacity, weight, chemistry or output.
+        </p>
+
+        <h3>Who it&rsquo;s for</h3>
+        <p>
+          Campers and van-lifers sizing a portable setup, homeowners planning
+          backup power for a fridge or a few circuits, remote workers running
+          tools or a laptop off-grid — anyone deciding between portable power
+          stations who wants real numbers instead of marketing claims.
+        </p>
+
+        <h3>Why use it instead of a retailer&rsquo;s own page</h3>
+        <ul>
+          <li>
+            Every spec carries a source and a &ldquo;last checked&rdquo; date
+            — unverified fields say so, they&rsquo;re never guessed.
+          </li>
+          <li>
+            The calculator&rsquo;s formula and assumptions are published, not
+            a black box.
+          </li>
+          <li>
+            Amazon Associates commissions fund the site, but never decide
+            rankings — see our{" "}
+            <Link href="/affiliate-disclosure">Affiliate Disclosure</Link>.
+          </li>
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+const HOME_FAQ = [
+  {
+    question: "What is PowerMatchLab?",
+    answer:
+      "An independent site that helps you size and compare portable power stations for the US market, using manufacturer-published specs and a transparent calculator — not a retailer or manufacturer.",
+  },
+  {
+    question: "Do you test the power stations yourselves?",
+    answer:
+      "No. We record manufacturer-published specifications with a source and a checked date. We don't run lab tests, and we label anything we can't confirm as “Not verified” rather than estimating it. Full detail on our About & Methodology page.",
+  },
+  {
+    question: "How does the Power Calculator work?",
+    answer:
+      "You list your devices and how long you'd run them; it computes your daily energy and peak power needs with a documented formula, then only recommends stations whose real specs actually cover that — never an undersized match.",
+  },
+  {
+    question: "How are you funded — can brands pay for a better ranking?",
+    answer:
+      "Through Amazon Associates commissions when you buy through our links, at no extra cost to you. No brand can pay for placement, a rating, or a review. See our Affiliate Disclosure.",
+  },
+  {
+    question: "What is the PowerMatch Score?",
+    answer:
+      "An editorial scoring model built from verified specs (capacity, output, weight, etc.) — it's a judgment call we're explicit about, never dressed up as a lab measurement.",
+  },
+  {
+    question: "I found a wrong or outdated spec — what do I do?",
+    answer:
+      "Email us with the product name and what looks wrong; we'll check it against the manufacturer's own source. See Contact and our Editorial Policy for how corrections are handled.",
+  },
+];
+
+/**
+ * Deliberately no FAQ rich-result structured data here — see
+ * tests/no-faqpage-schema.test.ts, which enforces that sitewide. This is a
+ * visible, crawlable FAQ section only, same <details> pattern as the Power
+ * Calculator's FAQ.
+ */
+export function HomeFaq() {
+  return (
+    <section className="bg-navy-950 pb-4 pt-0 text-white">
+      <div className="container-page max-w-3xl">
+        <h2 className="text-lg font-bold text-white">Frequently Asked Questions</h2>
+        <div className="mt-4 space-y-3">
+          {HOME_FAQ.map((f) => (
+            <details
+              key={f.question}
+              className="group rounded-xl border border-navy-700 bg-gradient-to-b from-navy-800 to-navy-900 p-4 open:shadow-glow-soft"
+            >
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-semibold text-white">
+                {f.question}
+                <span
+                  aria-hidden="true"
+                  className="shrink-0 text-cyan-300 transition-transform duration-200 group-open:rotate-45"
+                >
+                  +
+                </span>
+              </summary>
+              <p className="mt-2 animate-fade-up text-sm text-navy-300">{f.answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export const TRUST = [
   {
     title: "Manufacturer-sourced data",
